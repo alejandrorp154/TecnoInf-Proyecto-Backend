@@ -1,52 +1,43 @@
 package com.javaee.pryectoBack.data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Singleton;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import com.javaee.pryectoBack.model.Usuario;
 
 @Singleton
 public class ControladorDA implements ControladorDALocal, ControladorDARemote {
 
-	//PROVISORIO, luego se utiliza JPA.
-	private List<Usuario> usuarios;
+	@PersistenceContext(unitName = "primary")
+	private EntityManager manager;
 	
-	public ControladorDA() {
-		this.cargarDatosDebug();
-	}
-
-	// Agrega 5 Usuario
-	public void cargarDatosDebug() {
-		
-		this.usuarios = new ArrayList<Usuario>();
-		
-		for (int i = 1; i < 6; i++) {
-			String nombre = "nombre" + " " + Integer.toString(i);
-			String email = "nombre" + Integer.toString(i) + "@example.com";
-			Usuario usuario = new Usuario(i, nombre, email);
-			usuarios.add(usuario);
-		}
+	public ControladorDA()
+	{
 	}
 
 	@Override
 	public Usuario getUsuario(int idUsuario) throws Exception {
-		for (Usuario usuario : usuarios) {
-			if (usuario.getIdUsuario() == idUsuario) {
-				return usuario;
-			}
+		Usuario usuario = manager.find(Usuario.class, idUsuario);
+		if (usuario == null)
+		{
+			usuario = new Usuario();
 		}
-		throw new Exception("No existe Usuario con id=" + idUsuario);
+		return usuario;
 	}
 
 	@Override
-	public List<Usuario> getUsuarios() {
-		return this.usuarios;
+	public List<Usuario> getUsuarios(int offset, int size) {
+		TypedQuery<Usuario> query = manager.createQuery("SELECT usuario FROM Usuario usuario order by usuario.idUsuario", Usuario.class);
+		List<Usuario> usuarios = query.setFirstResult(offset).setMaxResults(size).getResultList();
+		return usuarios;
 	}
 
 	@Override
 	public void addUsuario(Usuario usuario) {
-		usuarios.add(usuario);
+		manager.persist(usuario);
 	}
 }
