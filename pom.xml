@@ -36,7 +36,6 @@
         <module>pryectoBack-ejb</module>
         <module>pryectoBack-web</module>
         <module>pryectoBack-ear</module>
-        <module>AppConsola</module>
     </modules>
 
     <properties>
