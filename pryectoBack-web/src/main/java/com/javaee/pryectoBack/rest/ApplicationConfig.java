@@ -26,5 +26,6 @@ public class ApplicationConfig extends Application
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(com.javaee.pryectoBack.rest.UsuarioRest.class);
+        resources.add(com.javaee.pryectoBack.rest.NotificationRest.class);
     }
 }
