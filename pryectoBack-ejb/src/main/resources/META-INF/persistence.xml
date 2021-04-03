@@ -20,16 +20,24 @@
    xsi:schemaLocation="
         http://xmlns.jcp.org/xml/ns/persistence
         http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
-   <persistence-unit name="primary">
+   <persistence-unit name="primary"  transaction-type="JTA">
       <!-- If you are running in a production environment, add a managed 
          data source, this example data source is just for development and testing! -->
-      <!-- The datasource is deployed as <EAR>/META-INF/pryectoBack-ds.xml, you
-         can find it in the source at ear/src/main/application/META-INF/pryectoBack-ds.xml -->
-      <jta-data-source>java:jboss/datasources/pryectoBackDS</jta-data-source>
-      <properties>
-         <!-- Properties for Hibernate -->
-         <property name="hibernate.hbm2ddl.auto" value="create-drop" />
-         <property name="hibernate.show_sql" value="false" />
-      </properties>
+      <!-- The datasource is deployed as <EAR>/META-INF/ejercicio1-ds.xml, you
+         can find it in the source at ear/src/main/application/META-INF/ejercicio1-ds.xml -->
+      	<jta-data-source>java:jboss/datasources/PostgresDS</jta-data-source>
+	  	<class>com.javaee.pryectoBack.model.Usuario</class>
+      
+		<properties>
+	         <property name="hibernate.hbm2ddl.auto" value="update" />
+         	<property name="hibernate.show_sql" value="true" />
+         	<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+			<property name="hibernate.format_sql" value="false" />
+			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5433/proyecto"/>
+			<property name="javax.persistence.jdbc.user" value="postgres"/>
+			<property name="javax.persistence.jdbc.password" value="root"/>
+		</properties>
    </persistence-unit>
 </persistence>
+

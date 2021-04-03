@@ -31,20 +31,34 @@ public class UsuarioRest
 	@GET
     @Produces(MediaType.APPLICATION_JSON)
     @ApiOperation(value = "Devuelve una lista de objetos usuarios",
-    notes = "Probando")
-    public List<Usuario> getAll() 
+    notes = "el offset es la posicion donde empieza (0 por defecto) el size es el tamño de la lista, por ejemplo si la primera consulta es offset=0 y size=10 la segunda consulta va a ser offset=10 y size=10")
+    @Path("/{offset}/{size}")
+    public List<Usuario> getAll(@PathParam("offset") int offset, @PathParam("size") int size) 
 	{
-        return controladorLocal.getUsuarios();
+        return controladorLocal.getUsuarios(offset, size);
     }
 	
 	@GET
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Devuelve una usuario",
+    @ApiOperation(value = "Devuelve un usuario",
     notes = "el que corresponda al id de usuario")
     @Path("/{idUsuario}")
-	public Usuario get(@PathParam("idUsuario") int idUsuario) throws Exception
+	public Response get(@PathParam("idUsuario") int idUsuario) throws Exception
 	{
-		return controladorLocal.getUsuario(idUsuario);
+		Response.ResponseBuilder builder = null;
+		Usuario usuario = controladorLocal.getUsuario(idUsuario);
+		if (usuario.getIdUsuario() != 0)
+		{
+			builder = Response.ok();
+			builder.entity(usuario);
+		}
+		else
+		{
+            Map<String, String> responseObj = new HashMap<>();
+            responseObj.put("error", "El usuario con id = " + idUsuario + " no existe");
+            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
 	}
 	
 	@POST
