@@ -21,7 +21,7 @@
 -----------
 ```
 <datasource jndi-name="java:jboss/datasources/PostgresDS" pool-name="PostgresDS" enabled="true" use-java-context="true">
-	<connection-url>jdbc:postgresql://localhost:5432/proyecto</connection-url>
+	<connection-url>jdbc:postgresql://localhost:5433/proyecto</connection-url>
 	<driver>postgresql</driver>
 	<security>
 		<user-name>postgres</user-name>
