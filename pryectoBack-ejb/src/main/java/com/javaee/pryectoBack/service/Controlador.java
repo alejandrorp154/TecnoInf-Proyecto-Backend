@@ -17,8 +17,8 @@ public class Controlador implements ControladorRemote, ControladorLocal {
 	private ControladorDALocal controladorDA;
 
 	@Override
-	public List<Usuario> getUsuarios() {
-		return this.controladorDA.getUsuarios();
+	public List<Usuario> getUsuarios(int offset, int size) {
+		return this.controladorDA.getUsuarios(offset, size);
 	}
 
 	@Override
