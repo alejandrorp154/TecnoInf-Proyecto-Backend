@@ -22,11 +22,10 @@ jobs:
         java-version: 1.8
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-      
-   build-docker-image:
+  
+  build-docker-image:
     name: Publish to Docker Hub
     runs-on: ubuntu-latest
-    needs: [build_and_test]
 
     steps:
       - uses: actions/checkout@v2
