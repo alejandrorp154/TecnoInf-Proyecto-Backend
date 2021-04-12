@@ -17,15 +17,17 @@ public class Usuario implements Serializable {
 	private int idUsuario;
 	private String nombre;
 	private String email;
+	private String uid;
 	
 	public Usuario()
 	{
 	}
 	
-	public Usuario(int idUsuario, String nombre, String email) {
+	public Usuario(int idUsuario, String nombre, String email, String uid) {
 		this.idUsuario = idUsuario;
 		this.nombre = nombre;
 		this.email = email;
+		this.uid = uid;
 	}
 
 	public int getIdUsuario() {
@@ -50,5 +52,13 @@ public class Usuario implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getUid() {
+		return uid;
+	}
+
+	public void setUid(String uid) {
+		this.uid = uid;
 	}
 }

@@ -35,4 +35,13 @@ public class Controlador implements ControladorRemote, ControladorLocal {
 		}
 		throw new Exception("No existe Usuario con id=" + idUsuario);
 	}
+
+	@Override
+	public Usuario getUsuarioByUid(String uid) throws Exception {
+		Usuario res = this.controladorDA.getUsuarioByUid(uid);
+		if (res != null) {
+			return res;
+		}
+		throw new Exception("No existe Usuario con uid=" + uid);
+	}
 }

@@ -8,4 +8,5 @@ public interface ControladorRemote {
 	List<Usuario> getUsuarios(int offset, int size);
 	void addUsuario(Usuario usuario);
 	Usuario getUsuario(int idUsuario) throws Exception;
+	Usuario getUsuarioByUid(String uid) throws Exception;
 }

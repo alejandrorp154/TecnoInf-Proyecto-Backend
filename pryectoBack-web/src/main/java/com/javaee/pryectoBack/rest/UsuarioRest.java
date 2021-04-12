@@ -61,6 +61,29 @@ public class UsuarioRest
 		return builder.build();
 	}
 	
+	@GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Devuelve un usuario",
+    notes = "el que corresponda al uid de usuario")
+    @Path("/{uid}")
+	public Response getByUid(@PathParam("uid") String uid) throws Exception
+	{
+		Response.ResponseBuilder builder = null;
+		Usuario usuario = controladorLocal.getUsuarioByUid(uid);
+		if (usuario.getUid() != null)
+		{
+			builder = Response.ok();
+			builder.entity(usuario);
+		}
+		else
+		{
+            Map<String, String> responseObj = new HashMap<>();
+            responseObj.put("error", "El usuario con uid = " + uid + " no existe");
+            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
+	}
+	
 	@POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)

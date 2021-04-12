@@ -30,6 +30,16 @@ public class ControladorDA implements ControladorDALocal, ControladorDARemote {
 	}
 
 	@Override
+	public Usuario getUsuarioByUid(String uid) throws Exception {
+		Usuario usuario = manager.find(Usuario.class, uid);
+		if (usuario == null)
+		{
+			usuario = new Usuario();
+		}
+		return usuario;
+	}
+
+	@Override
 	public List<Usuario> getUsuarios(int offset, int size) {
 		TypedQuery<Usuario> query = manager.createQuery("SELECT usuario FROM Usuario usuario order by usuario.idUsuario", Usuario.class);
 		List<Usuario> usuarios = query.setFirstResult(offset).setMaxResults(size).getResultList();
