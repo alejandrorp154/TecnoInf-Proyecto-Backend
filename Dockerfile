@@ -1,8 +1,19 @@
-FROM maven:3.6.3-openjdk-14-slim AS build
+The solution is to have multi stage docker build. Essentially do a maven build from DockerFile and not from GitHub Actions.
 
+My Final DockerFile
+
+#
+# Build stage
+#
+FROM maven:3.6.0-jdk-11-slim AS build
+COPY src /home/app/src
+COPY pom.xml /home/app
+RUN mvn -f /home/app/pom.xml clean package
+
+#
+# Package stage
+#
+FROM openjdk:11-jre-slim
+COPY --from=build /home/app/target/*.jar /usr/local/lib/app.jar
 EXPOSE 8080
-
-COPY ./build/libs/pryectoBack-1.0-SNAPSHOT.jar /usr/app/
-WORKDIR /usr/app
-
-ENTRYPOINT ["java", "-jar", "pryectoBack-1.0-SNAPSHOT.jar"]
+ENTRYPOINT ["java","-jar","/usr/local/lib/app.jar"]
