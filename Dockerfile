@@ -1,7 +1,3 @@
-The solution is to have multi stage docker build. Essentially do a maven build from DockerFile and not from GitHub Actions.
-
-My Final DockerFile
-
 #
 # Build stage
 #
