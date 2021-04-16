@@ -27,7 +27,7 @@ public class SwaggerJaxrsConfig extends HttpServlet
 	        super.init(servletConfig);
 	        SwaggerConfig swaggerConfig = new SwaggerConfig();
 	        ConfigFactory.setConfig(swaggerConfig);
-	        swaggerConfig.setBasePath("http://localhost:8080/pryectoBack-web/rest");
+	        swaggerConfig.setBasePath("https://travelpack.azurewebsites.net/pryectoBack-web/rest/");
 	        swaggerConfig.setApiVersion("1.0.0");
 	        ScannerFactory.setScanner(new DefaultJaxrsScanner());
 	        ClassReaders.setReader(new DefaultJaxrsApiReader());
