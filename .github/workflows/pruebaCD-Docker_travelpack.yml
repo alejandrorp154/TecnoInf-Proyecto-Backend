@@ -23,11 +23,10 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    - name: Upload artifact for deployment job
-      uses: actions/upload-artifact@v2
+    - name: Upload Artifact for deployment
       with:
         name: java-app
-        path: '${{ github.workspace }}/target/*.war'
+        path: /home/runner/work/Backend/Backend/pryectoBack-web/target/pryectoBack-web.war
 
   deploy:
     runs-on: ubuntu-latest
