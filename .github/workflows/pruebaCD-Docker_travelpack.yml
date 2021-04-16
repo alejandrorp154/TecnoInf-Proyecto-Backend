@@ -24,9 +24,10 @@ jobs:
       run: mvn -B package --file pom.xml
 
     - name: Upload Artifact for deployment
+      uses: actions/upload-artifact@v2
       with:
         name: java-app
-        path: /home/runner/work/Backend/Backend/pryectoBack-web/target/pryectoBack-web.war
+        path: /home/runner/work/Backend/Backend/pryectoBack-web/target/
 
   deploy:
     runs-on: ubuntu-latest
