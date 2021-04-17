@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.vividsolutions.jts.geom.Point;
+
 @Entity
 public class Usuario implements Serializable {
 
@@ -17,6 +19,7 @@ public class Usuario implements Serializable {
 	private int idUsuario;
 	private String nombre;
 	private String email;
+	private Point punto;
 	
 	public Usuario()
 	{
@@ -50,5 +53,13 @@ public class Usuario implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public Point getPunto() {
+		return punto;
+	}
+
+	public void setPunto(Point punto) {
+		this.punto = punto;
 	}
 }

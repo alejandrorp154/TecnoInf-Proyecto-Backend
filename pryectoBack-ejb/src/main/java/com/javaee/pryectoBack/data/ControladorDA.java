@@ -33,6 +33,11 @@ public class ControladorDA implements ControladorDALocal, ControladorDARemote {
 	public List<Usuario> getUsuarios(int offset, int size) {
 		TypedQuery<Usuario> query = manager.createQuery("SELECT usuario FROM Usuario usuario order by usuario.idUsuario", Usuario.class);
 		List<Usuario> usuarios = query.setFirstResult(offset).setMaxResults(size).getResultList();
+		
+		for (Usuario u : usuarios) {
+			System.out.println( u.getEmail().toString() + " | " + u.getNombre().toString() + " | X: " + u.getPunto().getX() + " |  Y: " + u.getPunto().getY());
+		}
+		
 		return usuarios;
 	}
 
