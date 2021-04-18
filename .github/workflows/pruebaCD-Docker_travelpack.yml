@@ -48,5 +48,5 @@ jobs:
       with:
         app-name: 'travelpack'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_06ffe69d31604243bfa83565c812161a }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_d286485f68a8494aaad7406e364a1be8 }}
         package: '*.war'
