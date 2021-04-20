@@ -28,7 +28,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: java-app
-        path: '${{ github.workspace }}/target/*.jar'
+        path: '/home/runner/work/Backend/Backend/pryectoBack-web/target/*.jar'
 
   deploy:
     runs-on: ubuntu-latest
