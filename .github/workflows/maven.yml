@@ -27,7 +27,7 @@ jobs:
     - name: Upload Artifact
       with:
         name: java-app
-        path: /home/runner/work/Backend/Backend/pryectoBack-web/target/pryectoBack-web.war
+        path: /home/runner/work/Backend/Backend/pryectoBack-web/target/*.war
       
    # - name: Check out the repo
    #   uses: actions/checkout@v2
