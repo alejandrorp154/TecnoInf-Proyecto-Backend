@@ -20,8 +20,8 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
       
-    - run: mkdir staging && cp target/*.war staging
-    - name: Upload Artifact
+    - name: Upload artifact for deployment job
+      uses: actions/upload-artifact@v2
       with:
         name: java-app
         path: /home/runner/work/Backend/Backend/pryectoBack-web/target/*.war
