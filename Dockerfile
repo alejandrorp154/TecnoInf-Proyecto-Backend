@@ -2,7 +2,7 @@ FROM maven:3.6.3-openjdk-14-slim AS build
 RUN mkdir -p /workspace
 WORKDIR /workspace
 COPY pom.xml /workspace
-COPY . /workspace/src
+COPY /home/runner/work/Backend/Backend/pryectoBack-web /workspace/src
 RUN mvn -B package --file pom.xml
 
 FROM openjdk:14-slim
