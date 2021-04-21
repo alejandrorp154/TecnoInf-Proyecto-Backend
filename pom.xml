@@ -32,11 +32,15 @@
             <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
         </license>
     </licenses>
-    <modules>
-        <module>pryectoBack-ejb</module>
-        <module>pryectoBack-web</module>
-        <module>pryectoBack-ear</module>
-    </modules>
+    <profiles>
+        <profile>
+            <modules>
+                <module>pryectoBack-ejb</module>
+                <module>pryectoBack-web</module>
+                <module>pryectoBack-ear</module>
+            </modules>
+        </profile>
+    </profiles>
 
     <properties>
         <!-- Explicitly declaring the source encoding eliminates the following 
