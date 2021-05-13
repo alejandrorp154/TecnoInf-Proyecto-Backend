@@ -28,7 +28,7 @@ public class Controlador implements ControladorRemote, ControladorLocal {
 	}
 
 	@Override
-	public Usuario getUsuario(int idUsuario) throws Exception {
+	public Usuario getUsuario(String idUsuario) throws Exception {
 		Usuario res = this.controladorDA.getUsuario(idUsuario);
 		if (res != null) {
 			return res;

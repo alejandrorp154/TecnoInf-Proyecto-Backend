@@ -20,7 +20,7 @@ public class ControladorDA implements ControladorDALocal, ControladorDARemote {
 	}
 
 	@Override
-	public Usuario getUsuario(int idUsuario) throws Exception {
+	public Usuario getUsuario(String idUsuario) throws Exception {
 		Usuario usuario = manager.find(Usuario.class, idUsuario);
 		if (usuario == null)
 		{

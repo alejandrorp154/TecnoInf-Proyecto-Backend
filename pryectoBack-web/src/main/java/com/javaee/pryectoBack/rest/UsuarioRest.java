@@ -15,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.javaee.pryectoBack.model.Persona;
 import com.javaee.pryectoBack.model.Usuario;
 import com.javaee.pryectoBack.service.ControladorLocal;
 import com.wordnik.swagger.annotations.Api;
@@ -43,11 +44,11 @@ public class UsuarioRest
     @ApiOperation(value = "Devuelve un usuario",
     notes = "el que corresponda al id de usuario")
     @Path("/{idUsuario}")
-	public Response get(@PathParam("idUsuario") int idUsuario) throws Exception
+	public Response get(@PathParam("idUsuario") String idUsuario) throws Exception
 	{
 		Response.ResponseBuilder builder = null;
 		Usuario usuario = controladorLocal.getUsuario(idUsuario);
-		if (usuario.getIdUsuario() != 0)
+		if (((Persona)usuario).getIdPersona() != null)
 		{
 			builder = Response.ok();
 			builder.entity(usuario);

@@ -26,7 +26,24 @@
       <!-- The datasource is deployed as <EAR>/META-INF/ejercicio1-ds.xml, you
          can find it in the source at ear/src/main/application/META-INF/ejercicio1-ds.xml -->
       	<jta-data-source>java:jboss/datasources/PostgresDS</jta-data-source>
+	  	<class>com.javaee.pryectoBack.model.Administrador</class>
+	  	<class>com.javaee.pryectoBack.model.Chat</class>
+	  	<class>com.javaee.pryectoBack.model.Comentario</class>
+	  	<class>com.javaee.pryectoBack.model.ComentarioReaccion</class>
+	  	<class>com.javaee.pryectoBack.model.Evento</class>
+	  	<class>com.javaee.pryectoBack.model.Galeria</class>
+	  	<class>com.javaee.pryectoBack.model.Interes</class>
+	  	<class>com.javaee.pryectoBack.model.Medalla</class>
+	  	<class>com.javaee.pryectoBack.model.Mensaje</class>
+	  	<class>com.javaee.pryectoBack.model.Notificacion</class>
+	  	<class>com.javaee.pryectoBack.model.PerfilUsuario</class>
+	  	<class>com.javaee.pryectoBack.model.Persona</class>
+	  	<class>com.javaee.pryectoBack.model.Publicacion</class>
+	  	<class>com.javaee.pryectoBack.model.Reaccion</class>
+	  	<class>com.javaee.pryectoBack.model.Tipo</class>
+	  	<class>com.javaee.pryectoBack.model.Ubicacion</class>
 	  	<class>com.javaee.pryectoBack.model.Usuario</class>
+	  	
       
 		<properties>
 	         <property name="hibernate.hbm2ddl.auto" value="update" />
@@ -34,7 +51,7 @@
          	<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
 			<property name="hibernate.format_sql" value="false" />
 			<property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
-			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5433/proyecto"/>
+			<property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/proyecto"/>
 			<property name="javax.persistence.jdbc.user" value="postgres"/>
 			<property name="javax.persistence.jdbc.password" value="root"/>
 		</properties>
