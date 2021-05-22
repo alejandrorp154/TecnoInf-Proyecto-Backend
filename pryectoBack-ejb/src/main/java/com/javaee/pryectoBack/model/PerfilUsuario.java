@@ -18,7 +18,7 @@ public class PerfilUsuario implements Serializable
 	@ManyToMany(mappedBy = "perfiles")
 	private List<Interes> intereses = new ArrayList<>();
 	@OneToMany(mappedBy = "perfil")
-	private List<Galeria> galerias = new ArrayList<>();
+	private List<Multimedia> galerias = new ArrayList<>();
 	@OneToMany(mappedBy = "perfil")
 	private List<Publicacion> publicaciones = new ArrayList<>();
 	
@@ -41,11 +41,11 @@ public class PerfilUsuario implements Serializable
 		this.intereses = intereses;
 	}
 
-	public List<Galeria> getGalerias() {
+	public List<Multimedia> getGalerias() {
 		return galerias;
 	}
 
-	public void setGalerias(List<Galeria> galerias) {
+	public void setGalerias(List<Multimedia> galerias) {
 		this.galerias = galerias;
 	}
 

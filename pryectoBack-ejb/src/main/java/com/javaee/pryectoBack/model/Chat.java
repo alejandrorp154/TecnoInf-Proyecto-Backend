@@ -15,7 +15,7 @@ public class Chat implements Serializable
 {
 	private static final long serialVersionUID = 1L;	
 	@Id
-	private String idEvento;
+	private String idChat;
 	private Date updatedAt;
 	@ManyToMany
 	private List<Usuario> usuarios = new ArrayList<>();
@@ -25,11 +25,11 @@ public class Chat implements Serializable
 	public Chat() {
 	}
 	
-	public String getIdEvento() {
-		return idEvento;
+	public String getIdChat() {
+		return idChat;
 	}
-	public void setIdEvento(String idEvento) {
-		this.idEvento = idEvento;
+	public void setIdChat(String idChat) {
+		this.idChat = idChat;
 	}
 	public Date getUpdatedAt() {
 		return updatedAt;

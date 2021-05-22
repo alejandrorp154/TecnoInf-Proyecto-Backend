@@ -31,7 +31,7 @@
 	  	<class>com.javaee.pryectoBack.model.Comentario</class>
 	  	<class>com.javaee.pryectoBack.model.ComentarioReaccion</class>
 	  	<class>com.javaee.pryectoBack.model.Evento</class>
-	  	<class>com.javaee.pryectoBack.model.Galeria</class>
+	  	<class>com.javaee.pryectoBack.model.Multimedia</class>
 	  	<class>com.javaee.pryectoBack.model.Interes</class>
 	  	<class>com.javaee.pryectoBack.model.Medalla</class>
 	  	<class>com.javaee.pryectoBack.model.Mensaje</class>

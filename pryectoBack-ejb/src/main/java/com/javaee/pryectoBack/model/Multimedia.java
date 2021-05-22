@@ -9,26 +9,26 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class Galeria implements Serializable
+public class Multimedia implements Serializable
 {
 	private static final long serialVersionUID = 1L;	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int idGaleria;
+	private int idMultimedia;
 	private String contenido;
 	private String nombre;
 	private String extension;
 	@ManyToOne
 	private PerfilUsuario perfil;
 	
-	public Galeria() {
+	public Multimedia() {
 	}
 	
-	public int getIdGaleria() {
-		return idGaleria;
+	public int getIdMultimedia() {
+		return idMultimedia;
 	}
-	public void setIdGaleria(int idGaleria) {
-		this.idGaleria = idGaleria;
+	public void setIdMultimedia(int idMultimedia) {
+		this.idMultimedia = idMultimedia;
 	}
 	public String getContenido() {
 		return contenido;
