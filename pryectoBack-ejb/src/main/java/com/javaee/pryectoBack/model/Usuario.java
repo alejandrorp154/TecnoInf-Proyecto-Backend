@@ -41,6 +41,8 @@ public class Usuario extends Persona implements Serializable
 	@OneToMany(mappedBy = "usuario")
 	private List<Ubicacion> ubicaciones = new ArrayList<>();
 	
+	private Configuracion configuracion;
+	
 	public Usuario()
 	{
 	}
@@ -131,5 +133,13 @@ public class Usuario extends Persona implements Serializable
 
 	public void setDireccion(String direccion) {
 		this.direccion = direccion;
+	}
+
+	public Configuracion getConfiguracion() {
+		return configuracion;
+	}
+
+	public void setConfiguracion(Configuracion configuracion) {
+		this.configuracion = configuracion;
 	}
 }
