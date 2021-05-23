@@ -1,54 +1,145 @@
 package com.javaee.pryectoBack.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 @Entity
-public class Usuario implements Serializable {
-
+public class Usuario extends Persona implements Serializable
+{
 	private static final long serialVersionUID = 1L;
 	
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int idUsuario;
-	private String nombre;
-	private String email;
+	private String nickname;
+	private String celular;
+	private String direccion;
+	
+	@ManyToMany(cascade=CascadeType.ALL)
+	@Column(name="contacto")
+	private List<Usuario> contactos = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "usuario")
+	private List<ComentarioReaccion> comentarioReaccioens = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "usuario")
+	private List<Medalla> medallas = new ArrayList<>();
+	
+	@ManyToMany(mappedBy = "usuarios")
+	private List<Notificacion> notificaciones = new ArrayList<>();
+	
+	@ManyToMany(mappedBy = "usuarios")
+	private List<Evento> eventos = new ArrayList<>();
+	
+	@ManyToMany(mappedBy = "usuarios")
+	private List<Chat> chats = new ArrayList<>();
+	
+	@OneToMany(mappedBy = "usuario")
+	private List<Ubicacion> ubicaciones = new ArrayList<>();
+	
+	private Configuracion configuracion;
 	
 	public Usuario()
 	{
 	}
-	
-	public Usuario(int idUsuario, String nombre, String email) {
-		this.idUsuario = idUsuario;
-		this.nombre = nombre;
-		this.email = email;
+
+	public List<Notificacion> getNotificaciones() {
+		return notificaciones;
 	}
 
-	public int getIdUsuario() {
-		return idUsuario;
+
+	public void setNotificaciones(List<Notificacion> notificaciones) {
+		this.notificaciones = notificaciones;
 	}
 
-	public void setIdUsuario(int idUsuario) {
-		this.idUsuario = idUsuario;
+
+	public List<Evento> getEventos() {
+		return eventos;
 	}
 
-	public String getNombre() {
-		return nombre;
+
+	public void setEventos(List<Evento> eventos) {
+		this.eventos = eventos;
 	}
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
+
+	public List<Chat> getChats() {
+		return chats;
 	}
 
-	public String getEmail() {
-		return email;
+
+	public void setChats(List<Chat> chats) {
+		this.chats = chats;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+
+	public List<Ubicacion> getUbicaciones() {
+		return ubicaciones;
+	}
+
+
+	public void setUbicaciones(List<Ubicacion> ubicaciones) {
+		this.ubicaciones = ubicaciones;
+	}
+
+
+	public List<Medalla> getMedallas() {
+		return medallas;
+	}
+
+	public void setMedallas(List<Medalla> medallas) {
+		this.medallas = medallas;
+	}
+
+	public List<Usuario> getContactos() {
+		return contactos;
+	}
+
+	public void setContactos(List<Usuario> contactos) {
+		this.contactos = contactos;
+	}
+
+	public List<ComentarioReaccion> getComentarioReaccioens() {
+		return comentarioReaccioens;
+	}
+
+	public void setComentarioReaccioens(List<ComentarioReaccion> comentarioReaccioens) {
+		this.comentarioReaccioens = comentarioReaccioens;
+	}
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	public String getCelular() {
+		return celular;
+	}
+
+	public void setCelular(String celular) {
+		this.celular = celular;
+	}
+
+	public String getDireccion() {
+		return direccion;
+	}
+
+	public void setDireccion(String direccion) {
+		this.direccion = direccion;
+	}
+
+	public Configuracion getConfiguracion() {
+		return configuracion;
+	}
+
+	public void setConfiguracion(Configuracion configuracion) {
+		this.configuracion = configuracion;
 	}
 }
