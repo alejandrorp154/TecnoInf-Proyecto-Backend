@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.javaee.pryectoBack.model.Publicacion;
 import com.javaee.pryectoBack.model.Tipo;
 
 public class DTOPublicacion implements Serializable
@@ -26,6 +27,14 @@ public class DTOPublicacion implements Serializable
 	}
 
 	public DTOPublicacion() {
+	}
+
+	public DTOPublicacion(Publicacion publicacion) {
+		this.idPublicacion = publicacion.getIdPublicacion();
+		this.contenido = publicacion.getContenido();
+		this.fecha = publicacion.getFecha();
+		this.tipos = publicacion.getTipos();
+		this.idPersona = publicacion.getPerfil().getUsuario().getIdPersona();
 	}
 
 	public int getIdPublicacion() {

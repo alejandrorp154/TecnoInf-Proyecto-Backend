@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.javaee.pryectoBack.datatypes.DTOPublicacion;
+
 @Entity
 public class Publicacion implements Serializable
 {
@@ -33,6 +35,13 @@ public class Publicacion implements Serializable
 	public Publicacion() {
 	}
 	
+	public Publicacion(DTOPublicacion newPublicacion) {
+		this.idPublicacion = newPublicacion.getIdPublicacion();
+		this.contenido = newPublicacion.getContenido();
+		this.fecha = newPublicacion.getFecha();
+		this.tipos = newPublicacion.getTipos();
+	}
+
 	public int getIdPublicacion() {
 		return idPublicacion;
 	}

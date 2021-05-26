@@ -17,5 +17,5 @@ public interface ControladorPublicacionComentarioLocal {
 	List<DTOPublicacion> obtenerPublicaciones(String idPersona);
 	boolean modificarPublicacion(DTOPublicacion dtoPublicacion);
 	boolean reaccionPublicacion(DTOReaccion dtoReaccion);
-	boolean altaPublicacion(DTOPublicacion dtoPublicacion);
+	DTOPublicacion altaPublicacion(DTOPublicacion dtoPublicacion);
 }
