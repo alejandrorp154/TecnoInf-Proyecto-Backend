@@ -1,14 +1,18 @@
 package com.javaee.pryectoBack.data;
 
+import java.util.List;
+
 import javax.ejb.Remote;
 
 import com.javaee.pryectoBack.datatypes.DTOInteres;
 
 @Remote
 public interface ControladorInteresDARemote {
-	boolean alta(DTOInteres dtoInteres);
-	boolean baja(DTOInteres dtoInteres);
-	boolean modificar(DTOInteres dtoInteres);
+	DTOInteres alta(DTOInteres dtoInteres);
+	boolean baja(int idInteres);
+	DTOInteres modificar(DTOInteres dtoInteres);
 	boolean suscribe(String idPersona, int idInteres);
 	boolean desuscribe(String idPersona, int idInteres);
+	DTOInteres getById(int idInteres);
+	List<DTOInteres> getAll(int offset, int size);
 }

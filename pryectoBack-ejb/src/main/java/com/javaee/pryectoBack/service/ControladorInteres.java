@@ -1,5 +1,7 @@
 package com.javaee.pryectoBack.service;
 
+import java.util.List;
+
 import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -15,21 +17,28 @@ public class ControladorInteres implements ControladorInteresLocal, ControladorI
 	private ControladorInteresDALocal controladorInteresDA;
 
 	@Override
-	public boolean alta(DTOInteres dtoInteres) {
-		// TODO Auto-generated method stub
-		return false;
+	public DTOInteres alta(DTOInteres dtoInteres) {
+		return this.controladorInteresDA.alta(dtoInteres);
 	}
 
 	@Override
-	public boolean baja(DTOInteres dtoInteres) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean baja(int idInteres) {
+		return this.controladorInteresDA.baja(idInteres);
 	}
 
 	@Override
-	public boolean modificar(DTOInteres dtoInteres) {
-		// TODO Auto-generated method stub
-		return false;
+	public DTOInteres modificar(DTOInteres dtoInteres) {
+		return this.controladorInteresDA.modificar(dtoInteres);
+	}
+
+	@Override
+	public DTOInteres getById(int idInteres) {
+		return this.controladorInteresDA.getById(idInteres);
+	}
+
+	@Override
+	public List<DTOInteres> getAll(int offset, int size) {
+		return this.controladorInteresDA.getAll(offset, size);
 	}
 
 	@Override
