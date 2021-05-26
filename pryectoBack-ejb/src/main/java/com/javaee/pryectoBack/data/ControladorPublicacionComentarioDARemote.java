@@ -12,5 +12,5 @@ public interface ControladorPublicacionComentarioDARemote {
 	List<DTOPublicacion> obtenerPublicaciones(String idPersona);
 	boolean modificarPublicacion(DTOPublicacion dtoPublicacion);
 	boolean reaccionPublicacion(DTOReaccion dtoReaccion);
-	boolean altaPublicacion(DTOPublicacion dtoPublicacion);
+	DTOPublicacion altaPublicacion(DTOPublicacion dtoPublicacion);
 }

@@ -1,10 +1,9 @@
 package com.javaee.pryectoBack.datatypes;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
+import com.javaee.pryectoBack.model.Publicacion;
 import com.javaee.pryectoBack.model.Tipo;
 
 public class DTOPublicacion implements Serializable
@@ -13,19 +12,31 @@ public class DTOPublicacion implements Serializable
 	private int idPublicacion;
 	private String contenido;
 	private Date fecha;
-	private List<Tipo> tipos = new ArrayList<>();
+	private Tipo tipo;
 	protected String idPersona;
+	private String extension;
+	private String nombre;
 	
-	public DTOPublicacion(int idPublicacion, String contenido, Date fecha, List<Tipo> tipos, String idPersona) {
+	public DTOPublicacion(int idPublicacion, String contenido, Date fecha, Tipo tipo, String idPersona) {
 		super();
 		this.idPublicacion = idPublicacion;
 		this.contenido = contenido;
 		this.fecha = fecha;
-		this.tipos = tipos;
+		this.tipo = tipo;
 		this.idPersona = idPersona;
 	}
 
 	public DTOPublicacion() {
+	}
+
+	public DTOPublicacion(Publicacion publicacion) {
+		this.idPublicacion = publicacion.getIdPublicacion();
+		this.contenido = publicacion.getContenido();
+		this.fecha = publicacion.getFecha();
+		this.tipo = publicacion.getTipo();
+//		this.idPersona = publicacion.getPerfil().getUsuario().getIdPersona();
+		this.extension = publicacion.getExtension();
+		this.nombre = publicacion.getNombre();
 	}
 
 	public int getIdPublicacion() {
@@ -52,12 +63,12 @@ public class DTOPublicacion implements Serializable
 		this.fecha = fecha;
 	}
 
-	public List<Tipo> getTipos() {
-		return tipos;
+	public Tipo getTipo() {
+		return tipo;
 	}
 
-	public void setTipos(List<Tipo> tipos) {
-		this.tipos = tipos;
+	public void setTipo(Tipo tipo) {
+		this.tipo = tipo;
 	}
 
 	public String getIdPersona() {
@@ -66,5 +77,21 @@ public class DTOPublicacion implements Serializable
 
 	public void setIdPersona(String idPersona) {
 		this.idPersona = idPersona;
+	}
+
+	public String getExtension() {
+		return extension;
+	}
+
+	public void setExtension(String extension) {
+		this.extension = extension;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 }

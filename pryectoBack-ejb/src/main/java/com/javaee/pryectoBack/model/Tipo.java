@@ -12,20 +12,21 @@ public class Tipo implements Serializable
 {
 	private static final long serialVersionUID = 1L;	
 	@Id
-	@ManyToOne
-	@JoinColumn(name="idPublicacion")
-	private Publicacion publicacion;
+	private int idPublicacion;
 	private tipos tipo;
 	
 	public Tipo() {
 	}
 	
-	public Publicacion getPublicacion() {
-		return publicacion;
+	public int getIdPublicacion() {
+		return idPublicacion;
 	}
-	public void setPublicacion(Publicacion publicacion) {
-		this.publicacion = publicacion;
+
+	public void setIdPublicacion(int idPublicacion) {
+		this.idPublicacion = idPublicacion;
 	}
+
+
 	public tipos getTipo() {
 		return tipo;
 	}

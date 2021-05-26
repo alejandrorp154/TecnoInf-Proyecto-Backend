@@ -45,6 +45,7 @@ public class JaxRsActivator extends Application {
 
 	private void addRestResourceClasses(Set<Class<?>> resources) {
 	    resources.add(com.javaee.pryectoBack.rest.UsuarioRest.class);
+	    resources.add(com.javaee.pryectoBack.rest.PublicacionComentarioRest.class);
 	    resources.add(com.javaee.pryectoBack.rest.InteresRest.class);
 	}
 }
