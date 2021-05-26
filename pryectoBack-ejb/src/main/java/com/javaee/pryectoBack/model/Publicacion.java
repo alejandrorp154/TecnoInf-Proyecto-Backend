@@ -22,9 +22,10 @@ public class Publicacion implements Serializable
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int idPublicacion;
 	private String contenido;
+	private String extension;
+	private String nombre;
 	private Date fecha;
-	@OneToMany(mappedBy = "publicacion")
-	private List<Tipo> tipos = new ArrayList<>();
+	private Tipo tipo;
 	@OneToMany(mappedBy = "publicacion")
 	private List<ComentarioReaccion> comentarioReacciones = new ArrayList<>();
 	@ManyToOne
@@ -39,7 +40,9 @@ public class Publicacion implements Serializable
 		this.idPublicacion = newPublicacion.getIdPublicacion();
 		this.contenido = newPublicacion.getContenido();
 		this.fecha = newPublicacion.getFecha();
-		this.tipos = newPublicacion.getTipos();
+		this.tipo = newPublicacion.getTipo();
+		this.extension = newPublicacion.getExtension();
+		this.nombre = newPublicacion.getNombre();
 	}
 
 	public int getIdPublicacion() {
@@ -60,11 +63,11 @@ public class Publicacion implements Serializable
 	public void setFecha(Date fecha) {
 		this.fecha = fecha;
 	}
-	public List<Tipo> getTipos() {
-		return tipos;
+	public Tipo getTipo() {
+		return tipo;
 	}
-	public void setTipos(List<Tipo> tipos) {
-		this.tipos = tipos;
+	public void setTipo(Tipo tipo) {
+		this.tipo = tipo;
 	}
 	public List<ComentarioReaccion> getComentarioReacciones() {
 		return comentarioReacciones;
@@ -83,5 +86,21 @@ public class Publicacion implements Serializable
 	}
 	public void setPerfil(PerfilUsuario perfil) {
 		this.perfil = perfil;
+	}
+
+	public String getExtension() {
+		return extension;
+	}
+
+	public void setExtension(String extension) {
+		this.extension = extension;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
 	}
 }

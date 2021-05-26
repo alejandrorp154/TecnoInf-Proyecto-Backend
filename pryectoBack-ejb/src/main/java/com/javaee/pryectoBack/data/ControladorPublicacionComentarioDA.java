@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import com.javaee.pryectoBack.datatypes.DTOPublicacion;
 import com.javaee.pryectoBack.datatypes.DTOReaccion;
 import com.javaee.pryectoBack.model.Publicacion;
+import com.javaee.pryectoBack.model.Tipo;
 
 @Singleton
 public class ControladorPublicacionComentarioDA
@@ -44,6 +45,11 @@ public class ControladorPublicacionComentarioDA
 		try {
 			Publicacion publicacion = new Publicacion(dtoPublicacion);
 			manager.persist(publicacion);
+			Tipo tipo = new Tipo();
+			tipo.setTipo(publicacion.getTipo().getTipo());
+			tipo.setIdPublicacion(publicacion.getIdPublicacion());
+			publicacion.setTipo(tipo);
+			manager.merge(tipo);
 			DTOPublicacion dtoPubli = new DTOPublicacion(publicacion);
 			return dtoPubli;
 		} catch (Exception exception) {
