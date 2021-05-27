@@ -18,6 +18,7 @@ public class Usuario extends Persona implements Serializable
 	private String nickname;
 	private String celular;
 	private String direccion;
+	private boolean estaBloqueado;
 	
 	@ManyToMany(cascade=CascadeType.ALL)
 	@Column(name="contacto")
@@ -141,5 +142,13 @@ public class Usuario extends Persona implements Serializable
 
 	public void setConfiguracion(Configuracion configuracion) {
 		this.configuracion = configuracion;
+	}
+
+	public boolean getEstaBloqueado() {
+		return estaBloqueado;
+	}
+
+	public void setEstaBloqueado(boolean estaBloqueado) {
+		this.estaBloqueado = estaBloqueado;
 	}
 }
