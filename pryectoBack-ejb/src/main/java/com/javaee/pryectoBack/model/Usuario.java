@@ -1,5 +1,7 @@
 package com.javaee.pryectoBack.model;
 
+import com.javaee.pryectoBack.datatypes.DTOUsuario;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +47,17 @@ public class Usuario extends Persona implements Serializable
 	
 	public Usuario()
 	{
+	}
+
+	public Usuario (DTOUsuario dtoUsuario){
+
+		this.idPersona = dtoUsuario.getIdPersona();
+		this.email = dtoUsuario.getEmail();
+		this.nombre = dtoUsuario.getNombre();
+		this.apellido = dtoUsuario.getApellido();
+		this.nickname = dtoUsuario.getNickname();
+		this.direccion = dtoUsuario.getNickname();
+		this.celular = dtoUsuario.getCelular();
 	}
 
 	public List<Notificacion> getNotificaciones() {

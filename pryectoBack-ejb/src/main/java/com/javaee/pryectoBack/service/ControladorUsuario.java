@@ -23,8 +23,7 @@ public class ControladorUsuario implements ControladorUsuarioRemote, Controlador
 
 	@Override
 	public boolean registrarUsuario(DTOUsuario dtoUsuario) {
-		// TODO Auto-generated method stub
-		return false;
+		return controladorDA.registrarUsuario(dtoUsuario);
 	}
 
 	@Override

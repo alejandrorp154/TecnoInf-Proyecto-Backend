@@ -11,9 +11,10 @@ public class DTOUsuario implements Serializable
 	private String apellido;
 	private String nickname;
 	private String direccion;
+	private String celular;
 	
 	public DTOUsuario(String idPersona, String email, String nombre, String apellido, String nickname,
-			String direccion) {
+			String direccion, String celular) {
 		super();
 		this.idPersona = idPersona;
 		this.email = email;
@@ -21,6 +22,7 @@ public class DTOUsuario implements Serializable
 		this.apellido = apellido;
 		this.nickname = nickname;
 		this.direccion = direccion;
+		this.celular = celular;
 	}
 	
 	public DTOUsuario() {
@@ -72,5 +74,13 @@ public class DTOUsuario implements Serializable
 	
 	public void setDireccion(String direccion) {
 		this.direccion = direccion;
+	}
+
+	public String getCelular() {
+		return celular;
+	}
+
+	public void setCelular(String celular) {
+		this.celular = celular;
 	}
 }

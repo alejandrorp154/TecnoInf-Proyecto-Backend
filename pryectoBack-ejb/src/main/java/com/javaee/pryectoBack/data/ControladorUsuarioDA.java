@@ -6,6 +6,7 @@ import javax.persistence.PersistenceContext;
 
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
+import com.javaee.pryectoBack.model.Usuario;
 
 @Singleton
 public class ControladorUsuarioDA implements ControladorUsuarioDALocal, ControladorUsuarioDARemote {
@@ -25,8 +26,13 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 
 	@Override
 	public boolean registrarUsuario(DTOUsuario dtoUsuario) {
-		// TODO Auto-generated method stub
-		return false;
+		try{
+			Usuario user = new Usuario(dtoUsuario);
+			manager.persist(user);
+			return true;
+		}catch (Exception exception) {
+			return false;
+		}
 	}
 
 	@Override
