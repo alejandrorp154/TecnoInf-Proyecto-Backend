@@ -1,16 +1,32 @@
 package com.javaee.pryectoBack.data;
 
 import javax.ejb.Singleton;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import com.javaee.pryectoBack.datatypes.DTOEvento;
+import com.javaee.pryectoBack.model.Chat;
+import com.javaee.pryectoBack.model.Evento;
 
 @Singleton
 public class ControladorEventoDA implements ControladorEventoDALocal, ControladorEventoDARemote {
+	
+	@PersistenceContext(unitName = "primary")
+	private EntityManager manager;
 
 	@Override
 	public boolean crearEvento(DTOEvento dtoEvento) {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			Evento evento = new Evento(dtoEvento);
+			manager.persist(evento);
+			Chat chatEvento = new Chat();
+			//Queda agregar al usuario creador al grupo
+			evento.setChat(chatEvento);
+			manager.merge(chatEvento);
+			return true;
+		} catch (Exception exception) {
+			return false;
+		}
 	}
 
 	@Override

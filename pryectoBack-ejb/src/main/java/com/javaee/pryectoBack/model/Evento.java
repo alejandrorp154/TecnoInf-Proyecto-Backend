@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import com.javaee.pryectoBack.datatypes.DTOEvento;
+
 @Entity
 public class Evento implements Serializable
 {
@@ -31,6 +33,15 @@ public class Evento implements Serializable
 	private List<Publicacion> publicaciones = new ArrayList<>();
 	
 	public Evento() {
+	}
+	
+	public Evento(DTOEvento dtoEvento) {
+		this.ubicacion = dtoEvento.getUbicacion();
+		this.descripcion = dtoEvento.getDescripcion();
+		this.fechaInicio = dtoEvento.getFechaInicio();
+		this.fechaFin = dtoEvento.getFechaFin();
+		this.estado = dtoEvento.getEstado();
+		
 	}
 
 	public int getIdEvento() {
