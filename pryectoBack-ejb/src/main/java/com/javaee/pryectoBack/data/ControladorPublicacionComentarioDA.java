@@ -6,8 +6,10 @@ import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import com.javaee.pryectoBack.datatypes.DTOComentario;
 import com.javaee.pryectoBack.datatypes.DTOPublicacion;
 import com.javaee.pryectoBack.datatypes.DTOReaccion;
+import com.javaee.pryectoBack.model.Comentario;
 import com.javaee.pryectoBack.model.Publicacion;
 import com.javaee.pryectoBack.model.Tipo;
 
@@ -54,6 +56,21 @@ public class ControladorPublicacionComentarioDA
 			return dtoPubli;
 		} catch (Exception exception) {
 			return new DTOPublicacion();
+		}
+	}
+	
+	@Override
+	public boolean altaComentario(String idPublicacion, DTOComentario dtoComentario) {
+		try {
+			//Queda crear la relacion Publicacion Comentario, de donde lo obtengo?
+			Comentario comentario = new Comentario(dtoComentario);
+			manager.persist(comentario);
+			Publicacion publicacion = manager.find(Publicacion.class, idPublicacion);
+			
+			
+			return true;
+		} catch (Exception exception) {
+			return false;
 		}
 	}
 

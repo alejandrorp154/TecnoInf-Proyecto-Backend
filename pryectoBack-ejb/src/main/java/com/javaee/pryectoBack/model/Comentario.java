@@ -8,6 +8,8 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
+import com.javaee.pryectoBack.datatypes.DTOComentario;
+
 @Entity
 public class Comentario extends ComentarioReaccion implements Serializable
 {
@@ -20,6 +22,11 @@ public class Comentario extends ComentarioReaccion implements Serializable
 	
 	public Comentario() {
 		super();
+	}
+	
+	public Comentario(DTOComentario dtoComentario) {
+		this.contenido = dtoComentario.getContenido();
+		this.fecha = dtoComentario.getFecha();
 	}
 	
 	public List<Comentario> getComentarios() {
