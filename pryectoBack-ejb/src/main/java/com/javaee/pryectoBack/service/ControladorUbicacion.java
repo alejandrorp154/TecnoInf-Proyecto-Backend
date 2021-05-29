@@ -18,8 +18,7 @@ public class ControladorUbicacion implements ControladorUbicacionLocal, Controla
 	
 	@Override
 	public boolean alta(DTOUbicacion dtoUbicacion) {
-		// TODO Auto-generated method stub
-		return false;
+		return controladorUbicacionDA.alta(dtoUbicacion);
 	}
 
 	@Override
