@@ -40,7 +40,7 @@ public class Publicacion implements Serializable
 		this.idPublicacion = newPublicacion.getIdPublicacion();
 		this.contenido = newPublicacion.getContenido();
 		this.fecha = newPublicacion.getFecha();
-		this.tipo = newPublicacion.getTipo();
+		this.tipo = new Tipo(newPublicacion.getTipo());
 		this.extension = newPublicacion.getExtension();
 		this.nombre = newPublicacion.getNombre();
 	}
