@@ -15,7 +15,7 @@ public class ControladorEvento implements ControladorEventoLocal, ControladorEve
 	private ControladorEventoDALocal controladorEventoDA;
 	
 	@Override
-	public boolean crearEvento(DTOEvento dtoEvento) {
+	public DTOEvento crearEvento(DTOEvento dtoEvento) {
 		return controladorEventoDA.crearEvento(dtoEvento);
 	}
 
