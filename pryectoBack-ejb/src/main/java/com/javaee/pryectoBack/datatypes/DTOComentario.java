@@ -3,17 +3,19 @@ package com.javaee.pryectoBack.datatypes;
 import java.io.Serializable;
 import java.util.Date;
 
+import org.bson.Document;
+
 public class DTOComentario implements Serializable
 {
 	private static final long serialVersionUID = 1L;
-	protected int idComentarioReaccion;
+	protected String idComentarioReaccion;
 	private String contenido;
 	private Date fecha;
 	private int idPublicacion;
-	private int idComentarioPadre;
+	private String idComentarioPadre;
 	protected String idPersona;
 	
-	public DTOComentario(int idComentarioReaccion, String contenido, Date fecha, int idPublicacion, String idPersona, int idComentarioPadre) {
+	public DTOComentario(String idComentarioReaccion, String contenido, Date fecha, int idPublicacion, String idPersona, String idComentarioPadre) {
 		super();
 		this.idComentarioPadre = idComentarioPadre;
 		this.idComentarioReaccion = idComentarioReaccion;
@@ -26,11 +28,11 @@ public class DTOComentario implements Serializable
 	public DTOComentario() {
 	}
 
-	public int getIdComentarioReaccion() {
+	public String getIdComentarioReaccion() {
 		return idComentarioReaccion;
 	}
 
-	public void setIdComentarioReaccion(int idComentarioReaccion) {
+	public void setIdComentarioReaccion(String idComentarioReaccion) {
 		this.idComentarioReaccion = idComentarioReaccion;
 	}
 
@@ -66,11 +68,21 @@ public class DTOComentario implements Serializable
 		this.idPersona = idPersona;
 	}
 
-	public int getIdComentarioPadre() {
+	public String getIdComentarioPadre() {
 		return idComentarioPadre;
 	}
 
-	public void setIdComentarioPadre(int idComentarioPadre) {
+	public void setIdComentarioPadre(String idComentarioPadre) {
 		this.idComentarioPadre = idComentarioPadre;
+	}	
+	
+	public Document getDocument() {
+		Document newDocument = new Document();
+		newDocument.append("idPublicacion", this.idPublicacion);
+		newDocument.append("idComentarioPadre", this.idComentarioPadre);
+		newDocument.append("idPersona", this.idPersona);
+		newDocument.append("contenido", this.contenido);
+		newDocument.append("fecha", this.fecha);
+		return newDocument;
 	}
 }

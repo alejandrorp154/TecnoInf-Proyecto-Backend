@@ -20,7 +20,7 @@ public class MongoDBConnector {
 		this.dataBase = this.client.getDatabase(TRAVELPACK_DATABASE_MONGO);
 	}	
 	
-	MongoCollection<Document> getCollection(String collectionName){
+	public MongoCollection<Document> getCollection(String collectionName){
 		if (this.client != null && this.dataBase != null) {
 			return this.dataBase.getCollection(collectionName);
 		} else return null;
