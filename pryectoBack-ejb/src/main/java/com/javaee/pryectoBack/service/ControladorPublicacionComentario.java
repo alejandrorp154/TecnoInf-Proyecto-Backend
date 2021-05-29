@@ -13,7 +13,6 @@ import com.javaee.pryectoBack.datatypes.DTOReaccion;
 import com.javaee.pryectoBack.model.Comentario;
 import com.javaee.pryectoBack.model.Publicacion;
 import com.javaee.pryectoBack.model.Tipo;
-import com.javaee.pryectoBack.util.ControladorComentarioMongoDB;
 
 @Stateless
 @Remote(ControladorPublicacionComentarioRemote.class)
@@ -22,9 +21,7 @@ public class ControladorPublicacionComentario
 
 	@EJB
 	private ControladorPublicacionComentarioDALocal controladorPublicacionComentarioDA;
-	
-	private ControladorComentarioMongoDB controladorComentarioMongoDB;
-	
+		
 	
 	@Override
 	public boolean altaComentario(String idPublicacion, DTOComentario dtoComentario) {

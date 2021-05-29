@@ -10,6 +10,7 @@ public class DTOComentario implements Serializable
 	private String contenido;
 	private Date fecha;
 	private int idPublicacion;
+	private int idComentarioPadre;
 	protected String idPersona;
 	
 	public DTOComentario(int idComentarioReaccion, String contenido, Date fecha, int idPublicacion, String idPersona) {
@@ -62,5 +63,13 @@ public class DTOComentario implements Serializable
 
 	public void setIdPersona(String idPersona) {
 		this.idPersona = idPersona;
+	}
+
+	public int getIdComentarioPadre() {
+		return idComentarioPadre;
+	}
+
+	public void setIdComentarioPadre(int idComentarioPadre) {
+		this.idComentarioPadre = idComentarioPadre;
 	}
 }
