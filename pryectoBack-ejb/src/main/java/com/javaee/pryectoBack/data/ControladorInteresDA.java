@@ -27,7 +27,7 @@ public class ControladorInteresDA implements ControladorInteresDALocal, Controla
 	public DTOInteres alta(DTOInteres dtoInteres) {
 		try {
 			Interes interes = new Interes();
-			interes.setInteres(dtoInteres.getIntres());
+			interes.setInteres(dtoInteres.getInteres());
 			manager.persist(interes);
 			DTOInteres dtoInte = new DTOInteres(interes);
 			return dtoInte;
@@ -86,7 +86,7 @@ public class ControladorInteresDA implements ControladorInteresDALocal, Controla
 				manager.persist(interes);
 			}
 			else {
-				dtoInteresSaved.setIntres(dtoInteres.getIntres());
+				dtoInteresSaved.setInteres(dtoInteres.getInteres());
 				interes = new Interes(dtoInteresSaved);
 				manager.merge(interes);
 			}

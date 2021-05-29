@@ -29,7 +29,7 @@ public class Interes implements Serializable
 
 	public Interes(DTOInteres dtoInteres) {
 		this.idInteres = dtoInteres.getIdInteres();
-		this.interes = dtoInteres.getIntres();
+		this.interes = dtoInteres.getInteres();
 		this.perfiles = new ArrayList<PerfilUsuario>();
 	}
 
