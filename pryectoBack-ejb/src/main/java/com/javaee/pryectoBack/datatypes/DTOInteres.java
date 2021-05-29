@@ -10,23 +10,15 @@ public class DTOInteres implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	private int idInteres;
-	private List<String> idPersonas;
-	private String intres;
-	
-	public DTOInteres(int idInteres, List<String> idPersonas, String intres) {
-		super();
-		this.idInteres = idInteres;
-		this.idPersonas = idPersonas;
-		this.intres = intres;
-	}
+	private String interes;
+	private List<DTOPerfilUsuario> perfiles = new ArrayList<>();
 
 	public DTOInteres() {
 	}
 
 	public DTOInteres(Interes interes) {
 		this.idInteres = interes.getIdInteres();
-		this.intres = interes.getInteres();
-		this.idPersonas = new ArrayList<String>();
+		this.interes = interes.getInteres();
 	}
 
 	public int getIdInteres() {
@@ -37,19 +29,19 @@ public class DTOInteres implements Serializable
 		this.idInteres = idInteres;
 	}
 
-	public List<String> getIdPersonas() {
-		return idPersonas;
+	public List<DTOPerfilUsuario> getPerfiles() {
+		return perfiles;
 	}
 
-	public void setIdPersonas(List<String> idPersonas) {
-		this.idPersonas = idPersonas;
+	public void setPerfiles(List<DTOPerfilUsuario> perfiles) {
+		this.perfiles = perfiles;
 	}
 
-	public String getIntres() {
-		return intres;
+	public String getInteres() {
+		return interes;
 	}
 
-	public void setIntres(String intres) {
-		this.intres = intres;
+	public void setInteres(String intres) {
+		this.interes = intres;
 	}
 }

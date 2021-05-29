@@ -35,11 +35,11 @@ public class InteresRest {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Agrega un interes al back", notes = "se le pasa el data type interes como lo devuelve el get obvio que metiendo los datos del nuevo")
-	public Response alta(Interes interes) {
+	public Response alta(DTOInteres interes) {
 		Response.ResponseBuilder builder = null;
 		try {
-			DTOInteres dtoInteres = new DTOInteres(interes);
-			DTOInteres newInter = controladorInteres.alta(dtoInteres);
+//			DTOInteres dtoInteres = new DTOInteres(interes);
+			DTOInteres newInter = controladorInteres.alta(interes);
 			Interes inter = new Interes(newInter);
             builder = Response.ok();
             builder.entity(inter);
@@ -79,11 +79,11 @@ public class InteresRest {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Modifica un interes", notes = "si no existe crea el interes")
-	public Response modificar(Interes interes) {
+	public Response modificar(DTOInteres interes) {
 		Response.ResponseBuilder builder = null;
 		try {
-			DTOInteres dtoInteres = new DTOInteres(interes);
-			DTOInteres modified = controladorInteres.modificar(dtoInteres);
+//			DTOInteres dtoInteres = new DTOInteres(interes);
+			DTOInteres modified = controladorInteres.modificar(interes);
 			Interes inter = new Interes(modified);
 			if (inter.getIdInteres() != 0) {
 	            builder = Response.ok();
