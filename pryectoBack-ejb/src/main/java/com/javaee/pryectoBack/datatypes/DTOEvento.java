@@ -5,8 +5,7 @@ import java.util.Date;
 
 import com.javaee.pryectoBack.model.estados;
 
-public class DTOEvento implements Serializable
-{
+public class DTOEvento implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private int idEvento;
 	private String ubicacion;
@@ -16,7 +15,8 @@ public class DTOEvento implements Serializable
 	private estados estado;
 	private int idPublicacion;
 	protected String idPersona;
-	
+	private String idChat;
+
 	public DTOEvento(int idEvento, String ubicacion, String descripcion, Date fechaInicio, Date fechaFin,
 			estados estado, int idPublicacion, String idPersona) {
 		super();
@@ -96,4 +96,13 @@ public class DTOEvento implements Serializable
 	public void setIdPersona(String idPersona) {
 		this.idPersona = idPersona;
 	}
+
+	public String getIdChat() {
+		return idChat;
+	}
+
+	public void setIdChat(String idChat) {
+		this.idChat = idChat;
+	}
+
 }

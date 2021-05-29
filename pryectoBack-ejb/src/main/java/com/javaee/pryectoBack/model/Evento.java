@@ -28,7 +28,7 @@ public class Evento implements Serializable
 	private estados estado;
 	@ManyToMany
 	private List<Usuario> usuarios = new ArrayList<>();
-	private Chat chat;
+	private String idChat;
 	@OneToMany(mappedBy = "evento")
 	private List<Publicacion> publicaciones = new ArrayList<>();
 	
@@ -100,12 +100,12 @@ public class Evento implements Serializable
 		this.usuarios = usuarios;
 	}
 
-	public Chat getChat() {
-		return chat;
+	public String getChat() {
+		return idChat;
 	}
 
-	public void setChat(Chat chat) {
-		this.chat = chat;
+	public void setChat(String chat) {
+		this.idChat = chat;
 	}
 
 	public List<Publicacion> getPublicaciones() {
