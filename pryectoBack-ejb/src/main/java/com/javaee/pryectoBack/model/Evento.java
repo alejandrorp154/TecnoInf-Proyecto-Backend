@@ -100,11 +100,11 @@ public class Evento implements Serializable
 		this.usuarios = usuarios;
 	}
 
-	public String getChat() {
+	public String getIdChat() {
 		return idChat;
 	}
 
-	public void setChat(String chat) {
+	public void setIdChat(String chat) {
 		this.idChat = chat;
 	}
 
