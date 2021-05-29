@@ -16,9 +16,6 @@ import javax.ws.rs.core.Response;
 import com.javaee.pryectoBack.datatypes.DTOComentario;
 import com.javaee.pryectoBack.datatypes.DTOPublicacion;
 import com.javaee.pryectoBack.datatypes.DTOReaccion;
-import com.javaee.pryectoBack.model.Publicacion;
-import com.javaee.pryectoBack.model.Tipo;
-import com.javaee.pryectoBack.model.tipos;
 import com.javaee.pryectoBack.service.ControladorPublicacionComentarioLocal;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -96,21 +93,12 @@ public class PublicacionComentarioRest {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Agrega una publicacion al back", notes = "se le pasa el objeto publicacion como sigue: {\"contenido\":\"test 3\",\"tipo\":{\"tipo\":\"mapa\"},\"extension\":\"\",\"nombre\":\"\",\"perfil\":{\"usuario\":{\"idPersona\":\"idPersona\"}}} no es necesario que se le pasen todos los atributos del objeto. Tambien quedamos que si el tipo es mapa se le pasa las coordenadas en contenido. Si el tipo es foto, se le pasa el nombre del archivo y la extension.")
-	public Response altaPublicacion(Publicacion publicacion) {
+	public Response altaPublicacion(DTOPublicacion dtoPublicacion) {
 		Response.ResponseBuilder builder = null;
 		try {
-			Tipo tipo = new Tipo();
-			tipos publicacionTipo = publicacion.getTipo().getTipo();
-			tipos tiposPublicacion = publicacionTipo.equals(tipos.enlaceExterno.toString()) ? tipos.enlaceExterno : 
-				publicacionTipo.equals(tipos.texto.toString()) ? tipos.texto : 
-					publicacionTipo.equals(tipos.foto.toString()) ? tipos.foto : tipos.mapa;
-			tipo.setTipo(tiposPublicacion);
-			publicacion.setTipo(tipo); 
-			DTOPublicacion dtoPublicacion = new DTOPublicacion(publicacion);
 			DTOPublicacion newPublicacion = controladorPublicacionComentario.altaPublicacion(dtoPublicacion);
-			Publicacion publi = new Publicacion(newPublicacion);
             builder = Response.ok();
-            builder.entity(publi);
+            builder.entity(newPublicacion);
         } catch (Exception e) {
             Map<String, String> responseObj = new HashMap<>();
             responseObj.put("error", e.getMessage());
