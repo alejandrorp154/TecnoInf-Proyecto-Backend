@@ -18,7 +18,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.javaee.pryectoBack.datatypes.DTOInteres;
-import com.javaee.pryectoBack.model.Interes;
 import com.javaee.pryectoBack.service.ControladorInteresLocal;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -38,11 +37,9 @@ public class InteresRest {
 	public Response alta(DTOInteres interes) {
 		Response.ResponseBuilder builder = null;
 		try {
-//			DTOInteres dtoInteres = new DTOInteres(interes);
 			DTOInteres newInter = controladorInteres.alta(interes);
-			Interes inter = new Interes(newInter);
             builder = Response.ok();
-            builder.entity(inter);
+            builder.entity(newInter);
         } catch (Exception e) {
             Map<String, String> responseObj = new HashMap<>();
             responseObj.put("error", e.getMessage());
@@ -82,12 +79,10 @@ public class InteresRest {
 	public Response modificar(DTOInteres interes) {
 		Response.ResponseBuilder builder = null;
 		try {
-//			DTOInteres dtoInteres = new DTOInteres(interes);
 			DTOInteres modified = controladorInteres.modificar(interes);
-			Interes inter = new Interes(modified);
-			if (inter.getIdInteres() != 0) {
+			if (modified.getIdInteres() != 0) {
 	            builder = Response.ok();
-	            builder.entity(inter);
+	            builder.entity(modified);
 			}
 			else {
 				Map<String, String> responseObj = new HashMap<>();
