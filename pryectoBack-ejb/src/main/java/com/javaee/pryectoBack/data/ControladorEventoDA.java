@@ -6,6 +6,7 @@ import javax.persistence.PersistenceContext;
 
 import com.javaee.pryectoBack.datatypes.DTOEvento;
 import com.javaee.pryectoBack.model.Evento;
+import com.javaee.pryectoBack.model.Usuario;
 
 @Singleton
 public class ControladorEventoDA implements ControladorEventoDALocal, ControladorEventoDARemote {
@@ -18,6 +19,9 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 		try {
 			Evento evento = new Evento(dtoEvento);
 			manager.persist(evento);
+			Usuario owner = manager.find(Usuario.class, dtoEvento.getIdPersona());
+			owner.getEventos().add(evento);
+			manager.merge(owner);			
 			//Falta Agregar logica de puntos
 			return true;
 		} catch (Exception exception) {
