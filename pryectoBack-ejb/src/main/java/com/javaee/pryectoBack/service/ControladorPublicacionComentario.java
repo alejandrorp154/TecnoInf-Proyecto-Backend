@@ -10,7 +10,6 @@ import com.javaee.pryectoBack.data.ControladorPublicacionComentarioDALocal;
 import com.javaee.pryectoBack.datatypes.DTOComentario;
 import com.javaee.pryectoBack.datatypes.DTOPublicacion;
 import com.javaee.pryectoBack.datatypes.DTOReaccion;
-import com.javaee.pryectoBack.model.Comentario;
 import com.javaee.pryectoBack.model.Publicacion;
 import com.javaee.pryectoBack.model.Tipo;
 
@@ -24,8 +23,8 @@ public class ControladorPublicacionComentario
 		
 	
 	@Override
-	public boolean altaComentario(String idPublicacion, DTOComentario dtoComentario) {
-		return controladorPublicacionComentarioDA.altaComentario(idPublicacion, dtoComentario);
+	public boolean altaComentario(DTOComentario dtoComentario) {
+		return controladorPublicacionComentarioDA.altaComentario(dtoComentario);
 	}
 
 	@Override

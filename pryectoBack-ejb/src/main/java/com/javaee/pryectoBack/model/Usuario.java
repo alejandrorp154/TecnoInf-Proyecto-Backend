@@ -21,10 +21,7 @@ public class Usuario extends Persona implements Serializable
 	
 	@ManyToMany(cascade=CascadeType.ALL)
 	@Column(name="contacto")
-	private List<Usuario> contactos = new ArrayList<>();
-	
-	@OneToMany(mappedBy = "usuario")
-	private List<ComentarioReaccion> comentarioReaccioens = new ArrayList<>();
+	private List<Usuario> contactos = new ArrayList<>();	
 	
 	@OneToMany(mappedBy = "usuario")
 	private List<Medalla> medallas = new ArrayList<>();
@@ -101,14 +98,6 @@ public class Usuario extends Persona implements Serializable
 
 	public void setContactos(List<Usuario> contactos) {
 		this.contactos = contactos;
-	}
-
-	public List<ComentarioReaccion> getComentarioReaccioens() {
-		return comentarioReaccioens;
-	}
-
-	public void setComentarioReaccioens(List<ComentarioReaccion> comentarioReaccioens) {
-		this.comentarioReaccioens = comentarioReaccioens;
 	}
 
 	public String getNickname() {

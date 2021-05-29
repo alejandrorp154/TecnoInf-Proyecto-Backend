@@ -14,5 +14,5 @@ public interface ControladorPublicacionComentarioDALocal {
 	boolean modificarPublicacion(DTOPublicacion dtoPublicacion);
 	boolean reaccionPublicacion(DTOReaccion dtoReaccion);
 	DTOPublicacion altaPublicacion(DTOPublicacion dtoPublicacion);
-	public boolean altaComentario(String idPublicacion, DTOComentario dtoComentario);
+	public boolean altaComentario(DTOComentario dtoComentario);
 }

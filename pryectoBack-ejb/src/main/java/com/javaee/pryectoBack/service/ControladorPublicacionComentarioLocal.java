@@ -10,7 +10,7 @@ import com.javaee.pryectoBack.datatypes.DTOReaccion;
 
 @Local
 public interface ControladorPublicacionComentarioLocal {
-	boolean altaComentario(String idPublicacion, DTOComentario dtoComentario);
+	boolean altaComentario(DTOComentario dtoComentario);
 	boolean bajaComentario(int idComentario);
 	boolean modificarComentario(DTOComentario dtoComentario);
 	boolean reaccionarComentario(int idComentario, DTOReaccion dtoReaccion);

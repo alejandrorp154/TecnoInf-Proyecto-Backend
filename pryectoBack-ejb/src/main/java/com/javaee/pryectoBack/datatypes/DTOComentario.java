@@ -13,8 +13,9 @@ public class DTOComentario implements Serializable
 	private int idComentarioPadre;
 	protected String idPersona;
 	
-	public DTOComentario(int idComentarioReaccion, String contenido, Date fecha, int idPublicacion, String idPersona) {
+	public DTOComentario(int idComentarioReaccion, String contenido, Date fecha, int idPublicacion, String idPersona, int idComentarioPadre) {
 		super();
+		this.idComentarioPadre = idComentarioPadre;
 		this.idComentarioReaccion = idComentarioReaccion;
 		this.contenido = contenido;
 		this.fecha = fecha;
