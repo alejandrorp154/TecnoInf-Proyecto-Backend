@@ -9,8 +9,6 @@ import javax.persistence.PersistenceContext;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
-import org.jboss.resteasy.plugins.providers.jaxb.PrettyProcessor;
-
 import com.javaee.pryectoBack.datatypes.DTOComentario;
 import com.javaee.pryectoBack.datatypes.DTOPublicacion;
 import com.javaee.pryectoBack.datatypes.DTOReaccion;
