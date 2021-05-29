@@ -41,14 +41,9 @@ public class UbicacionRest {
 	public Response alta(DTOUbicacion dtoUbicacion) {
 		Response.ResponseBuilder builder = null;
 		try {
-			boolean success = controladorUbicacionLocal.alta(dtoUbicacion);
-			if (!success) {
-				Map<String, String> responseObj = new HashMap<>();
-	            responseObj.put("error", "Hubieron problemas en el sistema.");
-	            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
-			} else {
-				builder = Response.ok();
-			}           
+			DTOUbicacion newUbicacion = controladorUbicacionLocal.alta(dtoUbicacion);		
+			builder = Response.ok();
+			builder.entity(newUbicacion);		        
         } catch (Exception e) {
             Map<String, String> responseObj = new HashMap<>();
             responseObj.put("error", e.getMessage());
