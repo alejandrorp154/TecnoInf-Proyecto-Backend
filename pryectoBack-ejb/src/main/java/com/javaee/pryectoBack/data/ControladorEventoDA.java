@@ -15,17 +15,18 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 	private EntityManager manager;
 
 	@Override
-	public boolean crearEvento(DTOEvento dtoEvento) {
+	public DTOEvento crearEvento(DTOEvento dtoEvento) {
 		try {
 			Evento evento = new Evento(dtoEvento);
 			manager.persist(evento);
 			Usuario owner = manager.find(Usuario.class, dtoEvento.getIdPersona());
 			owner.getEventos().add(evento);
-			manager.merge(owner);			
+			manager.merge(owner);	
+			dtoEvento.setIdEvento(evento.getIdEvento());
 			//Falta Agregar logica de puntos
-			return true;
+			return dtoEvento;
 		} catch (Exception exception) {
-			return false;
+			return null;
 		}
 	}
 

@@ -42,14 +42,8 @@ public class EventoRest {
 	public Response crearEvento(DTOEvento dtoEvento) {
 		Response.ResponseBuilder builder = null;
 		try {
-			boolean error = controladorEvento.crearEvento(dtoEvento);
-			if (!error) {
-				Map<String, String> responseObj = new HashMap<>();
-	            responseObj.put("error", "Hubo un error en el sistema.");
-	            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
-			} else {
-				builder = Response.ok();
-			}            
+			DTOEvento dtoEventoAdded = controladorEvento.crearEvento(dtoEvento);
+	        builder.entity(dtoEventoAdded);           
         } catch (Exception e) {
             Map<String, String> responseObj = new HashMap<>();
             responseObj.put("error", e.getMessage());
