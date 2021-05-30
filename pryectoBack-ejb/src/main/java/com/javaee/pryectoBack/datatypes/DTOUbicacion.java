@@ -24,6 +24,15 @@ public class DTOUbicacion implements Serializable
 		this.idPersona = idPersona;
 	}
 	
+	public DTOUbicacion(int idUbicacion, float longitud, float latitud, Date fecha, String descripcion) {
+		super();
+		this.idUbicacion = idUbicacion;
+		this.longitud = longitud;
+		this.latitud = latitud;
+		this.fecha = fecha;
+		this.descripcion = descripcion;
+	}
+
 	public DTOUbicacion() {
 	}
 

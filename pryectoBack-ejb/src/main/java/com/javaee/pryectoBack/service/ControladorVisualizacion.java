@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 
 import com.javaee.pryectoBack.data.ControladorVisualizacionDALocal;
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
+import com.javaee.pryectoBack.datatypes.DTOPerfilUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioMedalla;
 
@@ -24,9 +25,8 @@ public class ControladorVisualizacion implements ControladorVisualizacionLocal, 
 	}
 
 	@Override
-	public DTOUsuario visualizarPerfil(String idPersona) {
-		// TODO Auto-generated method stub
-		return null;
+	public DTOPerfilUsuario visualizarPerfil(String idPersona) {
+		return controladorVisualizacionDA.visualizarPerfil(idPersona);
 	}
 
 	@Override

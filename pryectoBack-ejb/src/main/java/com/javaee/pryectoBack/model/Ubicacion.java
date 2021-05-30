@@ -71,4 +71,7 @@ public class Ubicacion implements Serializable
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
+	public DTOUbicacion getDTO() {
+		return new DTOUbicacion(this.idUbicacion,this.longitud,this.latitud,this.fecha,this.descripcion);
+	}
 }
