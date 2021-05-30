@@ -28,8 +28,6 @@
       	<jta-data-source>java:jboss/datasources/PostgresDS</jta-data-source>
 	  	<class>com.javaee.pryectoBack.model.Administrador</class>
 	  	<class>com.javaee.pryectoBack.model.Chat</class>
-	  	<class>com.javaee.pryectoBack.model.Comentario</class>
-	  	<class>com.javaee.pryectoBack.model.ComentarioReaccion</class>
 	  	<class>com.javaee.pryectoBack.model.Evento</class>
 	  	<class>com.javaee.pryectoBack.model.Multimedia</class>
 	  	<class>com.javaee.pryectoBack.model.Interes</class>
@@ -39,7 +37,6 @@
 	  	<class>com.javaee.pryectoBack.model.PerfilUsuario</class>
 	  	<class>com.javaee.pryectoBack.model.Persona</class>
 	  	<class>com.javaee.pryectoBack.model.Publicacion</class>
-	  	<class>com.javaee.pryectoBack.model.Reaccion</class>
 	  	<class>com.javaee.pryectoBack.model.Tipo</class>
 	  	<class>com.javaee.pryectoBack.model.Ubicacion</class>
 	  	<class>com.javaee.pryectoBack.model.Usuario</class>
