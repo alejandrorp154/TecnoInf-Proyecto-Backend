@@ -56,8 +56,15 @@ public class Usuario extends Persona implements Serializable
 		this.nombre = dtoUsuario.getNombre();
 		this.apellido = dtoUsuario.getApellido();
 		this.nickname = dtoUsuario.getNickname();
-		this.direccion = dtoUsuario.getNickname();
 		this.celular = dtoUsuario.getCelular();
+		this.direccion = dtoUsuario.getNickname();
+		this.contactos = new ArrayList<>();
+		this.medallas = new ArrayList<>();
+		this.notificaciones = new ArrayList<>();
+		this.eventos = new ArrayList<>();
+		this.chats = new ArrayList<>();
+		this.ubicaciones = new ArrayList<>();
+		this.configuracion = new Configuracion();
 	}
 
 	public List<Notificacion> getNotificaciones() {
