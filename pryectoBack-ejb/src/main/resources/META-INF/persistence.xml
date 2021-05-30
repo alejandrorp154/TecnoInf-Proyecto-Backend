@@ -37,7 +37,6 @@
 	  	<class>com.javaee.pryectoBack.model.PerfilUsuario</class>
 	  	<class>com.javaee.pryectoBack.model.Persona</class>
 	  	<class>com.javaee.pryectoBack.model.Publicacion</class>
-	  	<class>com.javaee.pryectoBack.model.Reaccion</class>
 	  	<class>com.javaee.pryectoBack.model.Tipo</class>
 	  	<class>com.javaee.pryectoBack.model.Ubicacion</class>
 	  	<class>com.javaee.pryectoBack.model.Usuario</class>

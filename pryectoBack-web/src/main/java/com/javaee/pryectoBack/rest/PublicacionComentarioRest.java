@@ -28,9 +28,35 @@ public class PublicacionComentarioRest {
 	@EJB
 	private ControladorPublicacionComentarioLocal controladorPublicacionComentario;
 	
-	public boolean altaComentario(DTOComentario dtoComentario) {
-		// TODO Auto-generated method stub
-		return false;
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/comentario")
+	@ApiOperation(value = "Agrega un comentario", notes = "Se le pasa el objeto comentario como sigue: {\r\n"
+			+ "    \"idComentarioReaccion\": \"Test\","
+			+ "    \"contenido\": \"Contenido de prueba 2\","
+			+ "    \"fecha\": \"2020-03-10\","
+			+ "    \"idPublicacion\": 1,"
+			+ "    \"idPersona\": 1,"
+			+ "    \"idComentarioPadre\": \"60b2a6ca83ea7a7211e52a01\""
+			+ " Si se quiere crear un comentario padre, enviamos idComentarioPadre con null, sino, se lo agregamos para crear un hijo"
+			+ "}")
+	public Response altaComentario(DTOComentario dtoComentario) {
+		Response.ResponseBuilder builder = null;
+		try {			
+			boolean error = controladorPublicacionComentario.altaComentario(dtoComentario);
+			if (!error) {
+				Map<String, String> responseObj = new HashMap<>();
+	            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);	
+			} else {
+				builder = Response.ok();				
+			}            
+        } catch (Exception e) {
+            Map<String, String> responseObj = new HashMap<>();
+            responseObj.put("error", e.getMessage());
+            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+        }
+		return builder.build();
 	}
 
 	public boolean bajaComentario(int idComentario) {
