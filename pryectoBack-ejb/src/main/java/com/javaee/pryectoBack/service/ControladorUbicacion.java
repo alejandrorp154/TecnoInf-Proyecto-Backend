@@ -17,7 +17,7 @@ public class ControladorUbicacion implements ControladorUbicacionLocal, Controla
 	private ControladorUbicacionDALocal controladorUbicacionDA;
 	
 	@Override
-	public boolean alta(DTOUbicacion dtoUbicacion) {
+	public DTOUbicacion alta(DTOUbicacion dtoUbicacion) {
 		return controladorUbicacionDA.alta(dtoUbicacion);
 	}
 

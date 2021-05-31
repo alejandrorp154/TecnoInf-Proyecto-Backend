@@ -18,7 +18,7 @@ public class ControladorUbicacionDA implements ControladorUbicacionDALocal, Cont
 	private EntityManager manager;
 	
 	@Override
-	public boolean alta(DTOUbicacion dtoUbicacion) {
+	public DTOUbicacion alta(DTOUbicacion dtoUbicacion) {
 		try {
 			Usuario owner = manager.find(Usuario.class, dtoUbicacion.getIdPersona());
 			if (owner != null) {
@@ -26,11 +26,13 @@ public class ControladorUbicacionDA implements ControladorUbicacionDALocal, Cont
 				manager.persist(ubicacion);
 				owner.getUbicaciones().add(ubicacion);
 				manager.merge(owner);
-				return true;
+				DTOUbicacion ubicacionCreada = dtoUbicacion;
+				ubicacionCreada.setIdUbicacion(ubicacion.getIdUbicacion());
+				return ubicacionCreada;
 			}			
-			return false;
+			return null;
 		} catch (Exception exception) {
-			return false;
+			return null;
 		}
 	}
 
