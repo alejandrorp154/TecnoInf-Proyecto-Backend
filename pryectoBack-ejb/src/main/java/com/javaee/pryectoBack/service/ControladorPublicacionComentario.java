@@ -10,7 +10,8 @@ import com.javaee.pryectoBack.data.ControladorPublicacionComentarioDALocal;
 import com.javaee.pryectoBack.datatypes.DTOComentario;
 import com.javaee.pryectoBack.datatypes.DTOPublicacion;
 import com.javaee.pryectoBack.datatypes.DTOReaccion;
-import com.javaee.pryectoBack.util.ControladorComentarioMongoDB;
+import com.javaee.pryectoBack.model.Publicacion;
+import com.javaee.pryectoBack.model.Tipo;
 
 @Stateless
 @Remote(ControladorPublicacionComentarioRemote.class)
@@ -19,13 +20,11 @@ public class ControladorPublicacionComentario
 
 	@EJB
 	private ControladorPublicacionComentarioDALocal controladorPublicacionComentarioDA;
-	
-	private ControladorComentarioMongoDB controladorComentarioMongoDB;
+		
 	
 	@Override
 	public boolean altaComentario(DTOComentario dtoComentario) {
-		// TODO Auto-generated method stub
-		return false;
+		return controladorPublicacionComentarioDA.altaComentario(dtoComentario);
 	}
 
 	@Override

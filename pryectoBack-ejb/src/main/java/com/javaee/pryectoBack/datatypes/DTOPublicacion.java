@@ -1,10 +1,11 @@
 package com.javaee.pryectoBack.datatypes;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.javaee.pryectoBack.model.Publicacion;
-import com.javaee.pryectoBack.model.Tipo;
 
 public class DTOPublicacion implements Serializable
 {
@@ -12,18 +13,29 @@ public class DTOPublicacion implements Serializable
 	private int idPublicacion;
 	private String contenido;
 	private Date fecha;
-	private Tipo tipo;
+	private DTOTipo tipo;
 	protected String idPersona;
 	private String extension;
 	private String nombre;
-	
-	public DTOPublicacion(int idPublicacion, String contenido, Date fecha, Tipo tipo, String idPersona) {
+	private List<DTOComentarioReaccion> comentarioReacciones = new ArrayList<>();
+	private DTOEvento evento;
+	private DTOPerfilUsuario perfil;
+
+
+	public DTOPublicacion(int idPublicacion, String contenido, Date fecha, DTOTipo dtoTipo, String idPersona,
+			String extension, String nombre, List<DTOComentarioReaccion> dtoComentarioReacciones, DTOEvento dtoEvento,
+			DTOPerfilUsuario dtoPerfil) {
 		super();
 		this.idPublicacion = idPublicacion;
 		this.contenido = contenido;
 		this.fecha = fecha;
-		this.tipo = tipo;
+		this.tipo = dtoTipo;
 		this.idPersona = idPersona;
+		this.extension = extension;
+		this.nombre = nombre;
+		this.comentarioReacciones = dtoComentarioReacciones;
+		this.evento = dtoEvento;
+		this.perfil = dtoPerfil;
 	}
 
 	public DTOPublicacion() {
@@ -33,7 +45,7 @@ public class DTOPublicacion implements Serializable
 		this.idPublicacion = publicacion.getIdPublicacion();
 		this.contenido = publicacion.getContenido();
 		this.fecha = publicacion.getFecha();
-		this.tipo = publicacion.getTipo();
+		this.tipo = new DTOTipo(publicacion.getTipo());
 //		this.idPersona = publicacion.getPerfil().getUsuario().getIdPersona();
 		this.extension = publicacion.getExtension();
 		this.nombre = publicacion.getNombre();
@@ -63,12 +75,12 @@ public class DTOPublicacion implements Serializable
 		this.fecha = fecha;
 	}
 
-	public Tipo getTipo() {
+	public DTOTipo getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(Tipo tipo) {
-		this.tipo = tipo;
+	public void setTipo(DTOTipo dtoTipo) {
+		this.tipo = dtoTipo;
 	}
 
 	public String getIdPersona() {
@@ -93,5 +105,29 @@ public class DTOPublicacion implements Serializable
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public List<DTOComentarioReaccion> getComentarioReacciones() {
+		return comentarioReacciones;
+	}
+
+	public void setComentarioReacciones(List<DTOComentarioReaccion> dtoComentarioReacciones) {
+		this.comentarioReacciones = dtoComentarioReacciones;
+	}
+
+	public DTOEvento getEvento() {
+		return evento;
+	}
+
+	public void setEvento(DTOEvento dtoEvento) {
+		this.evento = dtoEvento;
+	}
+
+	public DTOPerfilUsuario getPerfil() {
+		return perfil;
+	}
+
+	public void setPerfil(DTOPerfilUsuario dtoPerfil) {
+		this.perfil = dtoPerfil;
 	}
 }

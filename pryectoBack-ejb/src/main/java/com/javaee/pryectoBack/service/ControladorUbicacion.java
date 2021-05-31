@@ -24,8 +24,7 @@ public class ControladorUbicacion implements ControladorUbicacionLocal, Controla
 
 	@Override
 	public List<DTOUbicacion> obtenerUbicaciones(String idPersona) {
-		// TODO Auto-generated method stub
-		return null;
+		return controladorUbicacionDA.obtenerUbicaciones(idPersona);
 	}
 
 	@Override

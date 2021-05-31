@@ -18,7 +18,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.javaee.pryectoBack.datatypes.DTOInteres;
-import com.javaee.pryectoBack.model.Interes;
 import com.javaee.pryectoBack.service.ControladorInteresLocal;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -35,14 +34,12 @@ public class InteresRest {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Agrega un interes al back", notes = "se le pasa el data type interes como lo devuelve el get obvio que metiendo los datos del nuevo")
-	public Response alta(Interes interes) {
+	public Response alta(DTOInteres interes) {
 		Response.ResponseBuilder builder = null;
 		try {
-			DTOInteres dtoInteres = new DTOInteres(interes);
-			DTOInteres newInter = controladorInteres.alta(dtoInteres);
-			Interes inter = new Interes(newInter);
+			DTOInteres newInter = controladorInteres.alta(interes);
             builder = Response.ok();
-            builder.entity(inter);
+            builder.entity(newInter);
         } catch (Exception e) {
             Map<String, String> responseObj = new HashMap<>();
             responseObj.put("error", e.getMessage());
@@ -79,15 +76,13 @@ public class InteresRest {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Modifica un interes", notes = "si no existe crea el interes")
-	public Response modificar(Interes interes) {
+	public Response modificar(DTOInteres interes) {
 		Response.ResponseBuilder builder = null;
 		try {
-			DTOInteres dtoInteres = new DTOInteres(interes);
-			DTOInteres modified = controladorInteres.modificar(dtoInteres);
-			Interes inter = new Interes(modified);
-			if (inter.getIdInteres() != 0) {
+			DTOInteres modified = controladorInteres.modificar(interes);
+			if (modified.getIdInteres() != 0) {
 	            builder = Response.ok();
-	            builder.entity(inter);
+	            builder.entity(modified);
 			}
 			else {
 				Map<String, String> responseObj = new HashMap<>();

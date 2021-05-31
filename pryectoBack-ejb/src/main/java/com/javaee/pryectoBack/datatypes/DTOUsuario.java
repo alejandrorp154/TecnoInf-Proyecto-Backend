@@ -2,6 +2,8 @@ package com.javaee.pryectoBack.datatypes;
 
 import java.io.Serializable;
 
+import com.javaee.pryectoBack.model.Usuario;
+
 public class DTOUsuario implements Serializable
 {
 	private static final long serialVersionUID = 1L;
@@ -28,6 +30,15 @@ public class DTOUsuario implements Serializable
 	public DTOUsuario() {
 	}
 	
+	public DTOUsuario(Usuario usuario) {
+		this.idPersona = usuario.getIdPersona();
+		this.email = usuario.getEmail();
+		this.nombre = usuario.getNombre();
+		this.apellido = usuario.getApellido();
+		this.nickname = usuario.getNickname();
+		this.direccion = usuario.getDireccion();
+	}
+
 	public String getIdPersona() {
 		return idPersona;
 	}
