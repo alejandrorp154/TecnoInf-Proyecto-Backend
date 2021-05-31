@@ -8,7 +8,7 @@ import com.javaee.pryectoBack.datatypes.DTOUbicacion;
 
 @Local
 public interface ControladorUbicacionDALocal {
-	boolean alta(DTOUbicacion dtoUbicacion);
+	DTOUbicacion alta(DTOUbicacion dtoUbicacion);
 	List<DTOUbicacion> obtenerUbicaciones(String idPersona);
 	boolean baja(int idUbicacion);
 	boolean modificar(DTOUbicacion dtoUbicacion);

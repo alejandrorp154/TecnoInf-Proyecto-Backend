@@ -18,9 +18,22 @@ public class ControladorUbicacionDA implements ControladorUbicacionDALocal, Cont
 	private EntityManager manager;
 	
 	@Override
-	public boolean alta(DTOUbicacion dtoUbicacion) {
-		// TODO Auto-generated method stub
-		return false;
+	public DTOUbicacion alta(DTOUbicacion dtoUbicacion) {
+		try {
+			Usuario owner = manager.find(Usuario.class, dtoUbicacion.getIdPersona());
+			if (owner != null) {
+				Ubicacion ubicacion = new Ubicacion(dtoUbicacion);
+				manager.persist(ubicacion);
+				owner.getUbicaciones().add(ubicacion);
+				manager.merge(owner);
+				DTOUbicacion ubicacionCreada = dtoUbicacion;
+				ubicacionCreada.setIdUbicacion(ubicacion.getIdUbicacion());
+				return ubicacionCreada;
+			}			
+			return null;
+		} catch (Exception exception) {
+			return null;
+		}
 	}
 
 	@Override

@@ -28,6 +28,13 @@ public class Ubicacion implements Serializable
 	public Ubicacion() {
 	}
 	
+	public Ubicacion(DTOUbicacion dtoUbicacion) {
+		this.longitud = dtoUbicacion.getLongitud();
+		this.latitud = dtoUbicacion.getLatitud();
+		this.fecha = dtoUbicacion.getFecha();
+		this.descripcion = dtoUbicacion.getDescripcion();
+	}
+	
 	public int getIdUbicacion() {
 		return idUbicacion;
 	}
