@@ -17,6 +17,13 @@ public class Usuario extends Persona implements Serializable {
 	private String nickname;
 	private String celular;
 	private String direccion;
+
+	@ManyToMany(cascade = CascadeType.ALL)
+	@Column(name = "contacto")
+	private List<Usuario> contactos = new ArrayList<>();
+
+	@OneToMany(mappedBy = "usuario")
+	private List<ComentarioReaccion> comentarioReaccioens = new ArrayList<>();
 	
 	@ManyToMany(cascade=CascadeType.ALL)
 	@Column(name="contacto")
