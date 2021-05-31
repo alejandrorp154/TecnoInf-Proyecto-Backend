@@ -5,7 +5,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import com.javaee.pryectoBack.datatypes.DTOEvento;
-import com.javaee.pryectoBack.model.Chat;
 import com.javaee.pryectoBack.model.Evento;
 
 @Singleton
@@ -19,10 +18,7 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 		try {
 			Evento evento = new Evento(dtoEvento);
 			manager.persist(evento);
-			Chat chatEvento = new Chat();
-			//Queda agregar al usuario creador al grupo
-			evento.setChat(chatEvento);
-			manager.merge(chatEvento);
+			//Falta Agregar logica de puntos
 			return true;
 		} catch (Exception exception) {
 			return false;

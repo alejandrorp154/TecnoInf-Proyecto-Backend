@@ -32,7 +32,6 @@
 	  	<class>com.javaee.pryectoBack.model.Multimedia</class>
 	  	<class>com.javaee.pryectoBack.model.Interes</class>
 	  	<class>com.javaee.pryectoBack.model.Medalla</class>
-	  	<class>com.javaee.pryectoBack.model.Mensaje</class>
 	  	<class>com.javaee.pryectoBack.model.Notificacion</class>
 	  	<class>com.javaee.pryectoBack.model.PerfilUsuario</class>
 	  	<class>com.javaee.pryectoBack.model.Persona</class>
@@ -54,4 +53,3 @@
 		</properties>
    </persistence-unit>
 </persistence>
-
