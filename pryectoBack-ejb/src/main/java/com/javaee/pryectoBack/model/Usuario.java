@@ -1,5 +1,7 @@
 package com.javaee.pryectoBack.model;
 
+import com.javaee.pryectoBack.datatypes.DTOUsuario;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +9,10 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Usuario extends Persona implements Serializable {
@@ -33,10 +37,29 @@ public class Usuario extends Persona implements Serializable {
 
 	@OneToMany(mappedBy = "usuario")
 	private List<Ubicacion> ubicaciones = new ArrayList<>();
-
+	
+	@OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL,
+    fetch = FetchType.LAZY, optional = false)
 	private Configuracion configuracion;
 
 	public Usuario() {
+	}
+
+	public Usuario (DTOUsuario dtoUsuario){
+
+		this.idPersona = dtoUsuario.getIdPersona();
+		this.email = dtoUsuario.getEmail();
+		this.nombre = dtoUsuario.getNombre();
+		this.apellido = dtoUsuario.getApellido();
+		this.nickname = dtoUsuario.getNickname();
+		this.celular = dtoUsuario.getCelular();
+		this.direccion = dtoUsuario.getNickname();
+		this.contactos = new ArrayList<>();
+		this.medallas = new ArrayList<>();
+		this.notificaciones = new ArrayList<>();
+		this.eventos = new ArrayList<>();
+		this.ubicaciones = new ArrayList<>();
+		this.configuracion = new Configuracion();
 	}
 
 	public List<Notificacion> getNotificaciones() {

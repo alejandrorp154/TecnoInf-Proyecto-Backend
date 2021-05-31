@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Configuracion implements Serializable
@@ -28,7 +30,24 @@ public class Configuracion implements Serializable
 	private boolean bajaEvento;
 	private boolean modificacionEvento;
 	
+	@OneToOne
+    @JoinColumn(name = "idPersona")
+	private Usuario usuario;
+
 	public Configuracion() {
+		this.altaPublicacion = true;
+		this.altaContacto = true;
+		this.reaccionPublicacion = true;
+		this.comentarPublicacion = true;
+		this.altaEvento = true;
+		this.invitacionUsuario = true;
+		this.salirEvento = true;
+		this.recuperarContrasenia = true;
+		this.bloquearUsuario = true;
+		this.desbloquearUsuario = true;
+		this.chatUsuario = true;
+		this.bajaEvento = true;
+		this.modificacionEvento = true;
 	}
 
 	public int getIdConfiguracion() {
@@ -141,5 +160,13 @@ public class Configuracion implements Serializable
 
 	public void setModificacionEvento(boolean modificacionEvento) {
 		this.modificacionEvento = modificacionEvento;
+	}
+	
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 }
