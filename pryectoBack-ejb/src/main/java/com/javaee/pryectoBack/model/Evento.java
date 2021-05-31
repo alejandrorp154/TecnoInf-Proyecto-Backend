@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import com.javaee.pryectoBack.datatypes.DTOEvento;
+
 @Entity
 public class Evento implements Serializable
 {
@@ -26,11 +28,20 @@ public class Evento implements Serializable
 	private estados estado;
 	@ManyToMany
 	private List<Usuario> usuarios = new ArrayList<>();
-	private Chat chat;
+	private String idChat;
 	@OneToMany(mappedBy = "evento")
 	private List<Publicacion> publicaciones = new ArrayList<>();
 	
 	public Evento() {
+	}
+	
+	public Evento(DTOEvento dtoEvento) {
+		this.ubicacion = dtoEvento.getUbicacion();
+		this.descripcion = dtoEvento.getDescripcion();
+		this.fechaInicio = dtoEvento.getFechaInicio();
+		this.fechaFin = dtoEvento.getFechaFin();
+		this.estado = dtoEvento.getEstado();
+		
 	}
 
 	public int getIdEvento() {
@@ -89,12 +100,12 @@ public class Evento implements Serializable
 		this.usuarios = usuarios;
 	}
 
-	public Chat getChat() {
-		return chat;
+	public String getIdChat() {
+		return idChat;
 	}
 
-	public void setChat(Chat chat) {
-		this.chat = chat;
+	public void setIdChat(String chat) {
+		this.idChat = chat;
 	}
 
 	public List<Publicacion> getPublicaciones() {

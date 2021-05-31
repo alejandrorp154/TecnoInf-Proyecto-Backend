@@ -11,78 +11,57 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 @Entity
-public class Usuario extends Persona implements Serializable
-{
+public class Usuario extends Persona implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	private String nickname;
 	private String celular;
 	private String direccion;
-	
-	@ManyToMany(cascade=CascadeType.ALL)
-	@Column(name="contacto")
-	private List<Usuario> contactos = new ArrayList<>();	
+
+	@ManyToMany(cascade = CascadeType.ALL)
+	@Column(name = "contacto")
+	private List<Usuario> contactos = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "usuario")
 	private List<Medalla> medallas = new ArrayList<>();
-	
+
 	@ManyToMany(mappedBy = "usuarios")
 	private List<Notificacion> notificaciones = new ArrayList<>();
-	
+
 	@ManyToMany(mappedBy = "usuarios")
 	private List<Evento> eventos = new ArrayList<>();
-	
-	@ManyToMany(mappedBy = "usuarios")
-	private List<Chat> chats = new ArrayList<>();
-	
+
 	@OneToMany(mappedBy = "usuario")
 	private List<Ubicacion> ubicaciones = new ArrayList<>();
-	
+
 	private Configuracion configuracion;
-	
-	public Usuario()
-	{
+
+	public Usuario() {
 	}
 
 	public List<Notificacion> getNotificaciones() {
 		return notificaciones;
 	}
 
-
 	public void setNotificaciones(List<Notificacion> notificaciones) {
 		this.notificaciones = notificaciones;
 	}
-
 
 	public List<Evento> getEventos() {
 		return eventos;
 	}
 
-
 	public void setEventos(List<Evento> eventos) {
 		this.eventos = eventos;
 	}
-
-
-	public List<Chat> getChats() {
-		return chats;
-	}
-
-
-	public void setChats(List<Chat> chats) {
-		this.chats = chats;
-	}
-
 
 	public List<Ubicacion> getUbicaciones() {
 		return ubicaciones;
 	}
 
-
 	public void setUbicaciones(List<Ubicacion> ubicaciones) {
 		this.ubicaciones = ubicaciones;
 	}
-
 
 	public List<Medalla> getMedallas() {
 		return medallas;

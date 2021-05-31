@@ -15,9 +15,8 @@ public class ControladorEvento implements ControladorEventoLocal, ControladorEve
 	private ControladorEventoDALocal controladorEventoDA;
 	
 	@Override
-	public boolean crearEvento(DTOEvento dtoEvento) {
-		// TODO Auto-generated method stub
-		return false;
+	public DTOEvento crearEvento(DTOEvento dtoEvento) {
+		return controladorEventoDA.crearEvento(dtoEvento);
 	}
 
 	@Override
