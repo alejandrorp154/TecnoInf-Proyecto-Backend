@@ -28,7 +28,8 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	public boolean registrarUsuario(DTOUsuario dtoUsuario) {
 		try{
 			Usuario user = new Usuario(dtoUsuario);
-			manager.persist(user);
+			user.getConfiguracion().setUsuario(user);
+			manager.merge(user);
 			return true;
 		}catch (Exception exception) {
 			return false;

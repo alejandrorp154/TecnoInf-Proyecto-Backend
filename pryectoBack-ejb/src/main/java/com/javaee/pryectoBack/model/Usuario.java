@@ -9,8 +9,10 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Usuario extends Persona implements Serializable
@@ -43,6 +45,8 @@ public class Usuario extends Persona implements Serializable
 	@OneToMany(mappedBy = "usuario")
 	private List<Ubicacion> ubicaciones = new ArrayList<>();
 	
+	@OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL,
+    fetch = FetchType.LAZY, optional = false)
 	private Configuracion configuracion;
 	
 	public Usuario()
