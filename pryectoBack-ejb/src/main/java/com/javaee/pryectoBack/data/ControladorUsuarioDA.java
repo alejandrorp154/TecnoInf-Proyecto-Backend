@@ -76,6 +76,7 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 					user.setEstaBloqueado(true);
 				}
 				quedoBloqueado = true;
+				manager.persist(user);
 			} else {
 				quedoBloqueado = false;
 			}

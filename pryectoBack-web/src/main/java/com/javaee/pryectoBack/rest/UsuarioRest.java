@@ -2,10 +2,7 @@ package com.javaee.pryectoBack.rest;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -123,7 +120,8 @@ public class UsuarioRest
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation( value = "Se bloquea al Usuario", notes = "")
-	public Response bloquearUsuario(String idPersona) {
+	@Path("/{idPersona}")
+	public Response bloquearUsuario(@PathParam("idPersona") String idPersona) {
 		Response.ResponseBuilder builder = null;
 		try{
 			boolean fueBloqueado = controladorUsuario.bloquearUsuario(idPersona);
