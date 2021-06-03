@@ -91,7 +91,7 @@ public class UsuarioRest
 		Response.ResponseBuilder builder = null;
 
 		try{
-			boolean registrado = controladorLocal.registrarUsuario(dtoUsuario);
+			boolean registrado = controladorUsuario.registrarUsuario(dtoUsuario);
 			if (registrado){
 				builder = Response.ok();
 			}
