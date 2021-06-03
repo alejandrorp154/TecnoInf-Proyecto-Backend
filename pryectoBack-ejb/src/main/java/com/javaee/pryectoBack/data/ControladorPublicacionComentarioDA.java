@@ -57,18 +57,21 @@ public class ControladorPublicacionComentarioDA
 	@Override
 	public DTOPublicacion altaPublicacion(DTOPublicacion dtoPublicacion) {
 		try {
+			DTOPublicacion dtoPubli = new DTOPublicacion();
 			Publicacion publicacion = new Publicacion(dtoPublicacion);
 			Usuario usuario = manager.find(Usuario.class, dtoPublicacion.getPerfil().getUsuario().getIdPersona());
-			publicacion.getPerfil().setUsuario(usuario);
-			manager.persist(publicacion);
-			Tipo tipo = new Tipo();
-			tipo.setTipo(publicacion.getTipo().getTipo());
-			tipo.setIdPublicacion(publicacion.getIdPublicacion());
-			publicacion.setTipo(tipo);
-			manager.merge(tipo);
-			DTOUsuario dtoUsuario = new DTOUsuario(usuario);
-			puntoUsuario.getPuntosUsuario("AltaPublicacion", dtoUsuario, manager);
-			DTOPublicacion dtoPubli = new DTOPublicacion(publicacion);
+			if (usuario != null) {
+				publicacion.getPerfil().setUsuario(usuario);
+				manager.persist(publicacion);
+				Tipo tipo = new Tipo();
+				tipo.setTipo(publicacion.getTipo().getTipo());
+				tipo.setIdPublicacion(publicacion.getIdPublicacion());
+				publicacion.setTipo(tipo);
+				manager.merge(tipo);
+				DTOUsuario dtoUsuario = new DTOUsuario(usuario);
+				puntoUsuario.getPuntosUsuario("AltaPublicacion", dtoUsuario, manager);
+				dtoPubli = new DTOPublicacion(publicacion);
+			}
 			return dtoPubli;
 		} catch (Exception exception) {
 			return new DTOPublicacion();

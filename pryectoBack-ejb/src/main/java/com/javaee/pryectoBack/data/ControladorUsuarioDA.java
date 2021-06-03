@@ -1,14 +1,17 @@
 package com.javaee.pryectoBack.data;
 
+import java.util.Date;
+
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
-import com.javaee.pryectoBack.model.Medalla;
 import com.javaee.pryectoBack.model.PerfilUsuario;
+import com.javaee.pryectoBack.model.Persona;
 import com.javaee.pryectoBack.model.Usuario;
+import com.javaee.pryectoBack.model.UsuarioContacto;
 
 @Singleton
 public class ControladorUsuarioDA implements ControladorUsuarioDALocal, ControladorUsuarioDARemote {
@@ -49,8 +52,21 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 
 	@Override
 	public boolean agregarContacto(String idPersona, String idPersona2) {
-		// TODO Auto-generated method stub
-		return false;
+		try{
+			Persona user1 = manager.find(Usuario.class, idPersona);
+			Persona user2 = manager.find(Usuario.class, idPersona2);
+			if (user1 != null && user2 != null) {
+				UsuarioContacto usuarioContacto = new UsuarioContacto();
+				usuarioContacto.setIdPersona(idPersona);
+				usuarioContacto.setContactoIdPersona(idPersona2);
+				usuarioContacto.setFechaContactos(new Date());
+				manager.persist(usuarioContacto);
+				return true;
+			}
+			return false;
+		}catch (Exception exception) {
+			return false;
+		}
 	}
 
 	@Override

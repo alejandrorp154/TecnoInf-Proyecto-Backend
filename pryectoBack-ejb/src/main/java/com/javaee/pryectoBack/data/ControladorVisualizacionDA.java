@@ -1,5 +1,6 @@
 package com.javaee.pryectoBack.data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Singleton;
@@ -47,8 +48,27 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 
 	@Override
 	public List<DTOUsuario> obtenerSugerenciaAmigos(String idPersona, int offset, int size) {
-		// TODO Auto-generated method stub
-		return null;
+		List<DTOUsuario> dtoUsuario = new ArrayList<>();
+		try {
+			List<DTOUsuario> dtoUsuario1 = this.buscarAmigosDeAmigos(idPersona, offset, size);
+			for (DTOUsuario dtoUsu : dtoUsuario1) {
+				dtoUsuario.add(dtoUsu);
+			}
+
+			List<DTOUsuario> dtoUsuario2 = this.buscarAmigosSegunIntereses(idPersona, offset, size);
+			for (DTOUsuario dtoUsu : dtoUsuario2) {
+				dtoUsuario.add(dtoUsu);
+			}
+
+			List<DTOUsuario> dtoUsuario3 = this.buscarAmigosSegunUbicacion(idPersona, offset, size);
+			for (DTOUsuario dtoUsu : dtoUsuario3) {
+				dtoUsuario.add(dtoUsu);
+			}
+
+			return dtoUsuario;
+		} catch (Exception exception) {
+			return dtoUsuario;
+		}
 	}
 
 	@Override

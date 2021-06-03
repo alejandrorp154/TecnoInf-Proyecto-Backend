@@ -39,6 +39,7 @@
 	  	<class>com.javaee.pryectoBack.model.Ubicacion</class>
 	  	<class>com.javaee.pryectoBack.model.Usuario</class>
 	  	<class>com.javaee.pryectoBack.model.Configuracion</class>
+	  	<class>com.javaee.pryectoBack.model.UsuarioContacto</class>
       
 		<properties>
 	         <property name="hibernate.hbm2ddl.auto" value="update" />

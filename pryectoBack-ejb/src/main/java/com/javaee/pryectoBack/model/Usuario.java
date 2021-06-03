@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
@@ -21,10 +20,6 @@ public class Usuario extends Persona implements Serializable {
 	private String nickname;
 	private String celular;
 	private String direccion;
-
-	@ManyToMany(cascade = CascadeType.ALL)
-	@Column(name = "contacto")
-	private List<Usuario> contactos = new ArrayList<>();
 
 	@OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL,
     fetch = FetchType.LAZY, optional = false)
@@ -60,7 +55,6 @@ public class Usuario extends Persona implements Serializable {
 		this.celular = dtoUsuario.getCelular();
 		this.direccion = dtoUsuario.getNickname();
 		this.medalla = new Medalla(dtoUsuario.getMedalla());
-		this.contactos = new ArrayList<>();
 		this.notificaciones = new ArrayList<>();
 		this.eventos = new ArrayList<>();
 		this.ubicaciones = new ArrayList<>();
@@ -89,14 +83,6 @@ public class Usuario extends Persona implements Serializable {
 
 	public void setUbicaciones(List<Ubicacion> ubicaciones) {
 		this.ubicaciones = ubicaciones;
-	}
-
-	public List<Usuario> getContactos() {
-		return contactos;
-	}
-
-	public void setContactos(List<Usuario> contactos) {
-		this.contactos = contactos;
 	}
 
 	public String getNickname() {

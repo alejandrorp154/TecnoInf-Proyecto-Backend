@@ -5,6 +5,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -111,9 +112,25 @@ public class UsuarioRest
 		return false;
 	}
 
-	public boolean agregarContacto(String idPersona, String idPersona2) {
-		// TODO Auto-generated method stub
-		return false;
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Agregar un nuevo contacto a la lista de contactos de un", notes = "")
+	@Path("/agregarContacto/{idPersona}/{idPersona2}")
+	public Response agregarContacto(@PathParam("idPersona") String idPersona, @PathParam("idPersona2") String idPersona2) {
+		Response.ResponseBuilder builder = null;
+		try {
+			boolean agregado = controladorLocal.agregarContacto(idPersona, idPersona2);
+			if (agregado) {
+				builder = Response.ok();
+			}
+
+		} catch (Exception e) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
 	}
 
 	public boolean bajaContacto(String idPersona, String idPersona2) {

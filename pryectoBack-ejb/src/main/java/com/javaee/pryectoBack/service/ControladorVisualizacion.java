@@ -31,8 +31,7 @@ public class ControladorVisualizacion implements ControladorVisualizacionLocal, 
 
 	@Override
 	public List<DTOUsuario> obtenerSugerenciaAmigos(String idPersona, int offset, int size) {
-		// TODO Auto-generated method stub
-		return null;
+		return controladorVisualizacionDA.obtenerSugerenciaAmigos(idPersona, offset, size);
 	}
 
 	@Override
