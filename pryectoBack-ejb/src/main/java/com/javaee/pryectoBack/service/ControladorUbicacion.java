@@ -17,15 +17,13 @@ public class ControladorUbicacion implements ControladorUbicacionLocal, Controla
 	private ControladorUbicacionDALocal controladorUbicacionDA;
 	
 	@Override
-	public boolean alta(DTOUbicacion dtoUbicacion) {
-		// TODO Auto-generated method stub
-		return false;
+	public DTOUbicacion alta(DTOUbicacion dtoUbicacion) {
+		return controladorUbicacionDA.alta(dtoUbicacion);
 	}
 
 	@Override
 	public List<DTOUbicacion> obtenerUbicaciones(String idPersona) {
-		// TODO Auto-generated method stub
-		return null;
+		return controladorUbicacionDA.obtenerUbicaciones(idPersona);
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package com.javaee.pryectoBack.rest;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -81,9 +82,27 @@ public class UsuarioRest
 		return false;
 	}
 
-	public boolean registrarUsuario(DTOUsuario dtoUsuario) {
-		// TODO Auto-generated method stub
-		return false;
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Registra un nuevo Usuario en la aplicación", notes = "")
+	public Response registrarUsuario(DTOUsuario dtoUsuario) {
+
+		Response.ResponseBuilder builder = null;
+
+		try{
+			boolean registrado = controladorLocal.registrarUsuario(dtoUsuario);
+			if (registrado){
+				builder = Response.ok();
+			}
+
+		}catch (Exception e) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+
+		return builder.build();
 	}
 
 	public boolean subirFoto(String idPersona, DTOMultimedia dtoMultimedia) {

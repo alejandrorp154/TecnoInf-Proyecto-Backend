@@ -2,6 +2,8 @@ package com.javaee.pryectoBack.datatypes;
 
 import java.io.Serializable;
 
+import com.javaee.pryectoBack.model.Usuario;
+
 public class DTOUsuario implements Serializable
 {
 	private static final long serialVersionUID = 1L;
@@ -11,9 +13,10 @@ public class DTOUsuario implements Serializable
 	private String apellido;
 	private String nickname;
 	private String direccion;
+	private String celular;
 	
 	public DTOUsuario(String idPersona, String email, String nombre, String apellido, String nickname,
-			String direccion) {
+			String direccion, String celular) {
 		super();
 		this.idPersona = idPersona;
 		this.email = email;
@@ -21,11 +24,21 @@ public class DTOUsuario implements Serializable
 		this.apellido = apellido;
 		this.nickname = nickname;
 		this.direccion = direccion;
+		this.celular = celular;
 	}
 	
 	public DTOUsuario() {
 	}
 	
+	public DTOUsuario(Usuario usuario) {
+		this.idPersona = usuario.getIdPersona();
+		this.email = usuario.getEmail();
+		this.nombre = usuario.getNombre();
+		this.apellido = usuario.getApellido();
+		this.nickname = usuario.getNickname();
+		this.direccion = usuario.getDireccion();
+	}
+
 	public String getIdPersona() {
 		return idPersona;
 	}
@@ -72,5 +85,13 @@ public class DTOUsuario implements Serializable
 	
 	public void setDireccion(String direccion) {
 		this.direccion = direccion;
+	}
+
+	public String getCelular() {
+		return celular;
+	}
+
+	public void setCelular(String celular) {
+		this.celular = celular;
 	}
 }

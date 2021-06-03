@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+
+import com.javaee.pryectoBack.datatypes.DTOTipo;
 
 @Entity
 public class Tipo implements Serializable
@@ -18,6 +18,11 @@ public class Tipo implements Serializable
 	public Tipo() {
 	}
 	
+	public Tipo(DTOTipo dtoTipo) {
+		this.idPublicacion = dtoTipo.getIdPublicacion();
+		this.tipo = dtoTipo.getTipo();
+	}
+
 	public int getIdPublicacion() {
 		return idPublicacion;
 	}

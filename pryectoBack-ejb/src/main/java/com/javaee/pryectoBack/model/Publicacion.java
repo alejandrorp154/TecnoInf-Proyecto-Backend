@@ -26,8 +26,6 @@ public class Publicacion implements Serializable
 	private String nombre;
 	private Date fecha;
 	private Tipo tipo;
-	@OneToMany(mappedBy = "publicacion")
-	private List<ComentarioReaccion> comentarioReacciones = new ArrayList<>();
 	@ManyToOne
 	private Evento evento;
 	@ManyToOne
@@ -40,7 +38,7 @@ public class Publicacion implements Serializable
 		this.idPublicacion = newPublicacion.getIdPublicacion();
 		this.contenido = newPublicacion.getContenido();
 		this.fecha = newPublicacion.getFecha();
-		this.tipo = newPublicacion.getTipo();
+		this.tipo = new Tipo(newPublicacion.getTipo());
 		this.extension = newPublicacion.getExtension();
 		this.nombre = newPublicacion.getNombre();
 	}
@@ -68,12 +66,6 @@ public class Publicacion implements Serializable
 	}
 	public void setTipo(Tipo tipo) {
 		this.tipo = tipo;
-	}
-	public List<ComentarioReaccion> getComentarioReacciones() {
-		return comentarioReacciones;
-	}
-	public void setComentarioReacciones(List<ComentarioReaccion> comentarioReacciones) {
-		this.comentarioReacciones = comentarioReacciones;
 	}
 	public Evento getEvento() {
 		return evento;

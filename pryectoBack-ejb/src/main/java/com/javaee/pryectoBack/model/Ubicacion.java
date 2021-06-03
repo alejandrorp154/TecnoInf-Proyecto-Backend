@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.javaee.pryectoBack.datatypes.DTOUbicacion;
+
 @Entity
 public class Ubicacion implements Serializable
 {
@@ -24,6 +26,13 @@ public class Ubicacion implements Serializable
 	private Usuario usuario;
 	
 	public Ubicacion() {
+	}
+	
+	public Ubicacion(DTOUbicacion dtoUbicacion) {
+		this.longitud = dtoUbicacion.getLongitud();
+		this.latitud = dtoUbicacion.getLatitud();
+		this.fecha = dtoUbicacion.getFecha();
+		this.descripcion = dtoUbicacion.getDescripcion();
 	}
 	
 	public int getIdUbicacion() {
@@ -61,5 +70,8 @@ public class Ubicacion implements Serializable
 	}
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
+	}
+	public DTOUbicacion getDTO() {
+		return new DTOUbicacion(this.idUbicacion,this.longitud,this.latitud,this.fecha,this.descripcion);
 	}
 }

@@ -26,8 +26,14 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 
 	@Override
 	public boolean registrarUsuario(DTOUsuario dtoUsuario) {
-		// TODO Auto-generated method stub
-		return false;
+		try{
+			Usuario user = new Usuario(dtoUsuario);
+			user.getConfiguracion().setUsuario(user);
+			manager.merge(user);
+			return true;
+		}catch (Exception exception) {
+			return false;
+		}
 	}
 
 	@Override
