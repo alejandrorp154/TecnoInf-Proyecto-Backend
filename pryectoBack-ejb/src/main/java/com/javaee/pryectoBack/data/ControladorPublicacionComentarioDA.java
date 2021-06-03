@@ -12,9 +12,13 @@ import org.bson.types.ObjectId;
 import com.javaee.pryectoBack.datatypes.DTOComentario;
 import com.javaee.pryectoBack.datatypes.DTOPublicacion;
 import com.javaee.pryectoBack.datatypes.DTOReaccion;
+import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.model.Publicacion;
 import com.javaee.pryectoBack.model.Tipo;
+import com.javaee.pryectoBack.model.Usuario;
 import com.javaee.pryectoBack.util.MongoDBConnector;
+import com.javaee.pryectoBack.util.PuntosUsuario;
+
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.*;
 import com.mongodb.client.MongoCollection;
@@ -25,8 +29,11 @@ public class ControladorPublicacionComentarioDA
 
 	@PersistenceContext(unitName = "primary")
 	private EntityManager manager;
+	
+	private PuntosUsuario puntoUsuario;
 
 	public ControladorPublicacionComentarioDA() {
+		puntoUsuario = new PuntosUsuario();
 	}
 
 	@Override
@@ -51,12 +58,16 @@ public class ControladorPublicacionComentarioDA
 	public DTOPublicacion altaPublicacion(DTOPublicacion dtoPublicacion) {
 		try {
 			Publicacion publicacion = new Publicacion(dtoPublicacion);
+			Usuario usuario = manager.find(Usuario.class, dtoPublicacion.getPerfil().getUsuario().getIdPersona());
+			publicacion.getPerfil().setUsuario(usuario);
 			manager.persist(publicacion);
 			Tipo tipo = new Tipo();
 			tipo.setTipo(publicacion.getTipo().getTipo());
 			tipo.setIdPublicacion(publicacion.getIdPublicacion());
 			publicacion.setTipo(tipo);
 			manager.merge(tipo);
+			DTOUsuario dtoUsuario = new DTOUsuario(usuario);
+			puntoUsuario.getPuntosUsuario("AltaPublicacion", dtoUsuario, manager);
 			DTOPublicacion dtoPubli = new DTOPublicacion(publicacion);
 			return dtoPubli;
 		} catch (Exception exception) {

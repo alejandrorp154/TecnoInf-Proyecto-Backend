@@ -1,16 +1,13 @@
 package com.javaee.pryectoBack.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 
 import com.javaee.pryectoBack.datatypes.DTOPublicacion;
 
@@ -41,6 +38,7 @@ public class Publicacion implements Serializable
 		this.tipo = new Tipo(newPublicacion.getTipo());
 		this.extension = newPublicacion.getExtension();
 		this.nombre = newPublicacion.getNombre();
+		this.perfil = new PerfilUsuario(newPublicacion.getPerfil());
 	}
 
 	public int getIdPublicacion() {

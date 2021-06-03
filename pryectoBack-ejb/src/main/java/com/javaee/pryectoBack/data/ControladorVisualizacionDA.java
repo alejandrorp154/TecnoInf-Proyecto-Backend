@@ -36,7 +36,7 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 		DTOPerfilUsuario dtoPerfil = new DTOPerfilUsuario();
 		Persona usuario = manager.find(Usuario.class, idPersona);
 		if (usuario != null) {
-			PerfilUsuario perfil = manager.find(PerfilUsuario.class, usuario);
+			PerfilUsuario perfil = manager.find(PerfilUsuario.class, idPersona);
 			if (perfil != null)
 			{
 				dtoPerfil = new DTOPerfilUsuario(perfil);

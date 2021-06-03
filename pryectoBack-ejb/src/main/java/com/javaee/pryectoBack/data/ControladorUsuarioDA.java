@@ -6,6 +6,8 @@ import javax.persistence.PersistenceContext;
 
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
+import com.javaee.pryectoBack.model.Medalla;
+import com.javaee.pryectoBack.model.PerfilUsuario;
 import com.javaee.pryectoBack.model.Usuario;
 
 @Singleton
@@ -28,7 +30,10 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	public boolean registrarUsuario(DTOUsuario dtoUsuario) {
 		try{
 			Usuario user = new Usuario(dtoUsuario);
+			user.getMedalla().setUsuario(user);
 			user.getConfiguracion().setUsuario(user);
+			PerfilUsuario perfil = new PerfilUsuario(user);
+			user.setPerfil(perfil);
 			manager.merge(user);
 			return true;
 		}catch (Exception exception) {
@@ -83,5 +88,4 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 		// TODO Auto-generated method stub
 		return false;
 	}
-
 }
