@@ -6,7 +6,16 @@ import javax.persistence.PersistenceContext;
 
 import com.javaee.pryectoBack.datatypes.DTOEvento;
 import com.javaee.pryectoBack.model.Evento;
+import com.javaee.pryectoBack.model.Publicacion;
 import com.javaee.pryectoBack.model.Usuario;
+import com.javaee.pryectoBack.util.MongoDBConnector;
+import com.mongodb.client.MongoCollection;
+import org.bson.Document;
+import org.bson.types.ObjectId;
+
+import java.util.List;
+
+import static com.mongodb.client.model.Filters.eq;
 
 @Singleton
 public class ControladorEventoDA implements ControladorEventoDALocal, ControladorEventoDARemote {
@@ -21,6 +30,7 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 			manager.persist(evento);
 			Usuario owner = manager.find(Usuario.class, dtoEvento.getIdPersona());
 			owner.getEventos().add(evento);
+			owner.getCreadorDeEventos().add(evento);
 			manager.merge(owner);	
 			dtoEvento.setIdEvento(evento.getIdEvento());
 			//Falta Agregar logica de puntos
@@ -31,8 +41,47 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 	}
 
 	@Override
-	public boolean eliminarEvento(int idEvento) {
-		// TODO Auto-generated method stub
+	public boolean eliminarEvento(int idEvento, String idPersona) {
+
+		Evento event = manager.find(Evento.class, idEvento);
+
+		if (event != null) {
+			Usuario ownerEvent = event.getUsuarioCrador();
+
+			if ( ownerEvent!= null && ownerEvent.getIdPersona().equals(idPersona)) {
+				List<Publicacion> pubs = event.getPublicaciones();
+				if (!pubs.isEmpty()) {
+					for (Publicacion publicacion : pubs) {
+
+						MongoDBConnector mongoConnector = new MongoDBConnector();
+						MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosYReacciones");
+
+						String docu = String.valueOf(publicacion.getIdPublicacion());
+						collection.deleteOne(eq("idPublicacion", new ObjectId(docu)));
+
+						//publicacion.getPerfil().quitarPublicacion(publicacion);
+						publicacion.getPerfil().getPublicaciones().remove(publicacion);
+						/**
+						 *
+						 * Me parece que esta operacion tiraría error
+						 * por que no existiría la publicacion, ya se borró
+						 * en la entidad PerfilUsuario
+						 *
+						 *	manager.remove(publicacion);
+						 */
+					}
+				}
+				/**
+				 *		TALVEZ NO ES NECESARIO ELIMINAR EN TODOS ESTOS LUGARES?
+				 *		SE BORRA CON CON EL ULTIMO manager.remove(event) en linea 82;
+				 */
+				ownerEvent.getCreadorDeEventos().remove(event);
+				ownerEvent.getEventos().remove(event);
+
+				manager.remove(event);
+				return true;
+			}
+		}
 		return false;
 	}
 

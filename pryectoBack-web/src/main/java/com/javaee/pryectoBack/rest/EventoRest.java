@@ -5,10 +5,7 @@ import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -52,9 +49,26 @@ public class EventoRest {
         return builder.build();
 	}
 
-	public boolean eliminarEvento(int idEvento) {
-		// TODO Auto-generated method stub
-		return false;
+	@DELETE
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/{idEvento}")
+	@ApiOperation(value = "Eliminar evento", notes = "Se le pasa el id del evento y el Id del Usuario logueado")
+	public Response eliminarEvento(@PathParam("idEvento") int idEvento, String idPersona) {
+
+		Response.ResponseBuilder builder = null;
+
+		try{
+			boolean eventoEliminado = controladorEvento.eliminarEvento(idEvento, idPersona);
+			if (eventoEliminado){
+				builder = Response.ok();
+			}
+		}catch (Exception e){
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return  builder.build();
 	}
 
 	public boolean modificar(DTOEvento dtoEvento) {

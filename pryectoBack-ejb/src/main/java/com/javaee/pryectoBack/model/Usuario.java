@@ -42,6 +42,9 @@ public class Usuario extends Persona implements Serializable {
     fetch = FetchType.LAZY, optional = false)
 	private Configuracion configuracion;
 
+	@OneToMany(mappedBy = "usuario")
+	private List<Evento> creadorDeEventos = new ArrayList<>();
+
 	public Usuario() {
 	}
 
@@ -60,6 +63,7 @@ public class Usuario extends Persona implements Serializable {
 		this.eventos = new ArrayList<>();
 		this.ubicaciones = new ArrayList<>();
 		this.configuracion = new Configuracion();
+		this.creadorDeEventos = new ArrayList<>();
 	}
 
 	public List<Notificacion> getNotificaciones() {
@@ -133,4 +137,13 @@ public class Usuario extends Persona implements Serializable {
 	public void setConfiguracion(Configuracion configuracion) {
 		this.configuracion = configuracion;
 	}
+
+	public List<Evento> getCreadorDeEventos() {
+		return creadorDeEventos;
+	}
+
+	public void setCreadorDeEventos(List<Evento> creadorDeEventos) {
+		this.creadorDeEventos = creadorDeEventos;
+	}
+
 }

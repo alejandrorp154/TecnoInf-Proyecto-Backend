@@ -20,9 +20,8 @@ public class ControladorEvento implements ControladorEventoLocal, ControladorEve
 	}
 
 	@Override
-	public boolean eliminarEvento(int idEvento) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean eliminarEvento(int idEvento, String idPersona) {
+		return controladorEventoDA.eliminarEvento(idEvento, idPersona);
 	}
 
 	@Override
