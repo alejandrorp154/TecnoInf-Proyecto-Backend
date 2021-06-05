@@ -31,7 +31,7 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 			Usuario owner = manager.find(Usuario.class, dtoEvento.getIdPersona());
 			owner.getEventos().add(evento);
 			owner.getCreadorDeEventos().add(evento);
-			evento.setUsuarioCrador(owner);
+			evento.setUsuarioCreador(owner);
 			manager.merge(owner);	
 			dtoEvento.setIdEvento(evento.getIdEvento());
 			//Falta Agregar logica de puntos
@@ -47,7 +47,7 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 		Evento event = manager.find(Evento.class, idEvento);
 
 		if (event != null) {
-			Usuario ownerEvent = event.getUsuarioCrador();
+			Usuario ownerEvent = event.getUsuarioCreador();
 
 			if ( ownerEvent!= null && ownerEvent.getIdPersona().equals(idPersona)) {
 				List<Publicacion> pubs = event.getPublicaciones();
