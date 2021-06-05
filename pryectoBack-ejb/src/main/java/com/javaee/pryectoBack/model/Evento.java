@@ -114,11 +114,13 @@ public class Evento implements Serializable
 		this.publicaciones = publicaciones;
 	}
 
-	public Usuario getUsuarioCrador() {
-		return usuarioCrador;
+	public Usuario getUsuarioCreador() {
+		return usuarioCreador;
 	}
 
-	public void setUsuarioCrador(Usuario usuarioCrador) {
-		this.usuarioCrador = usuarioCrador;
+	public void setUsuarioCreador(Usuario usuarioCreador) {
+		this.usuarioCreador = usuarioCreador;
 	}
+
+	
 }
