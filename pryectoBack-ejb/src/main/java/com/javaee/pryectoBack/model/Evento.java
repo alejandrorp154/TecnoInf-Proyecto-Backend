@@ -28,7 +28,7 @@ public class Evento implements Serializable
 	private List<Publicacion> publicaciones = new ArrayList<>();
 
 	@ManyToOne
-	private Usuario usuarioCrador;
+	private Usuario usuarioCreador;
 	
 	public Evento() {
 	}
