@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import com.javaee.pryectoBack.data.ControladorUsuarioDALocal;
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
+import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
 
 @Stateless
 @Remote(ControladorUsuarioRemote.class)
@@ -64,13 +65,17 @@ public class ControladorUsuario implements ControladorUsuarioRemote, Controlador
 
 	@Override
 	public boolean bloquearUsuario(String idPersona) {
-		// TODO Auto-generated method stub
-		return false;
+		return controladorDA.bloquearUsuario(idPersona);
 	}
 
 	@Override
 	public boolean desbloquearUsuario(String idPersona) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public DTOUsuarioInicioSesion datosUsuarioInicioSesion(String idPersona){
+		return controladorDA.datosUsuarioInicioSesion(idPersona);
 	}
 }
