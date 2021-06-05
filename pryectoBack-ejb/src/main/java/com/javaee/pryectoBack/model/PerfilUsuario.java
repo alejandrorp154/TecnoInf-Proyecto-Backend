@@ -4,23 +4,26 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 @Entity
 public class PerfilUsuario implements Serializable
 {
 	private static final long serialVersionUID = 1L;	
 	@Id
+	@OneToOne
+	@JoinColumn(name = "idPersona")
 	private Usuario usuario;
+
 	@ManyToMany(mappedBy = "perfiles")
 	private List<Interes> intereses = new ArrayList<>();
 	@OneToMany(mappedBy = "perfil")
 	private List<Multimedia> galerias = new ArrayList<>();
 	@OneToMany(mappedBy = "perfil")
 	private List<Publicacion> publicaciones = new ArrayList<>();
+
+	private String imagenPerfil;
+
 	
 	public PerfilUsuario() {
 	}
@@ -57,4 +60,11 @@ public class PerfilUsuario implements Serializable
 		this.publicaciones = publicaciones;
 	}
 
+	public String getImagenPerfil() {
+		return imagenPerfil;
+	}
+
+	public void setImagenPerfil(String imagenPerfil) {
+		this.imagenPerfil = imagenPerfil;
+	}
 }
