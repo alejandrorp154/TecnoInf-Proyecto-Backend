@@ -22,8 +22,10 @@ public class Usuario extends Persona implements Serializable {
 	private String celular;
 	private String direccion;
 
-	@ManyToMany(cascade = CascadeType.ALL)
-	@Column(name = "contacto")
+	private boolean estaBloqueado;
+	
+	@ManyToMany(cascade=CascadeType.ALL)
+	@Column(name="contacto")
 	private List<Usuario> contactos = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "usuario")
@@ -132,5 +134,13 @@ public class Usuario extends Persona implements Serializable {
 
 	public void setConfiguracion(Configuracion configuracion) {
 		this.configuracion = configuracion;
+	}
+
+	public boolean getEstaBloqueado() {
+		return estaBloqueado;
+	}
+
+	public void setEstaBloqueado(boolean estaBloqueado) {
+		this.estaBloqueado = estaBloqueado;
 	}
 }

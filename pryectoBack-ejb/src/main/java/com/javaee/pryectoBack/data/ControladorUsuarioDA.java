@@ -74,14 +74,26 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 
 	@Override
 	public boolean bloquearUsuario(String idPersona) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean quedoBloqueado;
+			Usuario user = manager.find(Usuario.class, idPersona);
+			if(user != null) {
+				boolean estaBloqueado = user.getEstaBloqueado();
+				if (!estaBloqueado) {
+					user.setEstaBloqueado(true);
+				}
+				quedoBloqueado = true;
+				manager.persist(user);
+			} else {
+				quedoBloqueado = false;
+			}
+		return quedoBloqueado;
 	}
 
 	@Override
 	public boolean desbloquearUsuario(String idPersona) {
 		// TODO Auto-generated method stub
 		return false;
+
 	}
 
 }

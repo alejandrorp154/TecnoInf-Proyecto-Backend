@@ -2,10 +2,8 @@ package com.javaee.pryectoBack.rest;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -14,6 +12,7 @@ import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.service.ControladorUsuarioLocal;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.jaxrs.PATCH;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,8 +23,8 @@ import java.util.Map;
 public class UsuarioRest
 {
 	@EJB
-	private ControladorUsuarioLocal controladorLocal;
-	
+	private ControladorUsuarioLocal controladorUsuario;
+
 //	@GET
 //    @Produces(MediaType.APPLICATION_JSON)
 //    @ApiOperation(value = "Devuelve una lista de objetos usuarios",
@@ -92,7 +91,7 @@ public class UsuarioRest
 		Response.ResponseBuilder builder = null;
 
 		try{
-			boolean registrado = controladorLocal.registrarUsuario(dtoUsuario);
+			boolean registrado = controladorUsuario.registrarUsuario(dtoUsuario);
 			if (registrado){
 				builder = Response.ok();
 			}
@@ -136,9 +135,24 @@ public class UsuarioRest
 		return false;
 	}
 
-	public boolean bloquearUsuario(String idPersona) {
-		// TODO Auto-generated method stub
-		return false;
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation( value = "Se bloquea al Usuario", notes = "")
+	@Path("/{idPersona}")
+	public Response bloquearUsuario(@PathParam("idPersona") String idPersona) {
+		Response.ResponseBuilder builder = null;
+		try{
+			boolean fueBloqueado = controladorUsuario.bloquearUsuario(idPersona);
+			if (fueBloqueado){
+				builder = Response.ok();
+			}
+		}catch (Exception e) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
 	}
 
 	public boolean desbloquearUsuario(String idPersona) {
