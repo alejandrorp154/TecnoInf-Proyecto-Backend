@@ -146,6 +146,9 @@ public class Usuario extends Persona implements Serializable {
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bb36a3e20037ed92b2a7ed8b46c320101281ad3f
 	public List<Evento> getCreadorDeEventos() {
 		return creadorDeEventos;
 	}
@@ -154,7 +157,10 @@ public class Usuario extends Persona implements Serializable {
 		this.creadorDeEventos = creadorDeEventos;
 	}
 
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> bb36a3e20037ed92b2a7ed8b46c320101281ad3f
 	public PerfilUsuario getPerfil() {
 		return perfil;
 	}
@@ -168,6 +174,10 @@ public class Usuario extends Persona implements Serializable {
 
 	public void setEstaBloqueado(boolean estaBloqueado) {
 		this.estaBloqueado = estaBloqueado;
+<<<<<<< HEAD
 	}
 >>>>>>> desarrollo
+=======
+  }
+>>>>>>> bb36a3e20037ed92b2a7ed8b46c320101281ad3f
 }
