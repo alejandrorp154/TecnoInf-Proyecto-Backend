@@ -2,15 +2,13 @@ package com.javaee.pryectoBack.rest;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
+import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
 import com.javaee.pryectoBack.service.ControladorUsuarioLocal;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -24,7 +22,7 @@ import java.util.Map;
 public class UsuarioRest
 {
 	@EJB
-	private ControladorUsuarioLocal controladorLocal;
+	private ControladorUsuarioLocal controladorUsuario;
 	
 //	@GET
 //    @Produces(MediaType.APPLICATION_JSON)
@@ -82,6 +80,30 @@ public class UsuarioRest
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/{idUsuario}")
+	public Response inicioSesionDatos(@PathParam("idUsuario") String idPersona){
+
+		Response.ResponseBuilder builder = null;
+
+		try{
+			DTOUsuarioInicioSesion dtUserInicioSesion = controladorUsuario.datosUsuarioInicioSesion(idPersona);
+
+			if (dtUserInicioSesion != null) {
+				builder = Response.ok();
+			}
+		}catch (Exception e) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+
+		return builder.build();
+	}
+
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)

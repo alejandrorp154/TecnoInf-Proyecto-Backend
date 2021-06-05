@@ -6,6 +6,7 @@ import javax.persistence.PersistenceContext;
 
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
+import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
 import com.javaee.pryectoBack.model.Usuario;
 
 @Singleton
@@ -84,4 +85,15 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 		return false;
 	}
 
+	@Override
+	public DTOUsuarioInicioSesion datosUsuarioInicioSesion(String idPersona){
+
+		Usuario user = manager.find(Usuario.class, idPersona);
+
+		if (user != null){
+			String imagen = user.getPerfil().getImagenPerfil();
+			return new DTOUsuarioInicioSesion(user.getIdPersona(), user.getEmail(), user.getNombre(), user.getApellido(), user.getNickname(), imagen);
+		}
+		return null;
+	}
 }

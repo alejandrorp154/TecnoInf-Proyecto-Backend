@@ -42,6 +42,10 @@ public class Usuario extends Persona implements Serializable {
     fetch = FetchType.LAZY, optional = false)
 	private Configuracion configuracion;
 
+	@OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL,
+			fetch = FetchType.LAZY, optional = false)
+	private PerfilUsuario perfil;
+
 	public Usuario() {
 	}
 
@@ -132,5 +136,13 @@ public class Usuario extends Persona implements Serializable {
 
 	public void setConfiguracion(Configuracion configuracion) {
 		this.configuracion = configuracion;
+	}
+
+	public PerfilUsuario getPerfil() {
+		return perfil;
+	}
+
+	public void setPerfil(PerfilUsuario perfil) {
+		this.perfil = perfil;
 	}
 }
