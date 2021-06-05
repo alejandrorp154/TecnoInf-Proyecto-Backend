@@ -65,8 +65,7 @@ public class ControladorUsuario implements ControladorUsuarioRemote, Controlador
 
 	@Override
 	public boolean bloquearUsuario(String idPersona) {
-		// TODO Auto-generated method stub
-		return false;
+		return controladorDA.bloquearUsuario(idPersona);
 	}
 
 	@Override
