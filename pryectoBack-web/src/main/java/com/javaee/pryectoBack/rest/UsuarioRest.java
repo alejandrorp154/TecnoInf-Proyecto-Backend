@@ -144,9 +144,27 @@ public class UsuarioRest
 		return false;
 	}
 
-	public boolean eliminarCuenta(String idPersona) {
-		// TODO Auto-generated method stub
-		return false;
+	@DELETE
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation( value = "Se elimina al Usuario", notes = "")
+	@Path("/{idPersona}")
+	public Response eliminarCuenta(String idPersona) {
+
+		Response.ResponseBuilder builder = null;
+
+		try{
+			boolean seElimino = controladorUsuario.eliminarCuenta(idPersona);
+			if (seElimino){
+				builder = Response.ok();
+			}
+
+		}catch (Exception e){
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
 	}
 
 	public boolean bajaUsuarioAdmin(String idPersona) {

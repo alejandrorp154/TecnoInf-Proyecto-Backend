@@ -47,8 +47,7 @@ public class ControladorUsuario implements ControladorUsuarioRemote, Controlador
 
 	@Override
 	public boolean eliminarCuenta(String idPersona) {
-		// TODO Auto-generated method stub
-		return false;
+		return controladorDA.eliminarCuenta(idPersona);
 	}
 
 	@Override
