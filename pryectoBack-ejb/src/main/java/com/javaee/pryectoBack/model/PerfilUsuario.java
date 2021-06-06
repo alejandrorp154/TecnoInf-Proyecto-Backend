@@ -11,6 +11,9 @@ public class PerfilUsuario implements Serializable
 {
 	private static final long serialVersionUID = 1L;	
 	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private int idPerfil;
+
 	@OneToOne
 	@JoinColumn(name = "idPersona")
 	private Usuario usuario;
@@ -26,6 +29,14 @@ public class PerfilUsuario implements Serializable
 
 	
 	public PerfilUsuario() {
+	}
+
+	public int getIdPerfil() {
+		return idPerfil;
+	}
+
+	public void setIdPerfil(int idPerfil) {
+		this.idPerfil = idPerfil;
 	}
 
 	public Usuario getUsuario() {
