@@ -46,7 +46,7 @@ public class DTOPublicacion implements Serializable
 		this.contenido = publicacion.getContenido();
 		this.fecha = publicacion.getFecha();
 		this.tipo = new DTOTipo(publicacion.getTipo());
-//		this.idPersona = publicacion.getPerfil().getUsuario().getIdPersona();
+		this.idPersona = publicacion.getPerfil().getUsuario().getIdPersona();
 		this.extension = publicacion.getExtension();
 		this.nombre = publicacion.getNombre();
 	}
