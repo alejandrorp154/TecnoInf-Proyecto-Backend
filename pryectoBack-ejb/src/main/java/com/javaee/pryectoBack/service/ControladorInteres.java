@@ -43,8 +43,7 @@ public class ControladorInteres implements ControladorInteresLocal, ControladorI
 
 	@Override
 	public boolean suscribe(String idPersona, int idInteres) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.controladorInteresDA.suscribe(idPersona, idInteres);
 	}
 
 	@Override

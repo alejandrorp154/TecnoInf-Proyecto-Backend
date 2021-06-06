@@ -14,6 +14,7 @@ public class DTOUsuario implements Serializable
 	private String nickname;
 	private String direccion;
 	private String celular;
+	private DTOMedalla medalla;
 	
 	public DTOUsuario(String idPersona, String email, String nombre, String apellido, String nickname,
 			String direccion, String celular) {
@@ -37,6 +38,7 @@ public class DTOUsuario implements Serializable
 		this.apellido = usuario.getApellido();
 		this.nickname = usuario.getNickname();
 		this.direccion = usuario.getDireccion();
+		this.medalla = new DTOMedalla(usuario.getMedalla());
 	}
 
 	public String getIdPersona() {
@@ -93,5 +95,13 @@ public class DTOUsuario implements Serializable
 
 	public void setCelular(String celular) {
 		this.celular = celular;
+	}
+
+	public DTOMedalla getMedalla() {
+		return medalla;
+	}
+
+	public void setMedalla(DTOMedalla medalla) {
+		this.medalla = medalla;
 	}
 }

@@ -20,8 +20,7 @@ public interface ControladorVisualizacionDALocal {
 	List<DTOUsuario> obtenerCantidadUsuariosEnElSistema(int offset, int size);
 	List<DTOUsuario> obtenerCantidadUsuariosSegunPais(String pais, int offset, int size);
 	List<DTOUsuarioMedalla> obtenerCantidadUsuariosSegunMedallas(int idMedalla, int offset, int size);
-	List<DTOUsuario> buscarAmigosSegunUbicacion(String idPersona, int offset, int size);
-	List<DTOUsuario> buscarAmigosContactosCelular(String idPersona, int offset, int size);
-	List<DTOUsuario> buscarAmigosDeAmigos(String idPersona, int offset, int size);
-	List<DTOUsuario> buscarAmigosSegunIntereses(String idPersona, int offset, int size);
+	List<DTOUsuario> buscarAmigosSegunUbicacion(List<DTOUsuario> dtoUsuarios, String idPersona);
+	List<DTOUsuario> buscarAmigosDeAmigos(String idPersona);
+	List<DTOUsuario> buscarAmigosSegunIntereses(List<DTOUsuario> dtoUsuarios, String idPersona);
 }
