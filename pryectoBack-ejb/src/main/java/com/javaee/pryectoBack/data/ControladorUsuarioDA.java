@@ -10,6 +10,7 @@ import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.model.PerfilUsuario;
 import com.javaee.pryectoBack.model.Persona;
+import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
 import com.javaee.pryectoBack.model.Usuario;
 import com.javaee.pryectoBack.model.UsuarioContacto;
 
@@ -95,13 +96,37 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 
 	@Override
 	public boolean bloquearUsuario(String idPersona) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean quedoBloqueado;
+			Usuario user = manager.find(Usuario.class, idPersona);
+			if(user != null) {
+				boolean estaBloqueado = user.getEstaBloqueado();
+				if (!estaBloqueado) {
+					user.setEstaBloqueado(true);
+				}
+				quedoBloqueado = true;
+				manager.persist(user);
+			} else {
+				quedoBloqueado = false;
+			}
+		return quedoBloqueado;
 	}
 
 	@Override
 	public boolean desbloquearUsuario(String idPersona) {
 		// TODO Auto-generated method stub
 		return false;
+
+	}
+
+	@Override
+	public DTOUsuarioInicioSesion datosUsuarioInicioSesion(String idPersona){
+
+		Usuario user = manager.find(Usuario.class, idPersona);
+
+		if (user != null){
+			String imagen = user.getPerfil().getImagenPerfil();
+			return new DTOUsuarioInicioSesion(user.getIdPersona(), user.getEmail(), user.getNombre(), user.getApellido(), user.getNickname(), imagen);
+		}
+		return null;
 	}
 }

@@ -33,6 +33,9 @@ public class PerfilUsuario implements Serializable
 	
 	@OneToMany(mappedBy = "perfil")
 	private List<Publicacion> publicaciones = new ArrayList<>();
+
+	private String imagenPerfil;
+
 	
 	public PerfilUsuario() {
 	}
@@ -82,6 +85,7 @@ public class PerfilUsuario implements Serializable
 		this.publicaciones = publicaciones;
 	}
 
+
 	public String getIdPersona() {
 		return idPersona;
 	}
@@ -90,4 +94,11 @@ public class PerfilUsuario implements Serializable
 		this.idPersona = idPersona;
 	}
 
+	public String getImagenPerfil() {
+		return imagenPerfil;
+	}
+
+	public void setImagenPerfil(String imagenPerfil) {
+		this.imagenPerfil = imagenPerfil;
+	}
 }

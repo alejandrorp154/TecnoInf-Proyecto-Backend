@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
@@ -24,6 +25,9 @@ public class Usuario extends Persona implements Serializable {
 	@OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL,
     fetch = FetchType.LAZY, optional = false)
 	private Medalla medalla;
+
+	@Column(name = "estaBloqueado", nullable = false, columnDefinition = "boolean default false")
+	private boolean estaBloqueado;
 
 	@ManyToMany(mappedBy = "usuarios")
 	private List<Notificacion> notificaciones = new ArrayList<>();
@@ -131,5 +135,13 @@ public class Usuario extends Persona implements Serializable {
 
 	public void setMedalla(Medalla medalla) {
 		this.medalla = medalla;
+	}
+	
+	public boolean getEstaBloqueado() {
+		return estaBloqueado;
+	}
+
+	public void setEstaBloqueado(boolean estaBloqueado) {
+		this.estaBloqueado = estaBloqueado;
 	}
 }
