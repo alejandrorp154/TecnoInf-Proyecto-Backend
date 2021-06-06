@@ -10,6 +10,7 @@ import javax.persistence.TypedQuery;
 
 import com.javaee.pryectoBack.datatypes.DTOInteres;
 import com.javaee.pryectoBack.model.Interes;
+import com.javaee.pryectoBack.model.PerfilUsuario;
 
 @Singleton
 public class ControladorInteresDA implements ControladorInteresDALocal, ControladorInteresDARemote {
@@ -98,8 +99,25 @@ public class ControladorInteresDA implements ControladorInteresDALocal, Controla
 
 	@Override
 	public boolean suscribe(String idPersona, int idInteres) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean res = false;
+		try {
+			PerfilUsuario perfil = manager.find(PerfilUsuario.class, idPersona);
+			if (perfil != null) {
+				Interes interes = manager.find(Interes.class, idInteres);
+				if (interes != null) {
+					List<Interes> listAux = perfil.getIntereses();
+					listAux.add(interes);
+					perfil.setIntereses(listAux);
+					List<PerfilUsuario> perfilesAux = interes.getPerfiles();
+					perfilesAux.add(perfil);
+					manager.merge(perfil);
+					res = true;
+				}
+			}
+			return res;
+		} catch (Exception exception) {
+			return res;
+		}
 	}
 
 	@Override
