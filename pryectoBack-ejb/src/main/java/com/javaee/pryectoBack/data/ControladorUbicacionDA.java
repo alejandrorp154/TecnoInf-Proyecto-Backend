@@ -23,6 +23,8 @@ public class ControladorUbicacionDA implements ControladorUbicacionDALocal, Cont
 			Usuario owner = manager.find(Usuario.class, dtoUbicacion.getIdPersona());
 			if (owner != null) {
 				Ubicacion ubicacion = new Ubicacion(dtoUbicacion);
+				Usuario user = manager.find(Usuario.class, dtoUbicacion.getIdPersona());
+				ubicacion.setUsuario(user);
 				manager.persist(ubicacion);
 				owner.getUbicaciones().add(ubicacion);
 				manager.merge(owner);

@@ -38,6 +38,7 @@ public class Publicacion implements Serializable
 		this.tipo = new Tipo(newPublicacion.getTipo());
 		this.extension = newPublicacion.getExtension();
 		this.nombre = newPublicacion.getNombre();
+		this.perfil = new PerfilUsuario(newPublicacion.getPerfil());
 	}
 
 	public int getIdPublicacion() {
