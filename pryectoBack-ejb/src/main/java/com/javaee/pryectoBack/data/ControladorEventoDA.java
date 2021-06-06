@@ -46,37 +46,33 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 
 		Evento event = manager.find(Evento.class, idEvento);
 
-		try {
-			if (event != null) {
-				Usuario ownerEvent = event.getUsuarioCreador();
+		if (event != null) {
+			Usuario ownerEvent = event.getUsuarioCreador();
 
-				///Se comenta parte del control de la siguiente línea por que en el String
-				///	de idPersona vienen mas cosas, hay que ver como solucionarle
+			///Se comenta parte del control de la siguiente línea por que en el String
+			///	de idPersona vienen mas cosas, hay que ver como solucionarle
 
-				if ( ownerEvent!= null /*&& ownerEvent.getIdPersona().equals(idPersona)*/) {
-					List<Publicacion> pubs = event.getPublicaciones();
-					if (!pubs.isEmpty()) {
-						for (Publicacion publicacion : pubs) {
+			if ( ownerEvent!= null /*&& ownerEvent.getIdPersona().equals(idPersona)*/) {
+				List<Publicacion> pubs = event.getPublicaciones();
+				if (!pubs.isEmpty()) {
+					for (Publicacion publicacion : pubs) {
 
-							MongoDBConnector mongoConnector = new MongoDBConnector();
-							MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosYReacciones");
+						MongoDBConnector mongoConnector = new MongoDBConnector();
+						MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosYReacciones");
 
-							String docu = String.valueOf(publicacion.getIdPublicacion());
-							collection.deleteOne(eq("idPublicacion", new ObjectId(docu)));
+						String docu = String.valueOf(publicacion.getIdPublicacion());
+						collection.deleteOne(eq("idPublicacion", new ObjectId(docu)));
 
-							//publicacion.getPerfil().quitarPublicacion(publicacion);
-							publicacion.getPerfil().getPublicaciones().remove(publicacion);
-						}
+						//publicacion.getPerfil().quitarPublicacion(publicacion);
+						publicacion.getPerfil().getPublicaciones().remove(publicacion);
 					}
-					ownerEvent.getCreadorDeEventos().remove(event);
-					ownerEvent.getEventos().remove(event);
-
-					manager.remove(event);
-					return true;
 				}
+				ownerEvent.getCreadorDeEventos().remove(event);
+				ownerEvent.getEventos().remove(event);
+
+				manager.remove(event);
+				return true;
 			}
-		} catch ( Exception exception) {
-			return false;
 		}
 		return false;
 	}
