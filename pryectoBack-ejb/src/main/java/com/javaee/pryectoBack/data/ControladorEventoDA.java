@@ -50,10 +50,7 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 			if (event != null) {
 				Usuario ownerEvent = event.getUsuarioCreador();
 
-				///Se comenta parte del control de la siguiente línea por que en el String
-				///	de idPersona vienen mas cosas, hay que ver como solucionarle
-
-				if ( ownerEvent!= null /*&& ownerEvent.getIdPersona().equals(idPersona)*/) {
+				if ( ownerEvent!= null && ownerEvent.getIdPersona().equals(idPersona)) {
 					List<Publicacion> pubs = event.getPublicaciones();
 					if (!pubs.isEmpty()) {
 						for (Publicacion publicacion : pubs) {

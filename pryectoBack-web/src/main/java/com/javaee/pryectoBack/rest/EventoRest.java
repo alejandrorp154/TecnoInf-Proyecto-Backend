@@ -52,9 +52,9 @@ public class EventoRest {
 	@DELETE
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/{idEvento}")
+	@Path("/{idEvento}/{idPersona}")
 	@ApiOperation(value = "Eliminar evento", notes = "Se le pasa el id del evento y el Id del Usuario logueado")
-	public Response eliminarEvento(@PathParam("idEvento") int idEvento, String idPersona) {
+	public Response eliminarEvento(@PathParam("idEvento") int idEvento, @PathParam("idPersona") String idPersona) {
 
 		Response.ResponseBuilder builder = null;
 
