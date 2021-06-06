@@ -44,9 +44,10 @@ public class Usuario extends Persona implements Serializable {
 
 	@OneToMany(mappedBy = "usuarioCreador")
 	private List<Evento> creadorDeEventos = new ArrayList<>();
-	
+
+
 	@OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL,
-    fetch = FetchType.LAZY, optional = false)
+			fetch = FetchType.LAZY, optional = false)
 	private PerfilUsuario perfil;
 
 
@@ -150,7 +151,7 @@ public class Usuario extends Persona implements Serializable {
 	public void setMedalla(Medalla medalla) {
 		this.medalla = medalla;
 	}
-	
+
 	public boolean getEstaBloqueado() {
 		return estaBloqueado;
 	}

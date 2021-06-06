@@ -17,20 +17,20 @@ import com.javaee.pryectoBack.datatypes.DTOPerfilUsuario;
 public class PerfilUsuario implements Serializable
 {
 	private static final long serialVersionUID = 1L;	
-	
+
 	@Id
 	private String idPersona;
 
 	@OneToOne
     @JoinColumn(name = "idPersona")
 	private Usuario usuario;
-	
+
 	@ManyToMany(mappedBy = "perfiles")
 	private List<Interes> intereses = new ArrayList<>();
-	
+
 	@OneToMany(mappedBy = "perfil")
 	private List<Multimedia> galerias = new ArrayList<>();
-	
+
 	@OneToMany(mappedBy = "perfil")
 	private List<Publicacion> publicaciones = new ArrayList<>();
 
@@ -51,7 +51,9 @@ public class PerfilUsuario implements Serializable
 	public PerfilUsuario(DTOPerfilUsuario perfil) {
 		this.idPersona = perfil.getUsuario().getIdPersona();
 		this.usuario = new Usuario(perfil.getUsuario());
+
 	}
+
 
 	public Usuario getUsuario() {
 		return usuario;
