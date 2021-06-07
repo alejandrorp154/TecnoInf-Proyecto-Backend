@@ -145,7 +145,7 @@ public class UsuarioRest
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Agregar un nuevo contacto a la lista de contactos de un", notes = "")
+	@ApiOperation(value = "Agregar un nuevo contacto a la lista de contactos con estado pendiente", notes = "")
 	@Path("/agregarContacto/{idPersona}/{idPersona2}")
 	public Response agregarContacto(@PathParam("idPersona") String idPersona, @PathParam("idPersona2") String idPersona2) {
 		Response.ResponseBuilder builder = null;
@@ -166,7 +166,11 @@ public class UsuarioRest
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Agregar un nuevo contacto a la lista de contactos de un", notes = "")
+	@ApiOperation(value = "Respuesta a una solicitud anterior que se encuentra como pendiente", notes = "Se le pasa el objeto DTOUsuarioContacto como sigue:  {" + 
+			"			+ \"    \"idPersona\": \"1\", " + 
+			"			+ \"    \"contactoIdPersona\": \"2\", " + 
+			"			+ \"    \"estadoContactos\": \"aceptado o cancelada o borrado o pendiente\" " +
+			"			+ \"}")
 	@Path("/respuestaContacto")
 	public Response respuestaContacto(DTOUsuarioContacto dtoUsuarioContacto) {
 		Response.ResponseBuilder builder = null;
@@ -187,7 +191,7 @@ public class UsuarioRest
 	
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Remueve el interes segun id", notes = "el que corresponda al id de interes")
+	@ApiOperation(value = "Remueve el un contacto de la lista de contactos segun idPersona y contactoIdPersona", notes = "el que corresponda a los ids")
 	@Path("/bajaContacto/{idPersona}/{idPersona2}")
 	public Response bajaContacto(@PathParam("idPersona") String idPersona, @PathParam("idPersona2") String idPersona2) {
 		Response.ResponseBuilder builder = null;
