@@ -96,10 +96,9 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 			if (user != null) {
 
 				//Medallas
-				List<Medalla> medallas = user.getMedallas();
-				for (Medalla med : medallas) {
-					manager.remove(med);
-				}
+				Medalla medalla = user.getMedalla();
+				manager.remove(medalla);
+				
 
 				//Configuracion
 				manager.remove(user.getConfiguracion());
