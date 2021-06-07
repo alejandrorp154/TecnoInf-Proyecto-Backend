@@ -16,15 +16,19 @@ import com.javaee.pryectoBack.model.Usuario;
 import com.javaee.pryectoBack.model.UsuarioContacto;
 import com.javaee.pryectoBack.model.UsuarioContactoId;
 import com.javaee.pryectoBack.model.estadosContactos;
+import com.javaee.pryectoBack.util.PuntosUsuario;
 
 @Singleton
 public class ControladorUsuarioDA implements ControladorUsuarioDALocal, ControladorUsuarioDARemote {
 
 	@PersistenceContext(unitName = "primary")
 	private EntityManager manager;
+
+	private PuntosUsuario puntoUsuario;
 	
 	public ControladorUsuarioDA()
 	{
+		puntoUsuario = new PuntosUsuario();
 	}
 
 	@Override
@@ -163,6 +167,12 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 				manager.merge(usuarioContacto1);
 				manager.merge(usuarioContacto2);
 				dtoUsuarioContactoRes = new DTOUsuarioContacto(usuarioContacto1);
+				Usuario usuario1 = manager.find(Usuario.class, usuarioContacto1.getIdPersona());
+				DTOUsuario dtoUsuario1 = new DTOUsuario(usuario1);
+				Usuario usuario2 = manager.find(Usuario.class, usuarioContacto1.getContactoIdPersona());
+				DTOUsuario dtoUsuario2 = new DTOUsuario(usuario2);
+				puntoUsuario.getPuntosUsuario("AltaContacto", dtoUsuario1, manager);
+				puntoUsuario.getPuntosUsuario("AltaContacto", dtoUsuario2, manager);
 			}
 		} catch (Exception exception) {
 			return dtoUsuarioContactoRes;
