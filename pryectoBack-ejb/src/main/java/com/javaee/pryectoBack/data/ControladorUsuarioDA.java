@@ -8,11 +8,14 @@ import javax.persistence.PersistenceContext;
 
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
+import com.javaee.pryectoBack.datatypes.DTOUsuarioContacto;
 import com.javaee.pryectoBack.model.PerfilUsuario;
 import com.javaee.pryectoBack.model.Persona;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
 import com.javaee.pryectoBack.model.Usuario;
 import com.javaee.pryectoBack.model.UsuarioContacto;
+import com.javaee.pryectoBack.model.UsuarioContactoId;
+import com.javaee.pryectoBack.model.estadosContactos;
 
 @Singleton
 public class ControladorUsuarioDA implements ControladorUsuarioDALocal, ControladorUsuarioDARemote {
@@ -61,7 +64,14 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 				usuarioContacto.setIdPersona(idPersona);
 				usuarioContacto.setContactoIdPersona(idPersona2);
 				usuarioContacto.setFechaContactos(new Date());
+				usuarioContacto.setEstadoContactos(estadosContactos.pendiente);
+				UsuarioContacto usuarioContacto2 = new UsuarioContacto();
+				usuarioContacto2.setIdPersona(idPersona2);
+				usuarioContacto2.setContactoIdPersona(idPersona);
+				usuarioContacto2.setFechaContactos(new Date());
+				usuarioContacto2.setEstadoContactos(estadosContactos.pendiente);
 				manager.persist(usuarioContacto);
+				manager.persist(usuarioContacto2);
 				return true;
 			}
 			return false;
@@ -72,8 +82,19 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 
 	@Override
 	public boolean bajaContacto(String idPersona, String idPersona2) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean res = false;
+		try {
+			UsuarioContacto usuarioContacto1 = manager.find(UsuarioContacto.class, new UsuarioContactoId(idPersona, idPersona2));
+			UsuarioContacto usuarioContacto2 = manager.find(UsuarioContacto.class, new UsuarioContactoId(idPersona2, idPersona));
+			if (usuarioContacto1 != null && usuarioContacto2 != null) {
+				manager.remove(usuarioContacto1);
+				manager.remove(usuarioContacto2);
+				res = true;
+			}
+		} catch (Exception exception) {
+			return res;
+		}
+		return res;
 	}
 
 	@Override
@@ -128,5 +149,24 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 			return new DTOUsuarioInicioSesion(user.getIdPersona(), user.getEmail(), user.getNombre(), user.getApellido(), user.getNickname(), imagen);
 		}
 		return null;
+	}
+
+	@Override
+	public DTOUsuarioContacto respuestaContacto(DTOUsuarioContacto dtoUsuarioContacto) {
+		DTOUsuarioContacto dtoUsuarioContactoRes = new DTOUsuarioContacto();
+		try {
+			UsuarioContacto usuarioContacto1 = manager.find(UsuarioContacto.class, new UsuarioContactoId(dtoUsuarioContacto.getIdPersona(), dtoUsuarioContacto.getContactoIdPersona()));
+			UsuarioContacto usuarioContacto2 = manager.find(UsuarioContacto.class, new UsuarioContactoId(dtoUsuarioContacto.getContactoIdPersona(), dtoUsuarioContacto.getIdPersona()));
+			if (usuarioContacto1 != null && usuarioContacto2 != null) {
+				usuarioContacto1.setEstadoContactos(dtoUsuarioContacto.getEstadoContactos());
+				usuarioContacto2.setEstadoContactos(dtoUsuarioContacto.getEstadoContactos());
+				manager.merge(usuarioContacto1);
+				manager.merge(usuarioContacto2);
+				dtoUsuarioContactoRes = new DTOUsuarioContacto(usuarioContacto1);
+			}
+		} catch (Exception exception) {
+			return dtoUsuarioContactoRes;
+		}
+		return dtoUsuarioContactoRes;
 	}
 }

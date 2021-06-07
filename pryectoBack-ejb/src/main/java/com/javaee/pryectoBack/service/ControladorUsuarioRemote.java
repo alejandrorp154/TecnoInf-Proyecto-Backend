@@ -4,6 +4,7 @@ import javax.ejb.Remote;
 
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
+import com.javaee.pryectoBack.datatypes.DTOUsuarioContacto;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
 
 @Remote
@@ -19,4 +20,5 @@ public interface ControladorUsuarioRemote {
 	boolean bloquearUsuario(String idPersona);
 	boolean desbloquearUsuario(String idPersona);
 	DTOUsuarioInicioSesion datosUsuarioInicioSesion(String idPersona);
+	DTOUsuarioContacto respuestaContacto(DTOUsuarioContacto dtoUsuarioContacto);
 }
