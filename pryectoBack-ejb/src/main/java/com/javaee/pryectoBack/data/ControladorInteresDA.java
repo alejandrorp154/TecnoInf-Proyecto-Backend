@@ -87,8 +87,8 @@ public class ControladorInteresDA implements ControladorInteresDALocal, Controla
 				manager.persist(interes);
 			}
 			else {
-				dtoInteresSaved.setInteres(dtoInteres.getInteres());
-				interes = new Interes(dtoInteresSaved);
+				interes = manager.find(Interes.class, dtoInteresSaved.getIdInteres());
+				interes.setInteres(dtoInteres.getInteres());
 				manager.merge(interes);
 			}
 			return getById(interes.getIdInteres());
