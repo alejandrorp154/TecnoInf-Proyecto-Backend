@@ -35,8 +35,7 @@ public class ControladorUsuario implements ControladorUsuarioRemote, Controlador
 
 	@Override
 	public boolean agregarContacto(String idPersona, String idPersona2) {
-		// TODO Auto-generated method stub
-		return false;
+		return controladorDA.agregarContacto(idPersona, idPersona2);
 	}
 
 	@Override

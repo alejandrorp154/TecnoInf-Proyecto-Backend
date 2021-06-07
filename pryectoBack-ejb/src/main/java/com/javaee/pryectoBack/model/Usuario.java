@@ -22,14 +22,12 @@ public class Usuario extends Persona implements Serializable {
 	private String celular;
 	private String direccion;
 
+	@OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL,
+    fetch = FetchType.LAZY, optional = false)
+	private Medalla medalla;
+
+	@Column(name = "estaBloqueado", nullable = false, columnDefinition = "boolean default false")
 	private boolean estaBloqueado;
-	
-	@ManyToMany(cascade=CascadeType.ALL)
-	@Column(name="contacto")
-	private List<Usuario> contactos = new ArrayList<>();
-	
-	@OneToMany(mappedBy = "usuario")
-	private List<Medalla> medallas = new ArrayList<>();
 
 	@ManyToMany(mappedBy = "usuarios")
 	private List<Notificacion> notificaciones = new ArrayList<>();
@@ -44,19 +42,20 @@ public class Usuario extends Persona implements Serializable {
     fetch = FetchType.LAZY, optional = false)
 	private Configuracion configuracion;
 
+
 	@OneToMany(mappedBy = "usuarioCreador")
 	private List<Evento> creadorDeEventos = new ArrayList<>();
-	
+		
 	@OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL,
-	fetch = FetchType.LAZY, optional = false)
+    fetch = FetchType.LAZY, optional = false)
 	private PerfilUsuario perfil;
 
 
 	public Usuario() {
 	}
 
-	public Usuario (DTOUsuario dtoUsuario){
-
+	public Usuario (DTOUsuario dtoUsuario)
+	{
 		this.idPersona = dtoUsuario.getIdPersona();
 		this.email = dtoUsuario.getEmail();
 		this.nombre = dtoUsuario.getNombre();
@@ -64,8 +63,7 @@ public class Usuario extends Persona implements Serializable {
 		this.nickname = dtoUsuario.getNickname();
 		this.celular = dtoUsuario.getCelular();
 		this.direccion = dtoUsuario.getNickname();
-		this.contactos = new ArrayList<>();
-		this.medallas = new ArrayList<>();
+		this.medalla = new Medalla(dtoUsuario.getMedalla());
 		this.notificaciones = new ArrayList<>();
 		this.eventos = new ArrayList<>();
 		this.ubicaciones = new ArrayList<>();
@@ -96,22 +94,6 @@ public class Usuario extends Persona implements Serializable {
 
 	public void setUbicaciones(List<Ubicacion> ubicaciones) {
 		this.ubicaciones = ubicaciones;
-	}
-
-	public List<Medalla> getMedallas() {
-		return medallas;
-	}
-
-	public void setMedallas(List<Medalla> medallas) {
-		this.medallas = medallas;
-	}
-
-	public List<Usuario> getContactos() {
-		return contactos;
-	}
-
-	public void setContactos(List<Usuario> contactos) {
-		this.contactos = contactos;
 	}
 
 	public String getNickname() {
@@ -160,7 +142,16 @@ public class Usuario extends Persona implements Serializable {
 
 	public void setPerfil(PerfilUsuario perfil) {
 		this.perfil = perfil;
-  }
+	}
+
+	public Medalla getMedalla() {
+		return medalla;
+	}
+
+	public void setMedalla(Medalla medalla) {
+		this.medalla = medalla;
+	}
+	
 	public boolean getEstaBloqueado() {
 		return estaBloqueado;
 	}

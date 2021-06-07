@@ -4,24 +4,33 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+
+import com.javaee.pryectoBack.datatypes.DTOPerfilUsuario;
 
 @Entity
 public class PerfilUsuario implements Serializable
 {
 	private static final long serialVersionUID = 1L;	
+	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int idPerfil;
-
+	private String idPersona;
+	
 	@OneToOne
-	@JoinColumn(name = "idPersona")
+    @JoinColumn(name = "idPersona")
 	private Usuario usuario;
-
+	
 	@ManyToMany(mappedBy = "perfiles")
 	private List<Interes> intereses = new ArrayList<>();
+	
 	@OneToMany(mappedBy = "perfil")
 	private List<Multimedia> galerias = new ArrayList<>();
+	
 	@OneToMany(mappedBy = "perfil")
 	private List<Publicacion> publicaciones = new ArrayList<>();
 
@@ -31,12 +40,19 @@ public class PerfilUsuario implements Serializable
 	public PerfilUsuario() {
 	}
 
-	public int getIdPerfil() {
-		return idPerfil;
+
+	public PerfilUsuario(Usuario user) {
+		this.idPersona = user.getIdPersona();
+		this.usuario = user;
+		this.intereses = new ArrayList<>();
+		this.galerias = new ArrayList<>();
+		this.publicaciones = new ArrayList<>();
 	}
 
-	public void setIdPerfil(int idPerfil) {
-		this.idPerfil = idPerfil;
+	public PerfilUsuario(DTOPerfilUsuario perfil) {
+		this.idPersona = perfil.getUsuario().getIdPersona();
+		this.usuario = new Usuario(perfil.getUsuario());
+
 	}
 
 	public Usuario getUsuario() {
@@ -69,6 +85,15 @@ public class PerfilUsuario implements Serializable
 
 	public void setPublicaciones(List<Publicacion> publicaciones) {
 		this.publicaciones = publicaciones;
+	}
+
+
+	public String getIdPersona() {
+		return idPersona;
+	}
+
+	public void setIdPersona(String idPersona) {
+		this.idPersona = idPersona;
 	}
 
 	public String getImagenPerfil() {
