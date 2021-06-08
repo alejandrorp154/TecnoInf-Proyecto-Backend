@@ -18,9 +18,8 @@ public class ControladorUsuario implements ControladorUsuarioRemote, Controlador
 	private ControladorUsuarioDALocal controladorDA;
 
 	@Override
-	public boolean editarPerfil(DTOUsuario dtoUsuario) {
-		// TODO Auto-generated method stub
-		return false;
+	public DTOUsuario editarPerfil(DTOUsuario dtoUsuario) {
+		return controladorDA.editarPerfil(dtoUsuario);
 	}
 
 	@Override

@@ -77,10 +77,23 @@ public class VisualizacionRest {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	public List<DTOUsuario> obtenerUsuarios(int offset, int size) {
-		// TODO Auto-generated method stub
-		return null;
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Devuelve el perfil de un usuario", notes = "el que corresponda al id de persona")
+	@Path("/obtenerUsuarios/{offset}/{size}")
+	public Response obtenerUsuarios(@PathParam("offset") int offset, @PathParam("size") int size) {
+		Response.ResponseBuilder builder = null;
+		try {
+			List<DTOUsuario> dtoUsuarios = controladorVisualizacionLocal.obtenerUsuarios(offset, size);
+			builder = Response.ok();
+			builder.entity(dtoUsuarios);
+		} catch(Exception exception) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", exception.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
 	}
 
 	public DTOUsuarioMedalla visualizarProgreso(String idPersona) {

@@ -32,9 +32,24 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	}
 
 	@Override
-	public boolean editarPerfil(DTOUsuario dtoUsuario) {
-		// TODO Auto-generated method stub
-		return false;
+	public DTOUsuario editarPerfil(DTOUsuario dtoUsuario) {
+		DTOUsuario dtoUsuarioRes = new DTOUsuario();
+		try{
+			Usuario usuario = manager.find(Usuario.class, dtoUsuario.getIdPersona());
+			if (usuario != null) {
+				usuario.setNickname(dtoUsuario.getNickname());
+				usuario.setDireccion(dtoUsuario.getDireccion());
+				usuario.setCelular(dtoUsuario.getCelular());
+				usuario.setNombre(dtoUsuario.getNombre());
+				usuario.setApellido(dtoUsuario.getApellido());
+				usuario.setEmail(dtoUsuario.getEmail());
+				manager.merge(usuario);
+				dtoUsuarioRes = new DTOUsuario(usuario);
+			}
+		}catch (Exception exception) {
+			return dtoUsuarioRes;
+		}
+		return dtoUsuarioRes;
 	}
 
 	@Override
