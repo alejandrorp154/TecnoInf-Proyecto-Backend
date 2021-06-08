@@ -42,8 +42,7 @@ public class ControladorVisualizacion implements ControladorVisualizacionLocal, 
 
 	@Override
 	public List<DTOUsuario> obtenerUsuarios(int offset, int size) {
-		// TODO Auto-generated method stub
-		return null;
+		return controladorVisualizacionDA.obtenerUsuarios(offset, size);
 	}
 
 	@Override
