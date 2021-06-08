@@ -8,7 +8,7 @@ import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
 
 @Remote
 public interface ControladorUsuarioDARemote {
-	boolean editarPerfil(DTOUsuario dtoUsuario);
+	DTOUsuario editarPerfil(DTOUsuario dtoUsuario);
 	boolean registrarUsuario(DTOUsuario dtoUsuario);
 	boolean subirFoto(String idPersona, DTOMultimedia dtoMultimedia);
 	boolean agregarContacto(String idPersona, String idPersona2);
