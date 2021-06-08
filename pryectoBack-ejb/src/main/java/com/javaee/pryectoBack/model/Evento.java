@@ -32,6 +32,9 @@ public class Evento implements Serializable
 	@OneToMany(mappedBy = "evento")
 	private List<Publicacion> publicaciones = new ArrayList<>();
 	
+	private String nombre;
+	private String idPersona;
+	
 	public Evento() {
 	}
 	
@@ -41,7 +44,9 @@ public class Evento implements Serializable
 		this.fechaInicio = dtoEvento.getFechaInicio();
 		this.fechaFin = dtoEvento.getFechaFin();
 		this.estado = dtoEvento.getEstado();
-		
+		this.nombre = dtoEvento.getNombre();
+		this.idPersona = dtoEvento.getIdPersona();
+		this.idChat = dtoEvento.getIdChat();
 	}
 
 	public int getIdEvento() {
@@ -114,5 +119,21 @@ public class Evento implements Serializable
 
 	public void setPublicaciones(List<Publicacion> publicaciones) {
 		this.publicaciones = publicaciones;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public String getIdPersona() {
+		return idPersona;
+	}
+
+	public void setIdPersona(String idPersona) {
+		this.idPersona = idPersona;
 	}
 }
