@@ -30,6 +30,9 @@ public class Evento implements Serializable
 	@ManyToOne
 	private Usuario usuarioCreador;
 	
+	private String nombre;
+	private String idPersona;
+
 	public Evento() {
 	}
 	
@@ -39,7 +42,9 @@ public class Evento implements Serializable
 		this.fechaInicio = dtoEvento.getFechaInicio();
 		this.fechaFin = dtoEvento.getFechaFin();
 		this.estado = dtoEvento.getEstado();
-		
+		this.nombre = dtoEvento.getNombre();
+		this.idPersona = dtoEvento.getIdPersona();
+		this.idChat = dtoEvento.getIdChat();
 	}
 
 	public int getIdEvento() {

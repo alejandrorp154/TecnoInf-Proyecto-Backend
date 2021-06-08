@@ -5,7 +5,13 @@ import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -34,13 +40,15 @@ public class EventoRest {
 			+ "    \"fechaFin\": \"2021-02-30\","
 			+ "    \"estado\": \"enCurso\","
 			+ "    \"idPersona\": 1,"
-			+ "    \"idChat\": \"asdasd\""
+			+ "    \"idChat\": \"asdasd\", "
+			+ "    \"nombre\": \"nombreEvento\""
 			+ "}")
 	public Response crearEvento(DTOEvento dtoEvento) {
 		Response.ResponseBuilder builder = null;
 		try {
 			DTOEvento dtoEventoAdded = controladorEvento.crearEvento(dtoEvento);
-	        builder.entity(dtoEventoAdded);           
+			builder = Response.ok();
+	        builder.entity(dtoEventoAdded);
         } catch (Exception e) {
             Map<String, String> responseObj = new HashMap<>();
             responseObj.put("error", e.getMessage());
@@ -71,9 +79,32 @@ public class EventoRest {
 		return  builder.build();
 	}
 
-	public boolean modificar(DTOEvento dtoEvento) {
-		// TODO Auto-generated method stub
-		return false;
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Modifica un evento", notes = "Se le pasa el objeto DTOEvento como sigue: {"
+			+ "    \"idEvento\": \"idEvento\","
+			+ "    \"ubicacion\": \"Ubicacion de prueba\","
+			+ "    \"descripcion\": \"Descripcion de prueba\","
+			+ "    \"fechaInicio\": \"2021-02-20\","
+			+ "    \"fechaFin\": \"2021-02-30\","
+			+ "    \"estado\": \"enCurso\","
+			+ "    \"idPersona\": 1,"
+			+ "    \"idChat\": \"asdasd\", "
+			+ "    \"nombre\": \"nombreEvento\""
+			+ "}")
+	public Response modificar(DTOEvento dtoEvento) {
+		Response.ResponseBuilder builder = null;
+		try {
+			DTOEvento dtoEventoModified = controladorEvento.modificar(dtoEvento);
+			builder = Response.ok();
+	        builder.entity(dtoEventoModified);
+        } catch (Exception e) {
+            Map<String, String> responseObj = new HashMap<>();
+            responseObj.put("error", e.getMessage());
+            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+        }
+        return builder.build();
 	}
 
 	public boolean agregarUsuario(int idEvento, String idPersona) {

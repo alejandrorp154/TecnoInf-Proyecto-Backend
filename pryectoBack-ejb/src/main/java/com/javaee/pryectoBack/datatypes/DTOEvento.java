@@ -3,6 +3,7 @@ package com.javaee.pryectoBack.datatypes;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.javaee.pryectoBack.model.Evento;
 import com.javaee.pryectoBack.model.estados;
 
 public class DTOEvento implements Serializable {
@@ -16,9 +17,10 @@ public class DTOEvento implements Serializable {
 	private int idPublicacion;
 	protected String idPersona;
 	private String idChat;
+	private String nombre;
 
 	public DTOEvento(int idEvento, String ubicacion, String descripcion, Date fechaInicio, Date fechaFin,
-			estados estado, int idPublicacion, String idPersona) {
+			estados estado, int idPublicacion, String idPersona, String nombre) {
 		super();
 		this.idEvento = idEvento;
 		this.ubicacion = ubicacion;
@@ -28,9 +30,21 @@ public class DTOEvento implements Serializable {
 		this.estado = estado;
 		this.idPublicacion = idPublicacion;
 		this.idPersona = idPersona;
+		this.nombre = nombre;
 	}
 
 	public DTOEvento() {
+	}
+
+	public DTOEvento(Evento evento) {
+		this.idEvento = evento.getIdEvento();
+		this.ubicacion = evento.getUbicacion();
+		this.descripcion = evento.getDescripcion();
+		this.fechaInicio = evento.getFechaInicio();
+		this.fechaFin = evento.getFechaFin();
+		this.estado = evento.getEstado();
+		this.idPersona = evento.getIdPersona();
+		this.nombre = evento.getNombre();
 	}
 
 	public int getIdEvento() {
@@ -105,4 +119,11 @@ public class DTOEvento implements Serializable {
 		this.idChat = idChat;
 	}
 
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
 }

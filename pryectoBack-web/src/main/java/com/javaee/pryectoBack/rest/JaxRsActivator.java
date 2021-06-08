@@ -50,5 +50,6 @@ public class JaxRsActivator extends Application {
 	    resources.add(com.javaee.pryectoBack.rest.VisualizacionRest.class);
 		resources.add(com.javaee.pryectoBack.rest.EventoRest.class);
 	    resources.add(com.javaee.pryectoBack.rest.UbicacionRest.class);
+	    resources.add(com.javaee.pryectoBack.rest.EventoRest.class);
 	}
 }

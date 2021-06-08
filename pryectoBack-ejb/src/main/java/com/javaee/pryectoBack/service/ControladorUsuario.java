@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import com.javaee.pryectoBack.data.ControladorUsuarioDALocal;
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
+import com.javaee.pryectoBack.datatypes.DTOUsuarioContacto;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
 
 @Stateless
@@ -17,9 +18,8 @@ public class ControladorUsuario implements ControladorUsuarioRemote, Controlador
 	private ControladorUsuarioDALocal controladorDA;
 
 	@Override
-	public boolean editarPerfil(DTOUsuario dtoUsuario) {
-		// TODO Auto-generated method stub
-		return false;
+	public DTOUsuario editarPerfil(DTOUsuario dtoUsuario) {
+		return controladorDA.editarPerfil(dtoUsuario);
 	}
 
 	@Override
@@ -40,8 +40,7 @@ public class ControladorUsuario implements ControladorUsuarioRemote, Controlador
 
 	@Override
 	public boolean bajaContacto(String idPersona, String idPersona2) {
-		// TODO Auto-generated method stub
-		return false;
+		return controladorDA.bajaContacto(idPersona, idPersona2);
 	}
 
 	@Override
@@ -76,5 +75,10 @@ public class ControladorUsuario implements ControladorUsuarioRemote, Controlador
 	@Override
 	public DTOUsuarioInicioSesion datosUsuarioInicioSesion(String idPersona){
 		return controladorDA.datosUsuarioInicioSesion(idPersona);
+	}
+
+	@Override
+	public DTOUsuarioContacto respuestaContacto(DTOUsuarioContacto dtoUsuarioContacto) {
+		return controladorDA.respuestaContacto(dtoUsuarioContacto);
 	}
 }
