@@ -17,13 +17,9 @@ import com.javaee.pryectoBack.datatypes.DTOPerfilUsuario;
 public class PerfilUsuario implements Serializable
 {
 	private static final long serialVersionUID = 1L;	
-
+	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int idPerfil;
-
 	private String idPersona;
-
 	@OneToOne
     @JoinColumn(name = "idPersona")
 	private Usuario usuario;
@@ -54,15 +50,9 @@ public class PerfilUsuario implements Serializable
 	public PerfilUsuario(DTOPerfilUsuario perfil) {
 		this.idPersona = perfil.getUsuario().getIdPersona();
 		this.usuario = new Usuario(perfil.getUsuario());
+
 	}
 
-	public int getIdPerfil() {
-		return idPerfil;
-	}
-
-	public void setIdPerfil(int idPerfil) {
-		this.idPerfil = idPerfil;
-	}
 
 	public Usuario getUsuario() {
 		return usuario;

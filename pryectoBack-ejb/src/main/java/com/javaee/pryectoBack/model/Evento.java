@@ -127,5 +127,20 @@ public class Evento implements Serializable
 		this.usuarioCreador = usuarioCreador;
 	}
 
-	
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public String getIdPersona() {
+		return idPersona;
+	}
+
+	public void setIdPersona(String idPersona) {
+		this.idPersona = idPersona;
+	}
+
 }

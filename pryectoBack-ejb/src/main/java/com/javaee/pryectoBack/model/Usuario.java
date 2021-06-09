@@ -44,9 +44,9 @@ public class Usuario extends Persona implements Serializable {
 
 	@OneToMany(mappedBy = "usuarioCreador")
 	private List<Evento> creadorDeEventos = new ArrayList<>();
-
+		
 	@OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL,
-			fetch = FetchType.LAZY, optional = false)
+    fetch = FetchType.LAZY, optional = false)
 	private PerfilUsuario perfil;
 
 
