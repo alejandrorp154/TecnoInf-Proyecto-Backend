@@ -8,14 +8,12 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
-import javax.ws.rs.DELETE;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import com.javaee.pryectoBack.datatypes.DTOInteres;
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioContacto;
@@ -198,7 +196,7 @@ public class UsuarioRest
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Respuesta a una solicitud anterior que se encuentra como pendiente", notes = "Se le pasa el objeto DTOUsuarioContacto como sigue:  {" + 
-			"			+ \"    \"idPersona\": \"1\", " + 
+			"			+ \"    \"idPersona\": \"1\", //el idPersona es el id del usuario que solicito la amistad" + 
 			"			+ \"    \"contactoIdPersona\": \"2\", " + 
 			"			+ \"    \"estadoContactos\": \"aceptado o cancelada o borrado o pendiente\" " +
 			"			+ \"}")
@@ -207,9 +205,13 @@ public class UsuarioRest
 		Response.ResponseBuilder builder = null;
 		try {
 			DTOUsuarioContacto agregado = controladorUsuario.respuestaContacto(dtoUsuarioContacto);
-			if (agregado != null) {
+			if (agregado.getIdPersona() != null && agregado.getContactoIdPersona() != null) {
 				builder = Response.ok();
 				builder.entity(agregado);
+			} else {
+				Map<String, String> responseObj = new HashMap<>();
+				responseObj.put("error", "El usuario con id igual a " + dtoUsuarioContacto.getIdPersona() + " no le envio una solicitud previa de amistad al usuario con id igual a " + dtoUsuarioContacto.getContactoIdPersona());
+				builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
 			}
 
 		} catch (Exception e) {
@@ -249,7 +251,7 @@ public class UsuarioRest
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation( value = "Se elimina al Usuario", notes = "")
 	@Path("/{idPersona}")
-	public Response eliminarCuenta(String idPersona) {
+	public Response eliminarCuenta(@PathParam("idPersona") String idPersona) {
 
 		Response.ResponseBuilder builder = null;
 
