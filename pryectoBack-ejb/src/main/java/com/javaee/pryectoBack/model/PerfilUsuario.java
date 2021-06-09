@@ -17,10 +17,9 @@ import com.javaee.pryectoBack.datatypes.DTOPerfilUsuario;
 public class PerfilUsuario implements Serializable
 {
 	private static final long serialVersionUID = 1L;	
-
+	
 	@Id
 	private String idPersona;
-
 	@OneToOne
     @JoinColumn(name = "idPersona")
 	private Usuario usuario;

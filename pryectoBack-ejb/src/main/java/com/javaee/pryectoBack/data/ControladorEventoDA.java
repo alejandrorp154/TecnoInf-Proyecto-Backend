@@ -32,6 +32,7 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 			owner.getEventos().add(evento);
 			owner.getCreadorDeEventos().add(evento);
 			evento.setUsuarioCreador(owner);
+			evento.getUsuarios().add(owner);
 			manager.merge(owner);	
 			dtoEvento.setIdEvento(evento.getIdEvento());
 			//Falta Agregar logica de puntos
@@ -50,7 +51,7 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 			if (event != null) {
 				Usuario ownerEvent = event.getUsuarioCreador();
 
-				if ( ownerEvent!= null && ownerEvent.getIdPersona().equals(idPersona)) {
+				if ( ownerEvent != null && ownerEvent.getIdPersona().equals(idPersona)) {
 					List<Publicacion> pubs = event.getPublicaciones();
 					if (!pubs.isEmpty()) {
 						for (Publicacion publicacion : pubs) {
@@ -79,9 +80,21 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 	}
 
 	@Override
-	public boolean modificar(DTOEvento dtoEvento) {
-		// TODO Auto-generated method stub
-		return false;
+	public DTOEvento modificar(DTOEvento dtoEvento) {
+		DTOEvento dtoEventoRes = new DTOEvento();
+		try {
+			Evento evento = manager.find(Evento.class, dtoEvento.getIdEvento());
+			evento.setUbicacion(dtoEvento.getUbicacion());
+			evento.setDescripcion(dtoEvento.getDescripcion());
+			evento.setFechaInicio(dtoEvento.getFechaInicio());
+			evento.setFechaFin(dtoEvento.getFechaFin());
+			evento.setEstado(dtoEvento.getEstado());
+			manager.merge(evento);
+			dtoEventoRes = new DTOEvento(evento);
+		} catch (Exception exception) {
+			return dtoEventoRes;
+		}
+		return dtoEventoRes;
 	}
 
 	@Override

@@ -8,26 +8,59 @@ import javax.persistence.PersistenceContext;
 
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
+import com.javaee.pryectoBack.datatypes.DTOUsuarioContacto;
 import com.javaee.pryectoBack.model.PerfilUsuario;
 import com.javaee.pryectoBack.model.Persona;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
+import com.javaee.pryectoBack.model.*;
+import com.javaee.pryectoBack.util.MongoDBConnector;
+import com.mongodb.client.MongoCollection;
+import org.bson.Document;
+import org.bson.types.ObjectId;
+
+import java.util.List;
+
+import static com.mongodb.client.model.Filters.eq;
+
 import com.javaee.pryectoBack.model.Usuario;
 import com.javaee.pryectoBack.model.UsuarioContacto;
+import com.javaee.pryectoBack.model.UsuarioContactoId;
+import com.javaee.pryectoBack.model.estadosContactos;
+import com.javaee.pryectoBack.util.PuntosUsuario;
+
 
 @Singleton
 public class ControladorUsuarioDA implements ControladorUsuarioDALocal, ControladorUsuarioDARemote {
 
 	@PersistenceContext(unitName = "primary")
 	private EntityManager manager;
+
+	private PuntosUsuario puntoUsuario;
 	
 	public ControladorUsuarioDA()
 	{
+		puntoUsuario = new PuntosUsuario();
 	}
 
 	@Override
-	public boolean editarPerfil(DTOUsuario dtoUsuario) {
-		// TODO Auto-generated method stub
-		return false;
+	public DTOUsuario editarPerfil(DTOUsuario dtoUsuario) {
+		DTOUsuario dtoUsuarioRes = new DTOUsuario();
+		try{
+			Usuario usuario = manager.find(Usuario.class, dtoUsuario.getIdPersona());
+			if (usuario != null) {
+				usuario.setNickname(dtoUsuario.getNickname());
+				usuario.setDireccion(dtoUsuario.getDireccion());
+				usuario.setCelular(dtoUsuario.getCelular());
+				usuario.setNombre(dtoUsuario.getNombre());
+				usuario.setApellido(dtoUsuario.getApellido());
+				usuario.setEmail(dtoUsuario.getEmail());
+				manager.merge(usuario);
+				dtoUsuarioRes = new DTOUsuario(usuario);
+			}
+		}catch (Exception exception) {
+			return dtoUsuarioRes;
+		}
+		return dtoUsuarioRes;
 	}
 
 	@Override
@@ -61,7 +94,14 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 				usuarioContacto.setIdPersona(idPersona);
 				usuarioContacto.setContactoIdPersona(idPersona2);
 				usuarioContacto.setFechaContactos(new Date());
+				usuarioContacto.setEstadoContactos(estadosContactos.pendiente);
+				UsuarioContacto usuarioContacto2 = new UsuarioContacto();
+				usuarioContacto2.setIdPersona(idPersona2);
+				usuarioContacto2.setContactoIdPersona(idPersona);
+				usuarioContacto2.setFechaContactos(new Date());
+				usuarioContacto2.setEstadoContactos(estadosContactos.pendiente);
 				manager.persist(usuarioContacto);
+				manager.persist(usuarioContacto2);
 				return true;
 			}
 			return false;
@@ -72,13 +112,134 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 
 	@Override
 	public boolean bajaContacto(String idPersona, String idPersona2) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean res = false;
+		try {
+			UsuarioContacto usuarioContacto1 = manager.find(UsuarioContacto.class, new UsuarioContactoId(idPersona, idPersona2));
+			UsuarioContacto usuarioContacto2 = manager.find(UsuarioContacto.class, new UsuarioContactoId(idPersona2, idPersona));
+			if (usuarioContacto1 != null && usuarioContacto2 != null) {
+				manager.remove(usuarioContacto1);
+				manager.remove(usuarioContacto2);
+				res = true;
+			}
+		} catch (Exception exception) {
+			return res;
+		}
+		return res;
 	}
 
 	@Override
 	public boolean eliminarCuenta(String idPersona) {
-		// TODO Auto-generated method stub
+
+		try	{
+			Usuario user = manager.find(Usuario.class,idPersona);
+
+			if (user != null) {
+
+				//Medallas
+				Medalla medalla = user.getMedalla();
+				manager.remove(medalla);
+				
+
+				//Configuracion
+				manager.remove(user.getConfiguracion());
+
+				//Notificaciones
+				List<Notificacion> notificaciones = user.getNotificaciones();
+				for (Notificacion noti : notificaciones) {
+					manager.remove(noti);
+				}
+
+				//Ubicaciones
+				List<Ubicacion> ubicaciones = user.getUbicaciones();
+				for (Ubicacion ubic : ubicaciones) {
+					manager.remove(ubic);
+				}
+
+				//Eventos
+				//Creados por el usuario
+				List<Evento> eventosCreadosPorUsuario = user.getCreadorDeEventos();
+				if (!eventosCreadosPorUsuario.isEmpty()){
+					for (Evento event : eventosCreadosPorUsuario) {
+
+						//Dessasigna a Usuarios que asistiran
+						List<Usuario> usuariosQueAsistiran = event.getUsuarios();
+						if (!usuariosQueAsistiran.isEmpty()) {
+							for (Usuario usuarioAsisteEvento : usuariosQueAsistiran) {
+								usuarioAsisteEvento.getEventos().remove(event);
+							}
+						}
+
+						//Desasigno las publicaciones del evento borrando sus comentarios
+						List<Publicacion> publicaciones = event.getPublicaciones();
+						if (!publicaciones.isEmpty()) {
+							for (Publicacion pub : publicaciones) {
+								MongoDBConnector mongoConnector = new MongoDBConnector();
+								MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosYReacciones");
+
+								String idPublicacion = String.valueOf(pub.getIdPublicacion());
+								collection.deleteOne(eq("idPublicacion", new ObjectId(idPublicacion)));
+
+								pub.getPerfil().getPublicaciones().remove(pub);
+
+								manager.remove(pub);
+							}
+						}
+						manager.remove(event);
+					}
+				}
+
+				//Eventos a los que asistira el usuario
+				List<Evento> eventos = user.getEventos();
+
+				if (!eventos.isEmpty()){
+					for (Evento event : eventos){
+						event.getUsuarios().remove(user);
+					}
+				}
+
+				//Remove Multimedia
+				PerfilUsuario userProfile = user.getPerfil();
+				List<Multimedia> galerias = userProfile.getGalerias();
+				if (!galerias.isEmpty()){
+					for (Multimedia multi : galerias){
+						manager.remove(multi);
+					}
+				}
+
+				//Publicaciones del Usuario
+				List<Publicacion> pubs = userProfile.getPublicaciones();
+				if (!pubs.isEmpty()){
+					for (Publicacion publicacion : pubs){
+
+						MongoDBConnector mongoConnector = new MongoDBConnector();
+						MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosYReacciones");
+
+						String idPublicacion = String.valueOf(publicacion.getIdPublicacion());
+						collection.deleteOne(eq("idPublicacion", new ObjectId(idPublicacion)));
+
+						manager.remove(publicacion);
+					}
+				}
+
+				//Intereses del usuario
+				List<Interes> intereses = userProfile.getIntereses();
+				if (!intereses.isEmpty()){
+					for (Interes inter : intereses){
+						inter.getPerfiles().remove(userProfile);
+					}
+				}
+
+				//Perfil
+				manager.remove(userProfile);
+
+				//Remueve Usuario
+				manager.remove(user);
+
+				return true;
+			}
+		} catch (Exception exception){
+			return false;
+		}
 		return false;
 	}
 
@@ -128,5 +289,30 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 			return new DTOUsuarioInicioSesion(user.getIdPersona(), user.getEmail(), user.getNombre(), user.getApellido(), user.getNickname(), imagen);
 		}
 		return null;
+	}
+
+	@Override
+	public DTOUsuarioContacto respuestaContacto(DTOUsuarioContacto dtoUsuarioContacto) {
+		DTOUsuarioContacto dtoUsuarioContactoRes = new DTOUsuarioContacto();
+		try {
+			UsuarioContacto usuarioContacto1 = manager.find(UsuarioContacto.class, new UsuarioContactoId(dtoUsuarioContacto.getIdPersona(), dtoUsuarioContacto.getContactoIdPersona()));
+			UsuarioContacto usuarioContacto2 = manager.find(UsuarioContacto.class, new UsuarioContactoId(dtoUsuarioContacto.getContactoIdPersona(), dtoUsuarioContacto.getIdPersona()));
+			if (usuarioContacto1 != null && usuarioContacto2 != null) {
+				usuarioContacto1.setEstadoContactos(dtoUsuarioContacto.getEstadoContactos());
+				usuarioContacto2.setEstadoContactos(dtoUsuarioContacto.getEstadoContactos());
+				manager.merge(usuarioContacto1);
+				manager.merge(usuarioContacto2);
+				dtoUsuarioContactoRes = new DTOUsuarioContacto(usuarioContacto1);
+				Usuario usuario1 = manager.find(Usuario.class, usuarioContacto1.getIdPersona());
+				DTOUsuario dtoUsuario1 = new DTOUsuario(usuario1);
+				Usuario usuario2 = manager.find(Usuario.class, usuarioContacto1.getContactoIdPersona());
+				DTOUsuario dtoUsuario2 = new DTOUsuario(usuario2);
+				puntoUsuario.getPuntosUsuario("AltaContacto", dtoUsuario1, manager);
+				puntoUsuario.getPuntosUsuario("AltaContacto", dtoUsuario2, manager);
+			}
+		} catch (Exception exception) {
+			return dtoUsuarioContactoRes;
+		}
+		return dtoUsuarioContactoRes;
 	}
 }

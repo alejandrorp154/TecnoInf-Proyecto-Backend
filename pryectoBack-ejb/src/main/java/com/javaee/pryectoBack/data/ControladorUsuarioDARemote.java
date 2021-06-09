@@ -4,11 +4,12 @@ import javax.ejb.Remote;
 
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
+import com.javaee.pryectoBack.datatypes.DTOUsuarioContacto;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
 
 @Remote
 public interface ControladorUsuarioDARemote {
-	boolean editarPerfil(DTOUsuario dtoUsuario);
+	DTOUsuario editarPerfil(DTOUsuario dtoUsuario);
 	boolean registrarUsuario(DTOUsuario dtoUsuario);
 	boolean subirFoto(String idPersona, DTOMultimedia dtoMultimedia);
 	boolean agregarContacto(String idPersona, String idPersona2);
@@ -19,4 +20,5 @@ public interface ControladorUsuarioDARemote {
 	boolean bloquearUsuario(String idPersona);
 	boolean desbloquearUsuario(String idPersona);
 	DTOUsuarioInicioSesion datosUsuarioInicioSesion(String idPersona);
+	DTOUsuarioContacto respuestaContacto(DTOUsuarioContacto dtoUsuarioContacto);
 }
