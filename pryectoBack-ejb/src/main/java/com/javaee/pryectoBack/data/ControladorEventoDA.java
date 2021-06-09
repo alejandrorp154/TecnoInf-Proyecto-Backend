@@ -32,7 +32,6 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 			owner.getEventos().add(evento);
 			owner.getCreadorDeEventos().add(evento);
 			evento.setUsuarioCreador(owner);
-			evento.getUsuarios().add(owner);
 			manager.merge(owner);	
 			dtoEvento.setIdEvento(evento.getIdEvento());
 			//Falta Agregar logica de puntos
@@ -44,10 +43,8 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 
 	@Override
 	public boolean eliminarEvento(int idEvento, String idPersona) {
-
-		Evento event = manager.find(Evento.class, idEvento);
-
-		try{
+		try {
+			Evento event = manager.find(Evento.class, idEvento);
 			if (event != null) {
 				Usuario ownerEvent = event.getUsuarioCreador();
 
@@ -73,7 +70,7 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 					return true;
 				}
 			}
-		} catch ( Exception exception) {
+		} catch (Exception exception) {
 			return false;
 		}
 		return false;
