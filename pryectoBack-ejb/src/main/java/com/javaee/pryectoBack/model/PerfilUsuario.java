@@ -40,6 +40,7 @@ public class PerfilUsuario implements Serializable
 	public PerfilUsuario() {
 	}
 
+
 	public PerfilUsuario(Usuario user) {
 		this.idPersona = user.getIdPersona();
 		this.usuario = user;
@@ -51,6 +52,7 @@ public class PerfilUsuario implements Serializable
 	public PerfilUsuario(DTOPerfilUsuario perfil) {
 		this.idPersona = perfil.getUsuario().getIdPersona();
 		this.usuario = new Usuario(perfil.getUsuario());
+
 	}
 
 	public Usuario getUsuario() {

@@ -6,15 +6,16 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.javaee.pryectoBack.datatypes.DTOEvento;
-import com.javaee.pryectoBack.datatypes.DTOPublicacion;
 import com.javaee.pryectoBack.service.ControladorEventoLocal;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -55,9 +56,26 @@ public class EventoRest {
         return builder.build();
 	}
 
-	public boolean eliminarEvento(int idEvento) {
-		// TODO Auto-generated method stub
-		return false;
+	@DELETE
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/{idEvento}/{idPersona}")
+	@ApiOperation(value = "Eliminar evento", notes = "Se le pasa el id del evento y el Id del Usuario logueado")
+	public Response eliminarEvento(@PathParam("idEvento") int idEvento, @PathParam("idPersona") String idPersona) {
+
+		Response.ResponseBuilder builder = null;
+
+		try{
+			boolean eventoEliminado = controladorEvento.eliminarEvento(idEvento, idPersona);
+			if (eventoEliminado){
+				builder = Response.ok();
+			}
+		}catch (Exception e){
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return  builder.build();
 	}
 
 	@PUT
