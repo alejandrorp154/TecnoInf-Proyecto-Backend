@@ -32,7 +32,7 @@ public class Evento implements Serializable
 	
 	private String nombre;
 	private String idPersona;
-	
+
 	public Evento() {
 	}
 	
@@ -126,6 +126,7 @@ public class Evento implements Serializable
 	public void setUsuarioCreador(Usuario usuarioCreador) {
 		this.usuarioCreador = usuarioCreador;
 	}
+
 	public String getNombre() {
 		return nombre;
 	}
@@ -141,4 +142,5 @@ public class Evento implements Serializable
 	public void setIdPersona(String idPersona) {
 		this.idPersona = idPersona;
 	}
+
 }
