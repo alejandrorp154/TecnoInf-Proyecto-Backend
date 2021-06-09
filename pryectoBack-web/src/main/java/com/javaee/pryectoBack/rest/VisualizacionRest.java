@@ -80,7 +80,7 @@ public class VisualizacionRest {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Devuelve el perfil de un usuario", notes = "el que corresponda al id de persona")
+	@ApiOperation(value = "Devuelve los usuarios registrados en el sistema", notes = "")
 	@Path("/obtenerUsuarios/{offset}/{size}")
 	public Response obtenerUsuarios(@PathParam("offset") int offset, @PathParam("size") int size) {
 		Response.ResponseBuilder builder = null;

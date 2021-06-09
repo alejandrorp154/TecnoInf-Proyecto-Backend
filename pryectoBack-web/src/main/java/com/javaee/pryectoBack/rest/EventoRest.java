@@ -1,20 +1,22 @@
 package com.javaee.pryectoBack.rest;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.javaee.pryectoBack.datatypes.DTOEvento;
-import com.javaee.pryectoBack.datatypes.DTOPublicacion;
 import com.javaee.pryectoBack.service.ControladorEventoLocal;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -101,6 +103,24 @@ public class EventoRest {
 	public boolean dejar(int idEvento, String idPersona) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Devuelve la lista de eventos de un usuario", notes = "el que corresponda al id de persona")
+	@Path("/obtenerEventos/{idPersona}/{offset}/{size}")
+	public Response obtenerEventos(@PathParam("idPersona") String idPersona, @PathParam("offset") int offset, @PathParam("size") int size) {
+		Response.ResponseBuilder builder = null;
+		try {
+			List<DTOEvento> dtoEventos = controladorEvento.obtenerEventos(idPersona, offset, size);
+			builder = Response.ok();
+			builder.entity(dtoEventos);
+		} catch(Exception exception) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", exception.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.javaee.pryectoBack.service;
 
+import java.util.List;
+
 import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -46,6 +48,11 @@ public class ControladorEvento implements ControladorEventoLocal, ControladorEve
 	public boolean dejar(int idEvento, String idPersona) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public List<DTOEvento> obtenerEventos(String idPersona, int offset, int size) {
+		return controladorEventoDA.obtenerEventos(idPersona, offset, size);
 	}
 
 }
