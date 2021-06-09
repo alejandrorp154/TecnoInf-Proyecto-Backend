@@ -5,12 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 
 import com.javaee.pryectoBack.datatypes.DTOEvento;
 
@@ -31,6 +26,9 @@ public class Evento implements Serializable
 	private String idChat;
 	@OneToMany(mappedBy = "evento")
 	private List<Publicacion> publicaciones = new ArrayList<>();
+
+	@ManyToOne
+	private Usuario usuarioCreador;
 	
 	private String nombre;
 	private String idPersona;
@@ -121,6 +119,13 @@ public class Evento implements Serializable
 		this.publicaciones = publicaciones;
 	}
 
+	public Usuario getUsuarioCreador() {
+		return usuarioCreador;
+	}
+
+	public void setUsuarioCreador(Usuario usuarioCreador) {
+		this.usuarioCreador = usuarioCreador;
+	}
 	public String getNombre() {
 		return nombre;
 	}

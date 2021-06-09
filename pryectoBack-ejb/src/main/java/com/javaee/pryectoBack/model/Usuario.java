@@ -41,10 +41,14 @@ public class Usuario extends Persona implements Serializable {
 	@OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL,
     fetch = FetchType.LAZY, optional = false)
 	private Configuracion configuracion;
-	
+
+	@OneToMany(mappedBy = "usuarioCreador")
+	private List<Evento> creadorDeEventos = new ArrayList<>();
+		
 	@OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL,
     fetch = FetchType.LAZY, optional = false)
 	private PerfilUsuario perfil;
+
 
 	public Usuario() {
 	}
@@ -63,6 +67,8 @@ public class Usuario extends Persona implements Serializable {
 		this.eventos = new ArrayList<>();
 		this.ubicaciones = new ArrayList<>();
 		this.configuracion = new Configuracion();
+		this.creadorDeEventos = new ArrayList<>();
+		this.estaBloqueado = false;
 	}
 
 	public List<Notificacion> getNotificaciones() {
@@ -121,6 +127,14 @@ public class Usuario extends Persona implements Serializable {
 		this.configuracion = configuracion;
 	}
 
+	public List<Evento> getCreadorDeEventos() {
+		return creadorDeEventos;
+	}
+
+	public void setCreadorDeEventos(List<Evento> creadorDeEventos) {
+		this.creadorDeEventos = creadorDeEventos;
+	}
+
 	public PerfilUsuario getPerfil() {
 		return perfil;
 	}
@@ -136,7 +150,7 @@ public class Usuario extends Persona implements Serializable {
 	public void setMedalla(Medalla medalla) {
 		this.medalla = medalla;
 	}
-	
+
 	public boolean getEstaBloqueado() {
 		return estaBloqueado;
 	}

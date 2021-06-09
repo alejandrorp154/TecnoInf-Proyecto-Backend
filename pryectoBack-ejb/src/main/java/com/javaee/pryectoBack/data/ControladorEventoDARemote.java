@@ -9,7 +9,7 @@ import com.javaee.pryectoBack.datatypes.DTOEvento;
 @Remote
 public interface ControladorEventoDARemote {
 	DTOEvento crearEvento(DTOEvento dtoEvento);
-	boolean eliminarEvento(int idEvento);
+	boolean eliminarEvento(int idEvento, String idPersona);
 	DTOEvento modificar(DTOEvento dtoEvento);
 	boolean agregarUsuario(int idEvento, String idPersona);
 	boolean removerUsuario(int idEvento, String idPersona);
