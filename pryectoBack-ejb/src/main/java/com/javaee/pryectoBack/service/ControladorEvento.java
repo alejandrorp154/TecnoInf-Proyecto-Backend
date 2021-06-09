@@ -25,9 +25,8 @@ public class ControladorEvento implements ControladorEventoLocal, ControladorEve
 	}
 
 	@Override
-	public boolean modificar(DTOEvento dtoEvento) {
-		// TODO Auto-generated method stub
-		return false;
+	public DTOEvento modificar(DTOEvento dtoEvento) {
+		return controladorEventoDA.modificar(dtoEvento);
 	}
 
 	@Override

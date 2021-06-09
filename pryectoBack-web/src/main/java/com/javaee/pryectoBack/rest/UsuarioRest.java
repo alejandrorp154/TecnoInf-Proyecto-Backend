@@ -4,6 +4,7 @@ import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -14,8 +15,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.javaee.pryectoBack.datatypes.DTOInteres;
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
+import com.javaee.pryectoBack.datatypes.DTOUsuarioContacto;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
 import com.javaee.pryectoBack.service.ControladorUsuarioLocal;
 import com.wordnik.swagger.annotations.Api;
@@ -83,10 +86,39 @@ public class UsuarioRest
 //        }
 //        return builder.build();
 //	}
-
-	public boolean editarPerfil(DTOUsuario dtoUsuario) {
-		// TODO Auto-generated method stub
-		return false;
+	
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Modifica un perfil de usuario", notes = "correspondiente al usuario logueado se le pasa el DTOUsuario como sigue: {\r\n" + 
+			"    \"idPersona\": \"15\",\r\n" + 
+			"    \"nickname\" : \"probandoPut\",\r\n" + 
+			"    \"nombre\" : \"Alvaro\",\r\n" + 
+			"    \"apellido\" : \"Gutierrez\",\r\n" + 
+			"    \"email\" : \"probando@test.com\",\r\n" + 
+			"    \"celular\" : \"0999\",\r\n" + 
+			"    \"direccion\" : \"En la FING\"\r\n" + 
+			"} ")
+	@Path("/editarPerfil")
+	public Response editarPerfil(DTOUsuario dtoUsuario) {
+		Response.ResponseBuilder builder = null;
+		try {
+			DTOUsuario modified = controladorUsuario.editarPerfil(dtoUsuario);
+			if (!modified.getIdPersona().isEmpty()) {
+	            builder = Response.ok();
+	            builder.entity(modified);
+			}
+			else {
+				Map<String, String> responseObj = new HashMap<>();
+				responseObj.put("error", "El interes con id = " + dtoUsuario.getIdPersona() + " no pudo modificarse");
+				builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+			}
+        } catch (Exception e) {
+            Map<String, String> responseObj = new HashMap<>();
+            responseObj.put("error", e.getMessage());
+            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+        }
+        return builder.build();
 	}
 
 	@GET
@@ -144,7 +176,7 @@ public class UsuarioRest
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Agregar un nuevo contacto a la lista de contactos de un", notes = "")
+	@ApiOperation(value = "Agregar un nuevo contacto a la lista de contactos con estado pendiente", notes = "")
 	@Path("/agregarContacto/{idPersona}/{idPersona2}")
 	public Response agregarContacto(@PathParam("idPersona") String idPersona, @PathParam("idPersona2") String idPersona2) {
 		Response.ResponseBuilder builder = null;
@@ -162,9 +194,54 @@ public class UsuarioRest
 		return builder.build();
 	}
 
-	public boolean bajaContacto(String idPersona, String idPersona2) {
-		// TODO Auto-generated method stub
-		return false;
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Respuesta a una solicitud anterior que se encuentra como pendiente", notes = "Se le pasa el objeto DTOUsuarioContacto como sigue:  {" + 
+			"			+ \"    \"idPersona\": \"1\", " + 
+			"			+ \"    \"contactoIdPersona\": \"2\", " + 
+			"			+ \"    \"estadoContactos\": \"aceptado o cancelada o borrado o pendiente\" " +
+			"			+ \"}")
+	@Path("/respuestaContacto")
+	public Response respuestaContacto(DTOUsuarioContacto dtoUsuarioContacto) {
+		Response.ResponseBuilder builder = null;
+		try {
+			DTOUsuarioContacto agregado = controladorUsuario.respuestaContacto(dtoUsuarioContacto);
+			if (agregado != null) {
+				builder = Response.ok();
+				builder.entity(agregado);
+			}
+
+		} catch (Exception e) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
+	}
+	
+	@DELETE
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Remueve el un contacto de la lista de contactos segun idPersona y contactoIdPersona", notes = "el que corresponda a los ids")
+	@Path("/bajaContacto/{idPersona}/{idPersona2}")
+	public Response bajaContacto(@PathParam("idPersona") String idPersona, @PathParam("idPersona2") String idPersona2) {
+		Response.ResponseBuilder builder = null;
+		try {
+			boolean baja = controladorUsuario.bajaContacto(idPersona, idPersona2);
+			if (baja) {
+				builder = Response.ok();
+			} else {
+				Map<String, String> responseObj = new HashMap<>();
+				responseObj.put("error", "algo salio mal dando de baja a los contactos con ids: " + idPersona + ", " + idPersona2);
+				builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+			}
+
+		} catch (Exception e) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
 	}
 
 	@DELETE
