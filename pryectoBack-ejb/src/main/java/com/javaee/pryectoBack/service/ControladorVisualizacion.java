@@ -69,4 +69,9 @@ public class ControladorVisualizacion implements ControladorVisualizacionLocal, 
 		return null;
 	}
 
+	@Override
+	public List<DTOUsuario> obtenerSolicitudesPendientes(String idPersona, int offset, int size) {
+		return controladorVisualizacionDA.obtenerSolicitudesPendientes(idPersona, offset, size);
+	}
+
 }

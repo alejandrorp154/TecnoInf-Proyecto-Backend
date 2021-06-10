@@ -96,6 +96,24 @@ public class VisualizacionRest {
 		return builder.build();
 	}
 
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Devuelve una lista de solicitudes pendientes para el usuario logueado", notes = "el que corresponda el idPersona")
+	@Path("/solicitudPendiente/{idPersona}/{offset}/{size}")
+	public Response obtenerSolicitudesPendientes(@PathParam("idPersona") String idPersona, @PathParam("offset") int offset, @PathParam("size") int size) {
+		Response.ResponseBuilder builder = null;
+		try {
+			List<DTOUsuario> dtoUsuarios = controladorVisualizacionLocal.obtenerSolicitudesPendientes(idPersona, offset, size);
+			builder = Response.ok();
+			builder.entity(dtoUsuarios);
+		} catch(Exception exception) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", exception.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
+	}
+
 	public DTOUsuarioMedalla visualizarProgreso(String idPersona) {
 		// TODO Auto-generated method stub
 		return null;

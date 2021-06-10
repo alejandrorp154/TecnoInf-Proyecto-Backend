@@ -23,4 +23,5 @@ public interface ControladorVisualizacionDALocal {
 	List<DTOUsuario> buscarAmigosSegunUbicacion(List<DTOUsuario> dtoUsuarios, String idPersona);
 	List<DTOUsuario> buscarAmigosDeAmigos(String idPersona);
 	List<DTOUsuario> buscarAmigosSegunIntereses(List<DTOUsuario> dtoUsuarios, String idPersona);
+	List<DTOUsuario> obtenerSolicitudesPendientes(String idPersona, int offset, int size);
 }
