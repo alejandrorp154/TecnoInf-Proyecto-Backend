@@ -302,7 +302,7 @@ public class UsuarioRest
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation( value = "Se desbloquea al Usuario", notes = "")
-	@Path("/{idPersona}")
+	@Path("desbloquearUsuario/{idPersona}")
 	public Response desbloquearUsuario(@PathParam("idPersona") String idPersona) {
 		Response.ResponseBuilder builder = null;
 		try{
