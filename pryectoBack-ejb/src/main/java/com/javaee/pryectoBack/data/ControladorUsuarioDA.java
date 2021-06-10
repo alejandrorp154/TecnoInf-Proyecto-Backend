@@ -9,9 +9,10 @@ import javax.persistence.PersistenceContext;
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioContacto;
+import com.javaee.pryectoBack.datatypes.DTOAdministrador;
+import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
 import com.javaee.pryectoBack.model.PerfilUsuario;
 import com.javaee.pryectoBack.model.Persona;
-import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
 import com.javaee.pryectoBack.model.*;
 import com.javaee.pryectoBack.util.MongoDBConnector;
 import com.mongodb.client.MongoCollection;
@@ -314,5 +315,17 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 			return dtoUsuarioContactoRes;
 		}
 		return dtoUsuarioContactoRes;
+	}
+
+	@Override
+	public DTOAdministrador altaUsuarioAdmin(DTOAdministrador dtoAdministrador){
+		try{
+			Administrador admin = new Administrador(dtoAdministrador);
+			manager.persist(admin);
+			return dtoAdministrador;
+
+		}catch ( Exception exception){
+			return null;
+		}
 	}
 }

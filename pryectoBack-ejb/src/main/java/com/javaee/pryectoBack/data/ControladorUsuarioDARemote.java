@@ -5,6 +5,7 @@ import javax.ejb.Remote;
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioContacto;
+import com.javaee.pryectoBack.datatypes.DTOAdministrador;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
 
 @Remote
@@ -21,4 +22,5 @@ public interface ControladorUsuarioDARemote {
 	boolean desbloquearUsuario(String idPersona);
 	DTOUsuarioInicioSesion datosUsuarioInicioSesion(String idPersona);
 	DTOUsuarioContacto respuestaContacto(DTOUsuarioContacto dtoUsuarioContacto);
+	DTOAdministrador altaUsuarioAdmin(DTOAdministrador dtoAdministrador);
 }
