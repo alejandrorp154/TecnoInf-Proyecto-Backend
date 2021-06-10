@@ -19,6 +19,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -83,8 +84,12 @@ public class EventoRest {
 
 		try{
 			boolean eventoEliminado = controladorEvento.eliminarEvento(idEvento, idPersona);
-			if (eventoEliminado){
+			if (eventoEliminado) {
 				builder = Response.ok();
+			} else {
+				Map<String, String> responseObj = new HashMap<>();
+				responseObj.put("error", "El evento con idEvento "+ idEvento +" no se pudo eliminar o no existe mas en el servidor.");
+				builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
 			}
 		}catch (Exception e){
 			Map<String, String> responseObj = new HashMap<>();

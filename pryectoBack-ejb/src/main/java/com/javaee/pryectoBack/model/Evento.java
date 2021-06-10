@@ -29,7 +29,6 @@ public class Evento implements Serializable {
 	private Usuario usuarioCreador;
 
 	private String nombre;
-	private String idPersona;
 
 	@OneToOne(mappedBy = "evento", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
 	private Ubicacion ubicacion;
@@ -46,8 +45,8 @@ public class Evento implements Serializable {
 		this.fechaFin = dtoEvento.getFechaFin();
 		this.estado = dtoEvento.getEstado();
 		this.nombre = dtoEvento.getNombre();
-		this.idPersona = dtoEvento.getIdPersona();
 		this.idChat = dtoEvento.getIdChat();
+		this.usuarioCreador = new Usuario(dtoEvento.getIdPersona());
 		this.ubicacion = new Ubicacion(dtoEvento.getUbicacion());
 		this.nombreImagen = dtoEvento.getNombreImagen();
 		this.extension = dtoEvento.getExtension();
@@ -132,14 +131,6 @@ public class Evento implements Serializable {
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
-	}
-
-	public String getIdPersona() {
-		return idPersona;
-	}
-
-	public void setIdPersona(String idPersona) {
-		this.idPersona = idPersona;
 	}
 
 	public Ubicacion getUbicacion() {

@@ -20,4 +20,5 @@ public interface ControladorVisualizacionLocal {
 	List<DTOUsuario> obtenerCantidadUsuariosEnElSistema(int offset, int size);
 	List<DTOUsuario> obtenerCantidadUsuariosSegunPais(String pais, int offset, int size);
 	List<DTOUsuarioMedalla> obtenerCantidadUsuariosSegunMedallas(int idMedalla, int offset, int size);
+	List<DTOUsuario> obtenerSolicitudesPendientes(String idPersona, int offset, int size);
 }

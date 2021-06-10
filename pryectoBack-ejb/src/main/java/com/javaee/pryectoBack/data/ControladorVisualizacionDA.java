@@ -18,6 +18,7 @@ import com.javaee.pryectoBack.model.Persona;
 import com.javaee.pryectoBack.model.Ubicacion;
 import com.javaee.pryectoBack.model.Usuario;
 import com.javaee.pryectoBack.model.UsuarioContacto;
+import com.javaee.pryectoBack.model.estadosContactos;
 
 @Singleton
 public class ControladorVisualizacionDA implements ControladorVisualizacionDALocal, ControladorVisualizacionDARemote {
@@ -243,6 +244,23 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 						}
 					}
 				}
+			}
+		} catch (Exception exception) {
+			return res;
+		}
+		return res;
+	}
+
+	@Override
+	public List<DTOUsuario> obtenerSolicitudesPendientes(String idPersona, int offset, int size) {
+		List<DTOUsuario> res = new ArrayList<>();
+		try {
+			TypedQuery<UsuarioContacto> query = manager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.contactoIdPersona = '" + idPersona + "' and usuariocontacto.estadoContactos = '" + estadosContactos.pendiente + "' order by usuariocontacto.fechaContactos desc", UsuarioContacto.class);
+			List<UsuarioContacto> usuariosContactos = query.setFirstResult(offset).setMaxResults(size).getResultList();
+			for(UsuarioContacto usuarioContacto : usuariosContactos) {
+				Usuario usuario = manager.find(Usuario.class, usuarioContacto.getIdPersona());
+				DTOUsuario dtoUsuario = new DTOUsuario(usuario);
+				res.add(dtoUsuario);
 			}
 		} catch (Exception exception) {
 			return res;

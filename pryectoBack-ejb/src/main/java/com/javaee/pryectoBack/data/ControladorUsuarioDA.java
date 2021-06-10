@@ -95,13 +95,7 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 				usuarioContacto.setContactoIdPersona(idPersona2);
 				usuarioContacto.setFechaContactos(new Date());
 				usuarioContacto.setEstadoContactos(estadosContactos.pendiente);
-				UsuarioContacto usuarioContacto2 = new UsuarioContacto();
-				usuarioContacto2.setIdPersona(idPersona2);
-				usuarioContacto2.setContactoIdPersona(idPersona);
-				usuarioContacto2.setFechaContactos(new Date());
-				usuarioContacto2.setEstadoContactos(estadosContactos.pendiente);
 				manager.persist(usuarioContacto);
-				manager.persist(usuarioContacto2);
 				return true;
 			}
 			return false;
@@ -296,19 +290,21 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 		DTOUsuarioContacto dtoUsuarioContactoRes = new DTOUsuarioContacto();
 		try {
 			UsuarioContacto usuarioContacto1 = manager.find(UsuarioContacto.class, new UsuarioContactoId(dtoUsuarioContacto.getIdPersona(), dtoUsuarioContacto.getContactoIdPersona()));
-			UsuarioContacto usuarioContacto2 = manager.find(UsuarioContacto.class, new UsuarioContactoId(dtoUsuarioContacto.getContactoIdPersona(), dtoUsuarioContacto.getIdPersona()));
-			if (usuarioContacto1 != null && usuarioContacto2 != null) {
+			if (usuarioContacto1 != null) {
+				Date dateUpdated = new Date();
 				usuarioContacto1.setEstadoContactos(dtoUsuarioContacto.getEstadoContactos());
+				UsuarioContacto usuarioContacto2 = new UsuarioContacto();
+				usuarioContacto2.setIdPersona(dtoUsuarioContacto.getContactoIdPersona());
+				usuarioContacto2.setContactoIdPersona(dtoUsuarioContacto.getContactoIdPersona());
+				usuarioContacto2.setFechaContactos(dateUpdated);
 				usuarioContacto2.setEstadoContactos(dtoUsuarioContacto.getEstadoContactos());
+				usuarioContacto1.setFechaContactos(dateUpdated);
 				manager.merge(usuarioContacto1);
-				manager.merge(usuarioContacto2);
+				manager.persist(usuarioContacto2);
 				dtoUsuarioContactoRes = new DTOUsuarioContacto(usuarioContacto1);
 				Usuario usuario1 = manager.find(Usuario.class, usuarioContacto1.getIdPersona());
 				DTOUsuario dtoUsuario1 = new DTOUsuario(usuario1);
-				Usuario usuario2 = manager.find(Usuario.class, usuarioContacto1.getContactoIdPersona());
-				DTOUsuario dtoUsuario2 = new DTOUsuario(usuario2);
 				puntoUsuario.getPuntosUsuario("AltaContacto", dtoUsuario1, manager);
-				puntoUsuario.getPuntosUsuario("AltaContacto", dtoUsuario2, manager);
 			}
 		} catch (Exception exception) {
 			return dtoUsuarioContactoRes;

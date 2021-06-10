@@ -71,6 +71,10 @@ public class Usuario extends Persona implements Serializable {
 		this.estaBloqueado = false;
 	}
 
+	public Usuario(String idPersona) {
+		this.idPersona = idPersona;
+	}
+
 	public List<Notificacion> getNotificaciones() {
 		return notificaciones;
 	}
