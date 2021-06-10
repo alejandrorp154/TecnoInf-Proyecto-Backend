@@ -31,7 +31,7 @@ public class Evento implements Serializable
 	private Usuario usuarioCreador;
 	
 	private String nombre;
-	
+
 	public Evento() {
 	}
 	
@@ -125,6 +125,7 @@ public class Evento implements Serializable
 	public void setUsuarioCreador(Usuario usuarioCreador) {
 		this.usuarioCreador = usuarioCreador;
 	}
+
 	public String getNombre() {
 		return nombre;
 	}
