@@ -10,13 +10,11 @@ import javax.persistence.*;
 import com.javaee.pryectoBack.datatypes.DTOEvento;
 
 @Entity
-public class Evento implements Serializable
-{
-	private static final long serialVersionUID = 1L;	
+public class Evento implements Serializable {
+	private static final long serialVersionUID = 1L;
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int idEvento;
-	private String ubicacion;
 	private String descripcion;
 	private Date fechaInicio;
 	private Date fechaFin;
@@ -29,14 +27,19 @@ public class Evento implements Serializable
 
 	@ManyToOne
 	private Usuario usuarioCreador;
-	
+
 	private String nombre;
+
+	@OneToOne(mappedBy = "evento", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+	private Ubicacion ubicacion;
+	private String nombreImagen;
+	private String imagen;
+	private String extension;
 
 	public Evento() {
 	}
-	
+
 	public Evento(DTOEvento dtoEvento) {
-		this.ubicacion = dtoEvento.getUbicacion();
 		this.descripcion = dtoEvento.getDescripcion();
 		this.fechaInicio = dtoEvento.getFechaInicio();
 		this.fechaFin = dtoEvento.getFechaFin();
@@ -44,6 +47,10 @@ public class Evento implements Serializable
 		this.nombre = dtoEvento.getNombre();
 		this.idChat = dtoEvento.getIdChat();
 		this.usuarioCreador = new Usuario(dtoEvento.getIdPersona());
+		this.ubicacion = new Ubicacion(dtoEvento.getUbicacion());
+		this.nombreImagen = dtoEvento.getNombreImagen();
+		this.extension = dtoEvento.getExtension();
+		this.imagen = dtoEvento.getImagen();
 	}
 
 	public int getIdEvento() {
@@ -52,14 +59,6 @@ public class Evento implements Serializable
 
 	public void setIdEvento(int idEvento) {
 		this.idEvento = idEvento;
-	}
-
-	public String getUbicacion() {
-		return ubicacion;
-	}
-
-	public void setUbicacion(String ubicacion) {
-		this.ubicacion = ubicacion;
 	}
 
 	public String getDescripcion() {
@@ -132,5 +131,37 @@ public class Evento implements Serializable
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public Ubicacion getUbicacion() {
+		return ubicacion;
+	}
+
+	public void setUbicacion(Ubicacion ubicacion) {
+		this.ubicacion = ubicacion;
+	}
+
+	public String getNombreImagen() {
+		return nombreImagen;
+	}
+
+	public void setNombreImagen(String nombreImagen) {
+		this.nombreImagen = nombreImagen;
+	}
+
+	public String getImagen() {
+		return imagen;
+	}
+
+	public void setImagen(String imagen) {
+		this.imagen = imagen;
+	}
+
+	public String getExtension() {
+		return extension;
+	}
+
+	public void setExtension(String extension) {
+		this.extension = extension;
 	}
 }

@@ -1,12 +1,15 @@
 package com.javaee.pryectoBack.rest;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 
@@ -38,14 +41,23 @@ public class EventoRest {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Agrega una evento al back", notes = "Se le pasa el objeto DTOEvento como sigue: {"
-			+ "    \"ubicacion\": \"Ubicacion de prueba\","
+			+ "    \"ubicacion\": {"
+					+ "	   \"descripcion\": \"deporte\" , "
+					+ "	   \"longitud\" : 60 , "
+					+ "    \"latitud\" : 60 , "
+					+ "    \"fecha\": \"2021-04-20\", "
+					+ "    \"idPersona\": \"1\"   "
+				+ " }\" , "
 			+ "    \"descripcion\": \"Descripcion de prueba\","
 			+ "    \"fechaInicio\": \"2021-02-20\","
 			+ "    \"fechaFin\": \"2021-02-30\","
 			+ "    \"estado\": \"enCurso\","
 			+ "    \"idPersona\": 1,"
 			+ "    \"idChat\": \"asdasd\", "
-			+ "    \"nombre\": \"nombreEvento\""
+			+ "    \"nombre\": \"nombreEvento\", "
+			+ "    \"nombreImagen\": \"nombreImagen\","
+			+ "    \"imagen\": \"asdasd\", "
+			+ "    \"extension\": \"extensionImagen\""
 			+ "}")
 	public Response crearEvento(DTOEvento dtoEvento) {
 		Response.ResponseBuilder builder = null;
@@ -92,14 +104,23 @@ public class EventoRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Modifica un evento", notes = "Se le pasa el objeto DTOEvento como sigue: {"
 			+ "    \"idEvento\": \"idEvento\","
-			+ "    \"ubicacion\": \"Ubicacion de prueba\","
+			+ "    \"ubicacion\": {"
+					+ "	   \"descripcion\": \"deporte\" , "
+					+ "	   \"longitud\" : 60 , "
+					+ "    \"latitud\" : 60 , "
+					+ "    \"fecha\": \"2021-04-20\", "
+					+ "    \"idPersona\": \"1\"   "
+				+ " }\" , "
 			+ "    \"descripcion\": \"Descripcion de prueba\","
 			+ "    \"fechaInicio\": \"2021-02-20\","
 			+ "    \"fechaFin\": \"2021-02-30\","
 			+ "    \"estado\": \"enCurso\","
 			+ "    \"idPersona\": 1,"
 			+ "    \"idChat\": \"asdasd\", "
-			+ "    \"nombre\": \"nombreEvento\""
+			+ "    \"nombre\": \"nombreEvento\" ,"
+			+ "    \"nombreImagen\": \"nombreImagen\","
+			+ "    \"imagen\": \"asdasd\", "
+			+ "    \"extension\": \"extensionImagen\""
 			+ "}")
 	public Response modificar(DTOEvento dtoEvento) {
 		Response.ResponseBuilder builder = null;
@@ -128,6 +149,24 @@ public class EventoRest {
 	public boolean dejar(int idEvento, String idPersona) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Devuelve la lista de eventos de un usuario", notes = "el que corresponda al id de persona")
+	@Path("/obtenerEventos/{idPersona}/{offset}/{size}")
+	public Response obtenerEventos(@PathParam("idPersona") String idPersona, @PathParam("offset") int offset, @PathParam("size") int size) {
+		Response.ResponseBuilder builder = null;
+		try {
+			List<DTOEvento> dtoEventos = controladorEvento.obtenerEventos(idPersona, offset, size);
+			builder = Response.ok();
+			builder.entity(dtoEventos);
+		} catch(Exception exception) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", exception.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
 	}
 
 }
