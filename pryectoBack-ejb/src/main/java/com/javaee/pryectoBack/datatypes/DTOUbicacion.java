@@ -3,6 +3,8 @@ package com.javaee.pryectoBack.datatypes;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.javaee.pryectoBack.model.Ubicacion;
+
 public class DTOUbicacion implements Serializable
 {
 	private static final long serialVersionUID = 1L;
@@ -34,6 +36,15 @@ public class DTOUbicacion implements Serializable
 	}
 
 	public DTOUbicacion() {
+	}
+
+	public DTOUbicacion(Ubicacion ubicacion, String idPersona) {
+		this.idUbicacion = ubicacion.getIdUbicacion();
+		this.longitud = ubicacion.getLongitud();
+		this.latitud = ubicacion.getLatitud();
+		this.fecha = ubicacion.getFecha();
+		this.descripcion = ubicacion.getDescripcion();
+		this.idPersona = idPersona;
 	}
 
 	public int getIdUbicacion() {

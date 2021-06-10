@@ -11,13 +11,12 @@ import javax.persistence.TypedQuery;
 import com.javaee.pryectoBack.datatypes.DTOEvento;
 import com.javaee.pryectoBack.model.Evento;
 import com.javaee.pryectoBack.model.Publicacion;
+import com.javaee.pryectoBack.model.Ubicacion;
 import com.javaee.pryectoBack.model.Usuario;
 import com.javaee.pryectoBack.util.MongoDBConnector;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-
-import java.util.List;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -88,7 +87,7 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 		DTOEvento dtoEventoRes = new DTOEvento();
 		try {
 			Evento evento = manager.find(Evento.class, dtoEvento.getIdEvento());
-			evento.setUbicacion(dtoEvento.getUbicacion());
+			evento.setUbicacion(new Ubicacion(dtoEvento.getUbicacion()));
 			evento.setDescripcion(dtoEvento.getDescripcion());
 			evento.setFechaInicio(dtoEvento.getFechaInicio());
 			evento.setFechaFin(dtoEvento.getFechaFin());

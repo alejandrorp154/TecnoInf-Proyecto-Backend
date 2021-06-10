@@ -9,7 +9,6 @@ import com.javaee.pryectoBack.model.estados;
 public class DTOEvento implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private int idEvento;
-	private String ubicacion;
 	private String descripcion;
 	private Date fechaInicio;
 	private Date fechaFin;
@@ -18,12 +17,15 @@ public class DTOEvento implements Serializable {
 	protected String idPersona;
 	private String idChat;
 	private String nombre;
+	private DTOUbicacion ubicacion;
+	private String nombreImagen;
+	private String imagen;
+	private String extension;
 
-	public DTOEvento(int idEvento, String ubicacion, String descripcion, Date fechaInicio, Date fechaFin,
-			estados estado, int idPublicacion, String idPersona, String nombre) {
+	public DTOEvento(int idEvento, String descripcion, Date fechaInicio, Date fechaFin,
+			estados estado, int idPublicacion, String idPersona, String nombre, DTOUbicacion dtoUbicacion, String nombreImagen, String imagen, String extension) {
 		super();
 		this.idEvento = idEvento;
-		this.ubicacion = ubicacion;
 		this.descripcion = descripcion;
 		this.fechaInicio = fechaInicio;
 		this.fechaFin = fechaFin;
@@ -31,6 +33,10 @@ public class DTOEvento implements Serializable {
 		this.idPublicacion = idPublicacion;
 		this.idPersona = idPersona;
 		this.nombre = nombre;
+		this.ubicacion = dtoUbicacion;
+		this.nombreImagen = nombreImagen;
+		this.extension = extension;
+		this.imagen = imagen;
 	}
 
 	public DTOEvento() {
@@ -38,13 +44,17 @@ public class DTOEvento implements Serializable {
 
 	public DTOEvento(Evento evento) {
 		this.idEvento = evento.getIdEvento();
-		this.ubicacion = evento.getUbicacion();
 		this.descripcion = evento.getDescripcion();
 		this.fechaInicio = evento.getFechaInicio();
 		this.fechaFin = evento.getFechaFin();
 		this.estado = evento.getEstado();
 		this.idPersona = evento.getIdPersona();
 		this.nombre = evento.getNombre();
+		this.idChat = evento.getIdChat();
+		this.ubicacion = new DTOUbicacion(evento.getUbicacion(), evento.getIdPersona());
+		this.nombreImagen = evento.getNombreImagen();
+		this.extension = evento.getExtension();
+		this.imagen = evento.getImagen();
 	}
 
 	public int getIdEvento() {
@@ -53,14 +63,6 @@ public class DTOEvento implements Serializable {
 
 	public void setIdEvento(int idEvento) {
 		this.idEvento = idEvento;
-	}
-
-	public String getUbicacion() {
-		return ubicacion;
-	}
-
-	public void setUbicacion(String ubicacion) {
-		this.ubicacion = ubicacion;
 	}
 
 	public String getDescripcion() {
@@ -126,4 +128,36 @@ public class DTOEvento implements Serializable {
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
+
+	public DTOUbicacion getUbicacion() {
+		return ubicacion;
+	}
+
+	public void setUbicacion(DTOUbicacion dtoUbicacion) {
+		this.ubicacion = dtoUbicacion;
+	}
+
+	public String getNombreImagen() {
+		return nombreImagen;
+	}
+
+	public void setNombreImagen(String nombreImagen) {
+		this.nombreImagen = nombreImagen;
+	}
+
+	public String getImagen() {
+		return imagen;
+	}
+
+	public void setImagen(String imagen) {
+		this.imagen = imagen;
+	}
+
+	public String getExtension() {
+		return extension;
+	}
+
+	public void setExtension(String extension) {
+		this.extension = extension;
+	}	
 }

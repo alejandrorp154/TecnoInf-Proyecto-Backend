@@ -36,14 +36,23 @@ public class EventoRest {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Agrega una evento al back", notes = "Se le pasa el objeto DTOEvento como sigue: {"
-			+ "    \"ubicacion\": \"Ubicacion de prueba\","
+			+ "    \"ubicacion\": {"
+					+ "	   \"descripcion\": \"deporte\" , "
+					+ "	   \"longitud\" : 60 , "
+					+ "    \"latitud\" : 60 , "
+					+ "    \"fecha\": \"2021-04-20\", "
+					+ "    \"idPersona\": \"1\"   "
+				+ " }\" , "
 			+ "    \"descripcion\": \"Descripcion de prueba\","
 			+ "    \"fechaInicio\": \"2021-02-20\","
 			+ "    \"fechaFin\": \"2021-02-30\","
 			+ "    \"estado\": \"enCurso\","
 			+ "    \"idPersona\": 1,"
 			+ "    \"idChat\": \"asdasd\", "
-			+ "    \"nombre\": \"nombreEvento\""
+			+ "    \"nombre\": \"nombreEvento\", "
+			+ "    \"nombreImagen\": \"nombreImagen\","
+			+ "    \"imagen\": \"asdasd\", "
+			+ "    \"extension\": \"extensionImagen\""
 			+ "}")
 	public Response crearEvento(DTOEvento dtoEvento) {
 		Response.ResponseBuilder builder = null;
@@ -86,14 +95,23 @@ public class EventoRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Modifica un evento", notes = "Se le pasa el objeto DTOEvento como sigue: {"
 			+ "    \"idEvento\": \"idEvento\","
-			+ "    \"ubicacion\": \"Ubicacion de prueba\","
+			+ "    \"ubicacion\": {"
+					+ "	   \"descripcion\": \"deporte\" , "
+					+ "	   \"longitud\" : 60 , "
+					+ "    \"latitud\" : 60 , "
+					+ "    \"fecha\": \"2021-04-20\", "
+					+ "    \"idPersona\": \"1\"   "
+				+ " }\" , "
 			+ "    \"descripcion\": \"Descripcion de prueba\","
 			+ "    \"fechaInicio\": \"2021-02-20\","
 			+ "    \"fechaFin\": \"2021-02-30\","
 			+ "    \"estado\": \"enCurso\","
 			+ "    \"idPersona\": 1,"
 			+ "    \"idChat\": \"asdasd\", "
-			+ "    \"nombre\": \"nombreEvento\""
+			+ "    \"nombre\": \"nombreEvento\" ,"
+			+ "    \"nombreImagen\": \"nombreImagen\","
+			+ "    \"imagen\": \"asdasd\", "
+			+ "    \"extension\": \"extensionImagen\""
 			+ "}")
 	public Response modificar(DTOEvento dtoEvento) {
 		Response.ResponseBuilder builder = null;
