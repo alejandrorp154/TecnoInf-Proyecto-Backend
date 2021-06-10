@@ -8,6 +8,7 @@ import com.javaee.pryectoBack.data.ControladorUsuarioDALocal;
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioContacto;
+import com.javaee.pryectoBack.datatypes.DTOAdministrador;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
 
 @Stateless
@@ -55,9 +56,8 @@ public class ControladorUsuario implements ControladorUsuarioRemote, Controlador
 	}
 
 	@Override
-	public boolean modificarUsuarioAdmin(DTOUsuario dtoUsuario) {
-		// TODO Auto-generated method stub
-		return false;
+	public DTOAdministrador modificarUsuarioAdmin(DTOAdministrador dtoAdministrador) {
+		return controladorDA.modificarUsuarioAdmin(dtoAdministrador);
 	}
 
 	@Override
@@ -78,5 +78,10 @@ public class ControladorUsuario implements ControladorUsuarioRemote, Controlador
 	@Override
 	public DTOUsuarioContacto respuestaContacto(DTOUsuarioContacto dtoUsuarioContacto) {
 		return controladorDA.respuestaContacto(dtoUsuarioContacto);
+	}
+
+	@Override
+	public DTOAdministrador altaUsuarioAdmin(DTOAdministrador dtoAdministrador){
+		return controladorDA.altaUsuarioAdmin(dtoAdministrador);
 	}
 }

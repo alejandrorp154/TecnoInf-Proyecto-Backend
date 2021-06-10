@@ -9,10 +9,18 @@ import javax.persistence.PersistenceContext;
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioContacto;
+import com.javaee.pryectoBack.datatypes.DTOAdministrador;
+import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
 import com.javaee.pryectoBack.model.PerfilUsuario;
 import com.javaee.pryectoBack.model.Persona;
-import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
-import com.javaee.pryectoBack.model.*;
+import com.javaee.pryectoBack.model.Medalla;
+import com.javaee.pryectoBack.model.Notificacion;
+import com.javaee.pryectoBack.model.Ubicacion;
+import com.javaee.pryectoBack.model.Evento;
+import com.javaee.pryectoBack.model.Publicacion;
+import com.javaee.pryectoBack.model.Multimedia;
+import com.javaee.pryectoBack.model.Interes;
+import com.javaee.pryectoBack.model.Administrador;
 import com.javaee.pryectoBack.util.MongoDBConnector;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
@@ -244,9 +252,18 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	}
 
 	@Override
-	public boolean modificarUsuarioAdmin(DTOUsuario dtoUsuario) {
-		// TODO Auto-generated method stub
-		return false;
+	public DTOAdministrador modificarUsuarioAdmin(DTOAdministrador dtoAdministrador) {
+		try{
+			Administrador admin = manager.find(Administrador.class,dtoAdministrador.getIdPersona());
+			admin.setIdPersona(dtoAdministrador.getIdPersona());
+			admin.setEmail(dtoAdministrador.getEmail());
+			admin.setNombre(dtoAdministrador.getNombre());
+			admin.setApellido(dtoAdministrador.getApellido());
+			manager.merge(admin);
+			return new DTOAdministrador(admin.getIdPersona(),admin.getEmail(), admin.getNombre(),admin.getApellido());
+		}catch (Exception exception){
+			return null;
+		}
 	}
 
 	@Override
@@ -321,5 +338,17 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 			return dtoUsuarioContactoRes;
 		}
 		return dtoUsuarioContactoRes;
+	}
+
+	@Override
+	public DTOAdministrador altaUsuarioAdmin(DTOAdministrador dtoAdministrador){
+		try{
+			Administrador admin = new Administrador(dtoAdministrador);
+			manager.persist(admin);
+			return new DTOAdministrador(admin.getIdPersona(),admin.getEmail(), admin.getNombre(), admin.getApellido());
+
+		}catch ( Exception exception){
+			return null;
+		}
 	}
 }
