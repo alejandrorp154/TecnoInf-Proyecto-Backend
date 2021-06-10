@@ -308,7 +308,9 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 
 		if (user != null){
 			String imagen = user.getPerfil().getImagenPerfil();
-			return new DTOUsuarioInicioSesion(user.getIdPersona(), user.getEmail(), user.getNombre(), user.getApellido(), user.getNickname(), imagen);
+			String extension = user.getPerfil().getExtension();
+			String nombreImagen = user.getPerfil().getNombreImagen();
+			return new DTOUsuarioInicioSesion(user.getIdPersona(), user.getEmail(), user.getNombre(), user.getApellido(), user.getNickname(), imagen, extension, nombreImagen);
 		}
 		return null;
 	}

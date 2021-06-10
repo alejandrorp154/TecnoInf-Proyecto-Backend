@@ -11,17 +11,21 @@ public class DTOUsuarioInicioSesion implements Serializable {
     private String apellido;
     private String nickname;
     private String imagen;
+    private String extension;
+    private String nombreImagen;
 
     public DTOUsuarioInicioSesion() {
     }
 
-    public DTOUsuarioInicioSesion ( String idPersona, String email, String nombre, String apellido, String nickname, String imagen){
+    public DTOUsuarioInicioSesion ( String idPersona, String email, String nombre, String apellido, String nickname, String imagen, String extension, String nombreImagen){
         this.idPersona = idPersona;
         this.email = email;
         this.nombre = nombre;
         this.apellido = apellido;
         this.nickname = nickname;
         this.imagen = imagen;
+        this.extension = extension;
+        this.nombreImagen = nombreImagen;
     }
 
 
@@ -72,4 +76,20 @@ public class DTOUsuarioInicioSesion implements Serializable {
     public void setImagen(String imagen) {
         this.imagen = imagen;
     }
+
+	public String getExtension() {
+		return extension;
+	}
+
+	public void setExtension(String extension) {
+		this.extension = extension;
+	}
+
+	public String getNombreImagen() {
+		return nombreImagen;
+	}
+
+	public void setNombreImagen(String nombreImagen) {
+		this.nombreImagen = nombreImagen;
+	}
 }
