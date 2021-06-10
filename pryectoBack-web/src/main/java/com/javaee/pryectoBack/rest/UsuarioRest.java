@@ -193,6 +193,7 @@ public class UsuarioRest
 			boolean agregado = controladorUsuario.agregarContacto(idPersona, idPersona2);
 			if (agregado) {
 				builder = Response.ok();
+				builder.entity(agregado);
 			} else {
 				Map<String, String> responseObj = new HashMap<>();
 				responseObj.put("error", "algo salio mal al tratr de agregar como contacto al usuario con id = " + idPersona2 + " verficar que el usuario logueado tiene id = " + idPersona);
@@ -247,6 +248,7 @@ public class UsuarioRest
 			boolean baja = controladorUsuario.bajaContacto(idPersona, idPersona2);
 			if (baja) {
 				builder = Response.ok();
+				builder.entity(baja);
 			} else {
 				Map<String, String> responseObj = new HashMap<>();
 				responseObj.put("error", "algo salio mal dando de baja a los contactos con ids: " + idPersona + ", " + idPersona2);
@@ -274,12 +276,12 @@ public class UsuarioRest
 			boolean seElimino = controladorUsuario.eliminarCuenta(idPersona);
 			if (seElimino){
 				builder = Response.ok();
+				builder.entity(seElimino);
 			} else {
 				Map<String, String> responseObj = new HashMap<>();
 				responseObj.put("error", "algo salio mal al eliminar el usuario con id = " + idPersona);
 				builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
 			}
-
 		}catch (Exception e){
 			Map<String, String> responseObj = new HashMap<>();
 			responseObj.put("error", e.getMessage());
