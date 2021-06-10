@@ -10,7 +10,7 @@ import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
 @Local
 public interface ControladorUsuarioDALocal {
 	DTOUsuario editarPerfil(DTOUsuario dtoUsuario);
-	boolean registrarUsuario(DTOUsuario dtoUsuario);
+	DTOUsuario registrarUsuario(DTOUsuario dtoUsuario);
 	boolean subirFoto(String idPersona, DTOMultimedia dtoMultimedia);
 	boolean agregarContacto(String idPersona, String idPersona2);
 	boolean bajaContacto(String idPersona, String idPersona2);

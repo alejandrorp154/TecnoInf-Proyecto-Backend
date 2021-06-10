@@ -49,6 +49,7 @@ public class Usuario extends Persona implements Serializable {
     fetch = FetchType.LAZY, optional = false)
 	private PerfilUsuario perfil;
 
+	private String pais;
 
 	public Usuario() {
 	}
@@ -69,6 +70,7 @@ public class Usuario extends Persona implements Serializable {
 		this.configuracion = new Configuracion();
 		this.creadorDeEventos = new ArrayList<>();
 		this.estaBloqueado = false;
+		this.pais = dtoUsuario.getPais();
 	}
 
 	public Usuario(String idPersona) {
@@ -161,5 +163,13 @@ public class Usuario extends Persona implements Serializable {
 
 	public void setEstaBloqueado(boolean estaBloqueado) {
 		this.estaBloqueado = estaBloqueado;
+	}
+
+	public String getPais() {
+		return pais;
+	}
+
+	public void setPais(String pais) {
+		this.pais = pais;
 	}
 }

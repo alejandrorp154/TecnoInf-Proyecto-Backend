@@ -15,9 +15,13 @@ public class DTOUsuario implements Serializable
 	private String direccion;
 	private String celular;
 	private DTOMedalla medalla;
+	private String pais;
+	private String imagenPerfil;
+	private String nombreImagen;
+	private String extensionImagen;
 	
 	public DTOUsuario(String idPersona, String email, String nombre, String apellido, String nickname,
-			String direccion, String celular) {
+			String direccion, String celular, String pais, String imagenPerfil, String nombreImagen, String extensionImagen) {
 		super();
 		this.idPersona = idPersona;
 		this.email = email;
@@ -26,6 +30,11 @@ public class DTOUsuario implements Serializable
 		this.nickname = nickname;
 		this.direccion = direccion;
 		this.celular = celular;
+		this.pais = pais;
+		this.imagenPerfil = imagenPerfil;
+		this.nombreImagen = nombreImagen;
+		this.extensionImagen = extensionImagen;
+
 	}
 	
 	public DTOUsuario() {
@@ -103,5 +112,37 @@ public class DTOUsuario implements Serializable
 
 	public void setMedalla(DTOMedalla medalla) {
 		this.medalla = medalla;
+	}
+
+	public String getPais() {
+		return pais;
+	}
+
+	public void setPais(String pais) {
+		this.pais = pais;
+	}
+
+	public String getImagenPerfil() {
+		return imagenPerfil;
+	}
+
+	public void setImagenPerfil(String imagenPerfil) {
+		this.imagenPerfil = imagenPerfil;
+	}
+
+	public String getNombreImagen() {
+		return nombreImagen;
+	}
+
+	public void setNombreImagen(String nombreImagen) {
+		this.nombreImagen = nombreImagen;
+	}
+
+	public String getExtension() {
+		return extensionImagen;
+	}
+
+	public void setExtension(String extension) {
+		this.extensionImagen = extension;
 	}
 }
