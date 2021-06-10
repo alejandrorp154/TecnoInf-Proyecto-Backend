@@ -23,7 +23,7 @@ public class ControladorUsuario implements ControladorUsuarioRemote, Controlador
 	}
 
 	@Override
-	public boolean registrarUsuario(DTOUsuario dtoUsuario) {
+	public DTOUsuario registrarUsuario(DTOUsuario dtoUsuario) {
 		return controladorDA.registrarUsuario(dtoUsuario);
 	}
 
@@ -67,8 +67,7 @@ public class ControladorUsuario implements ControladorUsuarioRemote, Controlador
 
 	@Override
 	public boolean desbloquearUsuario(String idPersona) {
-		// TODO Auto-generated method stub
-		return false;
+		return controladorDA.desbloquearUsuario(idPersona);
 	}
 
 	@Override

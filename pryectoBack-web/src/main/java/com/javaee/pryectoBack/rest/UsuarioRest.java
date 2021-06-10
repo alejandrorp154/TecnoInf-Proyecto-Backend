@@ -154,9 +154,10 @@ public class UsuarioRest
 		Response.ResponseBuilder builder = null;
 
 		try{
-			boolean registrado = controladorUsuario.registrarUsuario(dtoUsuario);
-			if (registrado){
+			DTOUsuario registrado = controladorUsuario.registrarUsuario(dtoUsuario);
+			if (registrado != null){
 				builder = Response.ok();
+				builder.entity(registrado);
 			}
 
 		}catch (Exception e) {
@@ -297,8 +298,24 @@ public class UsuarioRest
 		return builder.build();
 	}
 
-	public boolean desbloquearUsuario(String idPersona) {
-		// TODO Auto-generated method stub
-		return false;
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation( value = "Se desbloquea al Usuario", notes = "")
+	@Path("/{idPersona}")
+	public Response desbloquearUsuario(@PathParam("idPersona") String idPersona) {
+		Response.ResponseBuilder builder = null;
+		try{
+			boolean fueDesbloqueado = controladorUsuario.desbloquearUsuario(idPersona);
+			if (fueDesbloqueado){
+				builder = Response.ok();
+			}
+		}catch (Exception e) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
+
 	}
 }

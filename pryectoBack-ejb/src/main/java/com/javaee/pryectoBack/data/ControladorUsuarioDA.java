@@ -64,17 +64,17 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	}
 
 	@Override
-	public boolean registrarUsuario(DTOUsuario dtoUsuario) {
+	public DTOUsuario registrarUsuario(DTOUsuario dtoUsuario) {
 		try{
 			Usuario user = new Usuario(dtoUsuario);
 			user.getMedalla().setUsuario(user);
 			user.getConfiguracion().setUsuario(user);
-			PerfilUsuario perfil = new PerfilUsuario(user);
+			PerfilUsuario perfil = new PerfilUsuario(user, dtoUsuario);
 			user.setPerfil(perfil);
 			manager.merge(user);
-			return true;
+			return dtoUsuario;
 		}catch (Exception exception) {
-			return false;
+			return null;
 		}
 	}
 
@@ -257,26 +257,37 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 
 	@Override
 	public boolean bloquearUsuario(String idPersona) {
-		boolean quedoBloqueado;
+		boolean quedoBloqueado = false;
+		try {
 			Usuario user = manager.find(Usuario.class, idPersona);
-			if(user != null) {
+			if (user != null) {
 				boolean estaBloqueado = user.getEstaBloqueado();
 				if (!estaBloqueado) {
 					user.setEstaBloqueado(true);
+					manager.persist(user);
 				}
 				quedoBloqueado = true;
-				manager.persist(user);
-			} else {
-				quedoBloqueado = false;
 			}
-		return quedoBloqueado;
+			return quedoBloqueado;
+		}catch (Exception exception) {
+			return false;
+		}
 	}
 
 	@Override
 	public boolean desbloquearUsuario(String idPersona) {
-		// TODO Auto-generated method stub
-		return false;
-
+		boolean fueDesbloqueado = false;
+		try{
+			Usuario user = manager.find(Usuario.class, idPersona);
+			if (user != null){
+				user.setEstaBloqueado(false);
+				manager.persist(user);
+				fueDesbloqueado = true;
+			}
+			return fueDesbloqueado;
+		}catch (Exception exception){
+			return false;
+		}
 	}
 
 	@Override

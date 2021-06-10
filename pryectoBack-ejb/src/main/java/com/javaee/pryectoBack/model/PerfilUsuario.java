@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import com.javaee.pryectoBack.datatypes.DTOPerfilUsuario;
+import com.javaee.pryectoBack.datatypes.DTOUsuario;
 
 @Entity
 public class PerfilUsuario implements Serializable
@@ -34,17 +35,22 @@ public class PerfilUsuario implements Serializable
 	private List<Publicacion> publicaciones = new ArrayList<>();
 
 	private String imagenPerfil;
+	private String nombreImagen;
+	private String extensionImagen;
 
 	
 	public PerfilUsuario() {
 	}
 
-	public PerfilUsuario(Usuario user) {
+	public PerfilUsuario(Usuario user, DTOUsuario dtoUsuario) {
 		this.idPersona = user.getIdPersona();
 		this.usuario = user;
 		this.intereses = new ArrayList<>();
 		this.galerias = new ArrayList<>();
 		this.publicaciones = new ArrayList<>();
+		this.imagenPerfil = dtoUsuario.getImagenPerfil();
+		this.nombreImagen = dtoUsuario.getNombreImagen();
+		this.extensionImagen = dtoUsuario.getExtension();
 	}
 
 	public PerfilUsuario(DTOPerfilUsuario perfil) {
@@ -101,5 +107,21 @@ public class PerfilUsuario implements Serializable
 
 	public void setImagenPerfil(String imagenPerfil) {
 		this.imagenPerfil = imagenPerfil;
+	}
+
+	public String getNombreImagen() {
+		return nombreImagen;
+	}
+
+	public void setNombreImagen(String nombreImagen) {
+		this.nombreImagen = nombreImagen;
+	}
+
+	public String getExtension() {
+		return extensionImagen;
+	}
+
+	public void setExtension(String extensionImagen) {
+		this.extensionImagen = extensionImagen;
 	}
 }
