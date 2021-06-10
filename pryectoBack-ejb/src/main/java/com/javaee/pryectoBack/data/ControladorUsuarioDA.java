@@ -338,7 +338,7 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 		try{
 			Administrador admin = new Administrador(dtoAdministrador);
 			manager.persist(admin);
-			return dtoAdministrador;
+			return new DTOAdministrador(admin.getIdPersona(),admin.getEmail(), admin.getNombre(), admin.getApellido());
 
 		}catch ( Exception exception){
 			return null;
