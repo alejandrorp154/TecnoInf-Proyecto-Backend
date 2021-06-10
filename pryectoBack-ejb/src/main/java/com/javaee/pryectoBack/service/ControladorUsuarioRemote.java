@@ -17,7 +17,7 @@ public interface ControladorUsuarioRemote {
 	boolean bajaContacto(String idPersona, String idPersona2);
 	boolean eliminarCuenta(String idPersona);
 	boolean bajaUsuarioAdmin(String idPersona);
-	boolean modificarUsuarioAdmin(DTOUsuario dtoUsuario);
+	DTOAdministrador modificarUsuarioAdmin(DTOAdministrador dtoAdministrador);
 	boolean bloquearUsuario(String idPersona);
 	boolean desbloquearUsuario(String idPersona);
 	DTOUsuarioInicioSesion datosUsuarioInicioSesion(String idPersona);

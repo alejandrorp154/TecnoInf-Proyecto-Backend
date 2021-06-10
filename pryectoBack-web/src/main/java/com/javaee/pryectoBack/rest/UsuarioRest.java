@@ -273,9 +273,24 @@ public class UsuarioRest
 		return false;
 	}
 
-	public boolean modificarUsuarioAdmin(DTOUsuario dtoUsuario) {
-		// TODO Auto-generated method stub
-		return false;
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/modificarAdministrador")
+	public Response modificarUsuarioAdmin(DTOAdministrador dtoAdministrador) {
+		Response.ResponseBuilder builder = null;
+		try {
+			DTOAdministrador dtoAdmin = controladorUsuario.modificarUsuarioAdmin(dtoAdministrador);
+			if (dtoAdmin != null){
+				builder = Response.ok();
+				builder.entity(dtoAdmin);
+			}
+		}catch (Exception e) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
 	}
 
 	@PUT
@@ -307,7 +322,7 @@ public class UsuarioRest
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Registra un nuevo Administrador en la aplicación", notes = "")
-	@Path("/altaAdministrador")
+	@Path("/{altaAdministrador}")
 	public Response altaUsuarioAdmin(DTOAdministrador dtoAdministrador){
 		Response.ResponseBuilder builder = null;
 		try {

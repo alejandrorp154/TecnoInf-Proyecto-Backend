@@ -258,9 +258,18 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	}
 
 	@Override
-	public boolean modificarUsuarioAdmin(DTOUsuario dtoUsuario) {
-		// TODO Auto-generated method stub
-		return false;
+	public DTOAdministrador modificarUsuarioAdmin(DTOAdministrador dtoAdministrador) {
+		try{
+			Administrador admin = manager.find(Administrador.class,dtoAdministrador.getIdPersona());
+			admin.setIdPersona(dtoAdministrador.getIdPersona());
+			admin.setEmail(dtoAdministrador.getEmail());
+			admin.setNombre(dtoAdministrador.getNombre());
+			admin.setApellido(dtoAdministrador.getApellido());
+			manager.merge(admin);
+			return new DTOAdministrador(admin.getIdPersona(),admin.getEmail(), admin.getNombre(),admin.getApellido());
+		}catch (Exception exception){
+			return null;
+		}
 	}
 
 	@Override

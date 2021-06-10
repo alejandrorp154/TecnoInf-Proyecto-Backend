@@ -56,9 +56,8 @@ public class ControladorUsuario implements ControladorUsuarioRemote, Controlador
 	}
 
 	@Override
-	public boolean modificarUsuarioAdmin(DTOUsuario dtoUsuario) {
-		// TODO Auto-generated method stub
-		return false;
+	public DTOAdministrador modificarUsuarioAdmin(DTOAdministrador dtoAdministrador) {
+		return controladorDA.modificarUsuarioAdmin(dtoAdministrador);
 	}
 
 	@Override
