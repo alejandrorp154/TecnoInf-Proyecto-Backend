@@ -1,6 +1,7 @@
 package com.javaee.pryectoBack.rest;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJB;
@@ -105,7 +106,9 @@ public class InteresRest {
 	{
 		Response.ResponseBuilder builder = null;
 		try {
-			controladorInteres.getAll(offset, size);
+			List<DTOInteres> intereses = controladorInteres.getAll(offset, size);
+			builder = Response.ok();
+			builder.entity(intereses);
 		} catch (Exception exception) {
 			Map<String, String> responseObj = new HashMap<>();
 			responseObj.put("error", exception.getMessage());

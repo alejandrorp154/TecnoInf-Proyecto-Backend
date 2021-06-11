@@ -325,7 +325,7 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 				usuarioContacto1.setEstadoContactos(dtoUsuarioContacto.getEstadoContactos());
 				UsuarioContacto usuarioContacto2 = new UsuarioContacto();
 				usuarioContacto2.setIdPersona(dtoUsuarioContacto.getContactoIdPersona());
-				usuarioContacto2.setContactoIdPersona(dtoUsuarioContacto.getContactoIdPersona());
+				usuarioContacto2.setContactoIdPersona(dtoUsuarioContacto.getIdPersona());
 				usuarioContacto2.setFechaContactos(dateUpdated);
 				usuarioContacto2.setEstadoContactos(dtoUsuarioContacto.getEstadoContactos());
 				usuarioContacto1.setFechaContactos(dateUpdated);
