@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -34,6 +35,7 @@ public class PerfilUsuario implements Serializable
 	@OneToMany(mappedBy = "perfil")
 	private List<Publicacion> publicaciones = new ArrayList<>();
 
+	@Column(columnDefinition="text", length=10485760)
 	private String imagenPerfil;
 	private String nombreImagen;
 	private String extensionImagen;

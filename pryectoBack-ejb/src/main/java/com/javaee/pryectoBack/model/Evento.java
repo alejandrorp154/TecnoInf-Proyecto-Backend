@@ -33,6 +33,7 @@ public class Evento implements Serializable {
 	@OneToOne(mappedBy = "evento", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
 	private Ubicacion ubicacion;
 	private String nombreImagen;
+	@Column(columnDefinition="text", length=10485760)
 	private String imagen;
 	private String extension;
 

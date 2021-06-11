@@ -73,17 +73,24 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 
 	@Override
 	public DTOUsuario registrarUsuario(DTOUsuario dtoUsuario) {
+		DTOUsuario res = new DTOUsuario();
 		try{
-			Usuario user = new Usuario(dtoUsuario);
-			user.getMedalla().setUsuario(user);
-			user.getConfiguracion().setUsuario(user);
-			PerfilUsuario perfil = new PerfilUsuario(user, dtoUsuario);
-			user.setPerfil(perfil);
-			manager.merge(user);
-			return dtoUsuario;
+			Usuario usuario = manager.find(Usuario.class, dtoUsuario.getIdPersona());
+			if (usuario == null) {
+				Usuario user = new Usuario(dtoUsuario);
+				user.getMedalla().setUsuario(user);
+				user.getConfiguracion().setUsuario(user);
+				PerfilUsuario perfil = new PerfilUsuario(user, dtoUsuario);
+				user.setPerfil(perfil);
+				manager.merge(user);
+				res = new DTOUsuario(user);
+			} else {
+				res = dtoUsuario;
+			}
 		}catch (Exception exception) {
 			return null;
 		}
+		return res;
 	}
 
 	@Override

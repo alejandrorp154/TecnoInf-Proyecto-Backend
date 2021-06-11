@@ -3,6 +3,7 @@ package com.javaee.pryectoBack.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,6 +19,7 @@ public class Publicacion implements Serializable
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int idPublicacion;
+	@Column(columnDefinition="text", length=10485760)
 	private String contenido;
 	private String extension;
 	private String nombre;
