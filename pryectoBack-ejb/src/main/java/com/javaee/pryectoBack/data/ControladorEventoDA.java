@@ -31,6 +31,9 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 		try {
 			Evento evento = new Evento(dtoEvento);
 			manager.persist(evento);
+			Ubicacion ubicacion = new Ubicacion(dtoEvento.getUbicacion());
+			ubicacion.setEvento(evento);
+			manager.merge(ubicacion);
 			Usuario owner = manager.find(Usuario.class, dtoEvento.getIdPersona());
 			owner.getEventos().add(evento);
 			owner.getCreadorDeEventos().add(evento);
@@ -84,13 +87,16 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 		DTOEvento dtoEventoRes = new DTOEvento();
 		try {
 			Evento evento = manager.find(Evento.class, dtoEvento.getIdEvento());
-			evento.setUbicacion(new Ubicacion(dtoEvento.getUbicacion()));
-			evento.setDescripcion(dtoEvento.getDescripcion());
-			evento.setFechaInicio(dtoEvento.getFechaInicio());
-			evento.setFechaFin(dtoEvento.getFechaFin());
-			evento.setEstado(dtoEvento.getEstado());
-			manager.merge(evento);
-			dtoEventoRes = new DTOEvento(evento);
+			if (evento != null) {
+				evento.setUbicacion(new Ubicacion(dtoEvento.getUbicacion()));
+				evento.setDescripcion(dtoEvento.getDescripcion());
+				evento.setFechaInicio(dtoEvento.getFechaInicio());
+				evento.setFechaFin(dtoEvento.getFechaFin());
+				evento.setEstado(dtoEvento.getEstado());
+				evento.getUbicacion().setEvento(evento);
+				manager.merge(evento);
+				dtoEventoRes = new DTOEvento(evento);
+			}
 		} catch (Exception exception) {
 			return dtoEventoRes;
 		}
@@ -126,11 +132,13 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 		List<DTOEvento> res = new ArrayList<>();
 		try {
 			// luego de agregar la logica de invitar a evento y aceptar invitacion hay que cambiar esta logica un poco
-			TypedQuery<Evento> query = manager.createQuery("SELECT evento FROM Evento evento where evento.idPersona = :idPersona order by evento.idEvento", Evento.class);
-			List<Evento> eventos = query.setParameter("idPersona", idPersona).setFirstResult(offset).setMaxResults(size).getResultList();
+			TypedQuery<Evento> query = manager.createQuery("SELECT evento FROM Evento evento order by evento.idEvento", Evento.class);
+			List<Evento> eventos = query.setFirstResult(offset).setMaxResults(size).getResultList();
 			for(Evento evento : eventos) {
-				DTOEvento dtoEvento = new DTOEvento(evento);
-				res.add(dtoEvento);
+				if (evento.getUsuarioCreador().getIdPersona().equals(idPersona)) {
+					DTOEvento dtoEvento = new DTOEvento(evento);
+					res.add(dtoEvento);
+				}
 			}
 		} catch (Exception exception) {
 			return res;

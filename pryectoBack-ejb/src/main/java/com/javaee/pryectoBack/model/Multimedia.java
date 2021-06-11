@@ -2,6 +2,7 @@ package com.javaee.pryectoBack.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,6 +16,7 @@ public class Multimedia implements Serializable
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int idMultimedia;
+	@Column(columnDefinition="text", length=10485760)
 	private String contenido;
 	private String nombre;
 	private String extension;

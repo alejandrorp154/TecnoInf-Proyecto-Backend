@@ -13,13 +13,10 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 
-import javax.ws.rs.DELETE;
 import javax.ws.rs.PathParam;
 
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -86,6 +83,7 @@ public class EventoRest {
 			boolean eventoEliminado = controladorEvento.eliminarEvento(idEvento, idPersona);
 			if (eventoEliminado) {
 				builder = Response.ok();
+				builder.entity(eventoEliminado);
 			} else {
 				Map<String, String> responseObj = new HashMap<>();
 				responseObj.put("error", "El evento con idEvento "+ idEvento +" no se pudo eliminar o no existe mas en el servidor.");

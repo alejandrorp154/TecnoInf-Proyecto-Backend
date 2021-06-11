@@ -58,6 +58,7 @@ public class InteresRest {
 			boolean res = controladorInteres.baja(idInteres);
 			if (res) {
 	            builder = Response.ok();
+	            builder.entity(res);
 			}
 			else {
 				Map<String, String> responseObj = new HashMap<>();
@@ -101,9 +102,19 @@ public class InteresRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Devuelve una lista de data types intereses", notes = "el offset es la posicion donde empieza (0 por defecto) el size es el tamño de la lista, por ejemplo si la primera consulta es offset=0 y size=10 la segunda consulta va a ser offset=10 y size=10")
 	@Path("/{offset}/{size}")
-	public List<DTOInteres> getAll(@PathParam("offset") int offset, @PathParam("size") int size)
+	public Response getAll(@PathParam("offset") int offset, @PathParam("size") int size)
 	{
-		return controladorInteres.getAll(offset, size);
+		Response.ResponseBuilder builder = null;
+		try {
+			List<DTOInteres> intereses = controladorInteres.getAll(offset, size);
+			builder = Response.ok();
+			builder.entity(intereses);
+		} catch (Exception exception) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", exception.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
 	}
 	
 	@GET
@@ -139,6 +150,7 @@ public class InteresRest {
 		if (result)
 		{
 			builder = Response.ok();
+			builder.entity(result);
 		}
 		else
 		{

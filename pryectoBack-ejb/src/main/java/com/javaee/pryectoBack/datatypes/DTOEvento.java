@@ -51,7 +51,7 @@ public class DTOEvento implements Serializable {
 		this.idPersona = evento.getUsuarioCreador().getIdPersona();
 		this.nombre = evento.getNombre();
 		this.idChat = evento.getIdChat();
-		this.ubicacion = new DTOUbicacion(evento.getUbicacion(), this.idPersona);
+		this.ubicacion = evento.getUbicacion() != null ? new DTOUbicacion(evento.getUbicacion(), this.idPersona) : new DTOUbicacion();
 		this.nombreImagen = evento.getNombreImagen();
 		this.extension = evento.getExtension();
 		this.imagen = evento.getImagen();

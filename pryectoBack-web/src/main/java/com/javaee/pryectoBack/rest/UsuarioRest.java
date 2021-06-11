@@ -133,6 +133,11 @@ public class UsuarioRest
 
 			if (dtUserInicioSesion != null) {
 				builder = Response.ok();
+				builder.entity(dtUserInicioSesion);
+			} else {
+				Map<String, String> responseObj = new HashMap<>();
+				responseObj.put("error", "El usuario con idUsuario = " + idPersona + " no existe");
+				builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
 			}
 		}catch (Exception e) {
 			Map<String, String> responseObj = new HashMap<>();
@@ -157,6 +162,10 @@ public class UsuarioRest
 			if (registrado != null){
 				builder = Response.ok();
 				builder.entity(registrado);
+			} else {
+				Map<String, String> responseObj = new HashMap<>();
+				responseObj.put("error", "algo slaio mal registrando al usuario con id = " + dtoUsuario.getIdPersona() + " intente nuevamente luego de ver la documentacion");
+				builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
 			}
 
 		}catch (Exception e) {
@@ -184,6 +193,11 @@ public class UsuarioRest
 			boolean agregado = controladorUsuario.agregarContacto(idPersona, idPersona2);
 			if (agregado) {
 				builder = Response.ok();
+				builder.entity(agregado);
+			} else {
+				Map<String, String> responseObj = new HashMap<>();
+				responseObj.put("error", "algo salio mal al tratr de agregar como contacto al usuario con id = " + idPersona2 + " verficar que el usuario logueado tiene id = " + idPersona);
+				builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
 			}
 
 		} catch (Exception e) {
@@ -234,6 +248,7 @@ public class UsuarioRest
 			boolean baja = controladorUsuario.bajaContacto(idPersona, idPersona2);
 			if (baja) {
 				builder = Response.ok();
+				builder.entity(baja);
 			} else {
 				Map<String, String> responseObj = new HashMap<>();
 				responseObj.put("error", "algo salio mal dando de baja a los contactos con ids: " + idPersona + ", " + idPersona2);
@@ -261,8 +276,12 @@ public class UsuarioRest
 			boolean seElimino = controladorUsuario.eliminarCuenta(idPersona);
 			if (seElimino){
 				builder = Response.ok();
+				builder.entity(seElimino);
+			} else {
+				Map<String, String> responseObj = new HashMap<>();
+				responseObj.put("error", "algo salio mal al eliminar el usuario con id = " + idPersona);
+				builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
 			}
-
 		}catch (Exception e){
 			Map<String, String> responseObj = new HashMap<>();
 			responseObj.put("error", e.getMessage());
@@ -287,6 +306,10 @@ public class UsuarioRest
 			if (dtoAdmin != null){
 				builder = Response.ok();
 				builder.entity(dtoAdmin);
+			} else {
+				Map<String, String> responseObj = new HashMap<>();
+				responseObj.put("error", "algo salio mal al tratr de modificar el usuario administrador con id = " + dtoAdministrador.getIdPersona());
+				builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
 			}
 		}catch (Exception e) {
 			Map<String, String> responseObj = new HashMap<>();
@@ -307,6 +330,11 @@ public class UsuarioRest
 			boolean fueBloqueado = controladorUsuario.bloquearUsuario(idPersona);
 			if (fueBloqueado){
 				builder = Response.ok();
+				builder.entity(fueBloqueado);
+			} else {
+				Map<String, String> responseObj = new HashMap<>();
+				responseObj.put("error", "algo salio mal al tratr de bloquear al usuario con idPersona = " + idPersona);
+				builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
 			}
 		}catch (Exception e) {
 			Map<String, String> responseObj = new HashMap<>();
@@ -320,13 +348,18 @@ public class UsuarioRest
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation( value = "Se desbloquea al Usuario", notes = "")
-	@Path("desbloquearUsuario/{idPersona}")
+	@Path("/desbloquearUsuario/{idPersona}")
 	public Response desbloquearUsuario(@PathParam("idPersona") String idPersona) {
 		Response.ResponseBuilder builder = null;
 		try{
 			boolean fueDesbloqueado = controladorUsuario.desbloquearUsuario(idPersona);
 			if (fueDesbloqueado){
 				builder = Response.ok();
+				builder.entity(fueDesbloqueado);
+			} else {
+				Map<String, String> responseObj = new HashMap<>();
+				responseObj.put("error", " algo salio mal al tratar de desbloquar al usuario con id = " + idPersona);
+				builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
 			}
 		}catch (Exception e) {
 			Map<String, String> responseObj = new HashMap<>();
@@ -341,7 +374,7 @@ public class UsuarioRest
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Registra un nuevo Administrador en la aplicación", notes = "")
-	@Path("/{altaAdministrador}")
+	@Path("/altaAdministrador")
 	public Response altaUsuarioAdmin(DTOAdministrador dtoAdministrador){
 		Response.ResponseBuilder builder = null;
 		try {
@@ -349,6 +382,10 @@ public class UsuarioRest
 			if (dtoadmin != null){
 				builder = Response.ok();
 				builder.entity(dtoadmin);
+			} else {
+				Map<String, String> responseObj = new HashMap<>();
+				responseObj.put("error", "algo salio mal al tratar de dar de alta al administrador con id = " + dtoAdministrador.getIdPersona());
+				builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
 			}
 		}catch (Exception e) {
 			Map<String, String> responseObj = new HashMap<>();

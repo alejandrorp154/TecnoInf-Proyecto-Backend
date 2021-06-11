@@ -73,17 +73,24 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 
 	@Override
 	public DTOUsuario registrarUsuario(DTOUsuario dtoUsuario) {
+		DTOUsuario res = new DTOUsuario();
 		try{
-			Usuario user = new Usuario(dtoUsuario);
-			user.getMedalla().setUsuario(user);
-			user.getConfiguracion().setUsuario(user);
-			PerfilUsuario perfil = new PerfilUsuario(user, dtoUsuario);
-			user.setPerfil(perfil);
-			manager.merge(user);
-			return dtoUsuario;
+			Usuario usuario = manager.find(Usuario.class, dtoUsuario.getIdPersona());
+			if (usuario == null) {
+				Usuario user = new Usuario(dtoUsuario);
+				user.getMedalla().setUsuario(user);
+				user.getConfiguracion().setUsuario(user);
+				PerfilUsuario perfil = new PerfilUsuario(user, dtoUsuario);
+				user.setPerfil(perfil);
+				manager.merge(user);
+				res = new DTOUsuario(user);
+			} else {
+				res = dtoUsuario;
+			}
 		}catch (Exception exception) {
 			return null;
 		}
+		return res;
 	}
 
 	@Override
@@ -308,7 +315,9 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 
 		if (user != null){
 			String imagen = user.getPerfil().getImagenPerfil();
-			return new DTOUsuarioInicioSesion(user.getIdPersona(), user.getEmail(), user.getNombre(), user.getApellido(), user.getNickname(), imagen);
+			String extension = user.getPerfil().getExtension();
+			String nombreImagen = user.getPerfil().getNombreImagen();
+			return new DTOUsuarioInicioSesion(user.getIdPersona(), user.getEmail(), user.getNombre(), user.getApellido(), user.getNickname(), imagen, extension, nombreImagen);
 		}
 		return null;
 	}
@@ -323,7 +332,7 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 				usuarioContacto1.setEstadoContactos(dtoUsuarioContacto.getEstadoContactos());
 				UsuarioContacto usuarioContacto2 = new UsuarioContacto();
 				usuarioContacto2.setIdPersona(dtoUsuarioContacto.getContactoIdPersona());
-				usuarioContacto2.setContactoIdPersona(dtoUsuarioContacto.getContactoIdPersona());
+				usuarioContacto2.setContactoIdPersona(dtoUsuarioContacto.getIdPersona());
 				usuarioContacto2.setFechaContactos(dateUpdated);
 				usuarioContacto2.setEstadoContactos(dtoUsuarioContacto.getEstadoContactos());
 				usuarioContacto1.setFechaContactos(dateUpdated);
