@@ -99,8 +99,19 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 	
 	@Override
 	public List<DTOUsuario> obtenerAmigos(String idPersona, int offset, int size) {
-		// TODO Auto-generated method stub
-		return null;
+		List<DTOUsuario> dtoUsuarios = new ArrayList<DTOUsuario>();
+		try {
+			TypedQuery<UsuarioContacto> query = manager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.idPersona = '" + idPersona + "' and usuariocontacto.estadoContactos = '" + estadosContactos.aceptada + "' order by usuariocontacto.fechaContactos", UsuarioContacto.class);
+			List<UsuarioContacto> usuariosContactos = query.setFirstResult(offset).setMaxResults(size).getResultList();
+			for(UsuarioContacto usuarioContacto : usuariosContactos) {
+				Usuario usuario = manager.find(Usuario.class, usuarioContacto.getContactoIdPersona());
+				DTOUsuario dtoUsuario = new DTOUsuario(usuario);
+				dtoUsuarios.add(dtoUsuario);
+			}
+		} catch (Exception exception) {
+			return dtoUsuarios;
+		}
+		return dtoUsuarios;
 	}
 
 	@Override
