@@ -53,14 +53,37 @@ public class ControladorUbicacionDA implements ControladorUbicacionDALocal, Cont
 
 	@Override
 	public boolean baja(int idUbicacion) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean res = false;
+		try {
+			Ubicacion ubicacion = manager.find(Ubicacion.class, idUbicacion);
+			if (ubicacion != null) {
+				manager.remove(ubicacion);
+				res = true;
+			}
+		} catch (Exception exception) {
+			return res;
+		}
+		return res;
 	}
 
 	@Override
 	public boolean modificar(DTOUbicacion dtoUbicacion) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean res = false;
+		try {
+			Ubicacion ubicacion = manager.find(Ubicacion.class, dtoUbicacion.getIdUbicacion());
+			if (ubicacion != null) {
+				ubicacion.setDescripcion(dtoUbicacion.getDescripcion());
+				ubicacion.setFecha(dtoUbicacion.getFecha());
+				ubicacion.setLatitud(dtoUbicacion.getLatitud());
+				ubicacion.setLongitud(dtoUbicacion.getLongitud());
+				ubicacion.setPais(dtoUbicacion.getPais());
+				manager.merge(ubicacion);
+				res = true;
+			}
+		} catch (Exception exception) {
+			return res;
+		}
+		return res;
 	}
 
 	@Override
