@@ -1,13 +1,17 @@
 package com.javaee.pryectoBack.data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import com.javaee.pryectoBack.datatypes.DTOEstadistica;
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOPerfilUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
@@ -122,24 +126,6 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 	}
 
 	@Override
-	public List<DTOUsuario> obtenerCantidadUsuariosEnElSistema(int offset, int size) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<DTOUsuario> obtenerCantidadUsuariosSegunPais(String pais, int offset, int size) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<DTOUsuarioMedalla> obtenerCantidadUsuariosSegunMedallas(int idMedalla, int offset, int size) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public List<DTOUsuario> buscarAmigosSegunUbicacion(List<DTOUsuario> dtoUsuarios, String idPersona) {
 		List<DTOUsuario> res = new ArrayList<DTOUsuario>();
 		try {
@@ -249,6 +235,74 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 			return res;
 		}
 		return res;
+	}
+	
+	public List<DTOEstadistica> seleccionarTipoEstadistica(String tipoEstadistica){
+		List<Usuario> usuarios = null;
+		TypedQuery<Usuario> userQuery = null;
+		List<DTOEstadistica> estadisticas = new ArrayList<DTOEstadistica>();
+		DTOEstadistica estadistica = null;
+		switch (tipoEstadistica) {
+		case "CantidadUsuariosTotal":
+			Query query = manager.createQuery("SELECT Count(*) FROM Persona WHERE establoqueado = false");
+			Long count = (Long) query.getSingleResult();
+			estadistica = new DTOEstadistica();
+			estadistica.setCantidadUsuariosRegistrados(count);
+			estadisticas.add(estadistica);
+			return estadisticas;
+		case "UsuariosPorMedalla":
+			userQuery = manager.createQuery("SELECT u FROM Usuario u", Usuario.class);
+			usuarios = userQuery.getResultList();
+			for (Usuario usuario : usuarios) {
+				DTOEstadistica dtoEstadistica = new DTOEstadistica();
+				dtoEstadistica.setNombreUsuario(usuario.getNickname());
+				dtoEstadistica.setCantidadPuntos(usuario.getMedalla().getCantidadPuntos());
+				dtoEstadistica.setNombreMedalla(String.valueOf(usuario.getMedalla().getRango()));				
+				estadisticas.add(dtoEstadistica);
+			}
+			return estadisticas;
+		case "CantidadVisitasPorUsuario":
+			userQuery = manager.createQuery("SELECT u FROM Usuario u", Usuario.class);
+			usuarios = userQuery.getResultList();
+			for (Usuario usuario : usuarios) {
+				List<Ubicacion> ubicaciones = usuario.getUbicaciones();
+				Map<String, List<Ubicacion>> ubicacionPorPais = new HashMap<String, List<Ubicacion>>();
+				for (Ubicacion ubicacion : ubicaciones) {
+					if (ubicacionPorPais.get(ubicacion.getPais()) == null) {
+						List<Ubicacion> listadoUbicaciones = new ArrayList<Ubicacion>();
+						listadoUbicaciones.add(ubicacion);
+						ubicacionPorPais.put(ubicacion.getPais(), listadoUbicaciones);
+					} else {
+						ubicacionPorPais.get(ubicacion.getPais()).add(ubicacion);
+					}
+				}
+				estadistica = new DTOEstadistica();
+				estadistica.setCantidadVisitas(ubicacionPorPais.keySet().size());
+				estadistica.setNombreUsuario(usuario.getNickname());
+				estadisticas.add(estadistica);
+			}
+			return estadisticas;
+		case "CantidadUsuariosPorPais":
+			userQuery = manager.createQuery("SELECT u FROM Usuario u" , Usuario.class);
+			usuarios = userQuery.getResultList();
+			Map<String, List<Usuario>> usuariosPorPais = new HashMap<String, List<Usuario>>();
+			for (Usuario usuario : usuarios) {
+				if (usuariosPorPais.get(usuario.getPais()) == null) {
+					List<Usuario> usuariosPais = new ArrayList<Usuario>();
+					usuariosPais.add(usuario);
+					usuariosPorPais.put(usuario.getPais(), usuariosPais);
+				} else {
+					usuariosPorPais.get(usuario.getPais()).add(usuario);
+				}
+			}
+			for (String pais : usuariosPorPais.keySet()) {
+				estadistica = new DTOEstadistica(Long.valueOf(usuariosPorPais.get(pais).size()), pais);
+				estadisticas.add(estadistica);
+			}
+			return estadisticas;
+		default:
+			return null;
+		}		
 	}
 
 	@Override

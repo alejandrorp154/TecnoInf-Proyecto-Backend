@@ -7,6 +7,7 @@ import javax.ejb.Remote;
 import javax.ejb.Stateless;
 
 import com.javaee.pryectoBack.data.ControladorVisualizacionDALocal;
+import com.javaee.pryectoBack.datatypes.DTOEstadistica;
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOPerfilUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
@@ -50,23 +51,10 @@ public class ControladorVisualizacion implements ControladorVisualizacionLocal, 
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 	@Override
-	public List<DTOUsuario> obtenerCantidadUsuariosEnElSistema(int offset, int size) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<DTOUsuario> obtenerCantidadUsuariosSegunPais(String pais, int offset, int size) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<DTOUsuarioMedalla> obtenerCantidadUsuariosSegunMedallas(int idMedalla, int offset, int size) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<DTOEstadistica> seleccionarTipoEstadistica(String tipoEstadistica){
+		return controladorVisualizacionDA.seleccionarTipoEstadistica(tipoEstadistica);
 	}
 
 	@Override

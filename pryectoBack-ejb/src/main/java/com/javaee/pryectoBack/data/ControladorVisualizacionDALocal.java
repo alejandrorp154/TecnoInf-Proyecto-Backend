@@ -8,6 +8,7 @@ import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOPerfilUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioMedalla;
+import com.javaee.pryectoBack.datatypes.DTOEstadistica;
 
 @Local
 public interface ControladorVisualizacionDALocal {
@@ -17,11 +18,9 @@ public interface ControladorVisualizacionDALocal {
 	List<DTOUsuario> obtenerAmigos(String idPersona, int offset, int size);
 	List<DTOUsuario> obtenerUsuarios(int offset, int size);
 	DTOUsuarioMedalla visualizarProgreso(String idPersona);
-	List<DTOUsuario> obtenerCantidadUsuariosEnElSistema(int offset, int size);
-	List<DTOUsuario> obtenerCantidadUsuariosSegunPais(String pais, int offset, int size);
-	List<DTOUsuarioMedalla> obtenerCantidadUsuariosSegunMedallas(int idMedalla, int offset, int size);
 	List<DTOUsuario> buscarAmigosSegunUbicacion(List<DTOUsuario> dtoUsuarios, String idPersona);
 	List<DTOUsuario> buscarAmigosDeAmigos(String idPersona);
 	List<DTOUsuario> buscarAmigosSegunIntereses(List<DTOUsuario> dtoUsuarios, String idPersona);
 	List<DTOUsuario> obtenerSolicitudesPendientes(String idPersona, int offset, int size);
+	List<DTOEstadistica> seleccionarTipoEstadistica(String tipoEstadistica);
 }
