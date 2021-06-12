@@ -48,8 +48,7 @@ public class ControladorInteres implements ControladorInteresLocal, ControladorI
 
 	@Override
 	public boolean desuscribe(String idPersona, int idInteres) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.controladorInteresDA.desuscribe(idPersona, idInteres);
 	}
 
 }

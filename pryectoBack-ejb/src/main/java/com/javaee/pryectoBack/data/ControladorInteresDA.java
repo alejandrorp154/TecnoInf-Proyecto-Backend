@@ -9,8 +9,11 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import com.javaee.pryectoBack.datatypes.DTOInteres;
+import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.model.Interes;
 import com.javaee.pryectoBack.model.PerfilUsuario;
+import com.javaee.pryectoBack.model.Usuario;
+import com.javaee.pryectoBack.util.PuntosUsuario;
 
 @Singleton
 public class ControladorInteresDA implements ControladorInteresDALocal, ControladorInteresDARemote {
@@ -18,9 +21,12 @@ public class ControladorInteresDA implements ControladorInteresDALocal, Controla
 
 	@PersistenceContext(unitName = "primary")
 	private EntityManager manager;
+	
+	private PuntosUsuario puntoUsuario;
 
 	public ControladorInteresDA()
 	{
+		puntoUsuario = new PuntosUsuario();
 	}
 	
 	
@@ -111,6 +117,11 @@ public class ControladorInteresDA implements ControladorInteresDALocal, Controla
 					List<PerfilUsuario> perfilesAux = interes.getPerfiles();
 					perfilesAux.add(perfil);
 					manager.merge(perfil);
+					Usuario usuario = manager.find(Usuario.class, perfil.getIdPersona());
+					if (usuario != null) {
+						DTOUsuario dtoUsuario = new DTOUsuario(usuario);
+						puntoUsuario.getPuntosUsuario("SubscribeInteres", dtoUsuario, manager);
+					}
 					res = true;
 				}
 			}
@@ -122,8 +133,29 @@ public class ControladorInteresDA implements ControladorInteresDALocal, Controla
 
 	@Override
 	public boolean desuscribe(String idPersona, int idInteres) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean res = false;
+		try {
+			PerfilUsuario perfil = manager.find(PerfilUsuario.class, idPersona);
+			if (perfil != null) {
+				Interes interes = manager.find(Interes.class, idInteres);
+				if (interes != null) {
+					List<PerfilUsuario> perfiles = interes.getPerfiles();
+					boolean perfilRemovido = perfiles.remove(perfil);
+					if (perfilRemovido) {
+						manager.merge(interes);
+						Usuario usuario = manager.find(Usuario.class, perfil.getIdPersona());
+						if (usuario != null) {
+							DTOUsuario dtoUsuario = new DTOUsuario(usuario);
+							puntoUsuario.getPuntosUsuario("DesuscribirInteres", dtoUsuario, manager);
+						}
+						res = true;
+					}
+				}
+			}
+			return res;
+		} catch (Exception exception) {
+			return res;
+		}
 	}
 
 }
