@@ -44,8 +44,36 @@ public class ControladorPublicacionComentarioDA
 
 	@Override
 	public boolean modificarPublicacion(DTOPublicacion dtoPublicacion) {
-		// TODO Auto-generated method stub
-		return false;
+		Publicacion publicacion = manager.find(Publicacion.class, dtoPublicacion.getIdPublicacion());
+		if (publicacion != null) {
+			publicacion.setContenido(dtoPublicacion.getContenido());
+			publicacion.setExtension(dtoPublicacion.getExtension());
+			publicacion.setFecha(dtoPublicacion.getFecha());
+			if (publicacion.getTipo().getTipo() == dtoPublicacion.getTipo().getTipo()) {
+				manager.remove(publicacion.getTipo());
+				Tipo tipoNuevo  = new Tipo(dtoPublicacion.getTipo());
+				publicacion.setTipo(tipoNuevo);
+				manager.merge(tipoNuevo);
+			}			
+			publicacion.setNombre(dtoPublicacion.getNombre());
+			manager.merge(publicacion);
+		}		
+		return true;
+	}
+	
+	@Override
+	public boolean bajaPublicacion(int idPublicacion) {
+		Publicacion publicacion = manager.find(Publicacion.class, idPublicacion);
+		if (publicacion != null) {
+			manager.remove(publicacion.getTipo());
+			MongoDBConnector mongoConnector = new MongoDBConnector();
+			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosYReacciones");
+			collection.deleteMany(eq("idPublicacion",idPublicacion));
+			collection = mongoConnector.getCollection("ReaccionesPublicacion");
+			collection.deleteMany(eq("idPublicacion",idPublicacion));
+			manager.remove(publicacion);			
+		}		
+		return true;
 	}
 
 	@Override

@@ -18,4 +18,5 @@ public interface ControladorPublicacionComentarioRemote {
 	boolean modificarPublicacion(DTOPublicacion dtoPublicacion);
 	boolean reaccionPublicacion(DTOReaccion dtoReaccion);
 	DTOPublicacion altaPublicacion(DTOPublicacion dtoPublicacion);
+	boolean bajaPublicacion(int idPublicacion);
 }

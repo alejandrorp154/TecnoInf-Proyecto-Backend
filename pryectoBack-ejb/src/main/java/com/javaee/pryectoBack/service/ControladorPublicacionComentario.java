@@ -53,8 +53,11 @@ public class ControladorPublicacionComentario
 
 	@Override
 	public boolean modificarPublicacion(DTOPublicacion dtoPublicacion) {
-		// TODO Auto-generated method stub
-		return false;
+		return controladorPublicacionComentarioDA.modificarPublicacion(dtoPublicacion);
+	}
+	@Override
+	public boolean bajaPublicacion(int idPublicacion) {
+		return controladorPublicacionComentarioDA.bajaPublicacion(idPublicacion);
 	}
 
 	@Override
