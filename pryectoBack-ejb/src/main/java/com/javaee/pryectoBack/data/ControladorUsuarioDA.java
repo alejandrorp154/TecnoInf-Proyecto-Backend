@@ -254,8 +254,17 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 
 	@Override
 	public boolean bajaUsuarioAdmin(String idPersona) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean res = false;
+		try {
+			Administrador admin = manager.find(Administrador.class, idPersona);
+			if (admin != null) {
+				manager.remove(admin);
+				res = true;
+			}
+		} catch (Exception exception) {
+			return res;
+		}
+		return res;
 	}
 
 	@Override
