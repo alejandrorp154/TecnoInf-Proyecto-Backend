@@ -24,6 +24,7 @@ public class Ubicacion implements Serializable
 	private float latitud;
 	private Date fecha;
 	private String descripcion;
+	private String pais;
 	@ManyToOne
 	private Usuario usuario;
 	
@@ -102,5 +103,13 @@ public class Ubicacion implements Serializable
 
 	public void setEvento(Evento evento) {
 		this.evento = evento;
+	}
+	
+	public String getPais() {
+		return pais;
+	}
+
+	public void setPais(String pais) {
+		this.pais = pais;
 	}
 }

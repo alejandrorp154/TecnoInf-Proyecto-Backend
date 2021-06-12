@@ -13,6 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.javaee.pryectoBack.datatypes.DTOEstadistica;
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOPerfilUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
@@ -28,12 +29,12 @@ public class VisualizacionRest {
 
 	@EJB
 	private ControladorVisualizacionLocal controladorVisualizacionLocal;
-	
+
 	public List<DTOMultimedia> obtenerGaleriaFoto(String idPersona, int offset, int size) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Devuelve el perfil de un usuario", notes = "el que corresponda al id de persona")
@@ -41,16 +42,13 @@ public class VisualizacionRest {
 	public Response visualizarPerfil(@PathParam("idPersona") String idPersona) {
 		Response.ResponseBuilder builder = null;
 		DTOPerfilUsuario perfil = controladorVisualizacionLocal.visualizarPerfil(idPersona);
-		if (perfil != null && perfil.getUsuario() != null && perfil.getUsuario().getIdPersona() != null)
-		{
+		if (perfil != null && perfil.getUsuario() != null && perfil.getUsuario().getIdPersona() != null) {
 			builder = Response.ok();
 			builder.entity(perfil);
-		}
-		else
-		{
-          Map<String, String> responseObj = new HashMap<>();
-          responseObj.put("error", "El perfil con id = " + idPersona + " no existe");
-          builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		} else {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", "El perfil con id = " + idPersona + " no existe");
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
 		}
 		return builder.build();
 	}
@@ -59,13 +57,15 @@ public class VisualizacionRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Devuelve una lista de amigos sugeridos", notes = "para el usuario que corresponda el idPersona")
 	@Path("/sugerirAmigo/{idPersona}/{offset}/{size}")
-	public Response obtenerSugerenciaAmigos(@PathParam("idPersona") String idPersona, @PathParam("offset") int offset, @PathParam("size") int size) {
+	public Response obtenerSugerenciaAmigos(@PathParam("idPersona") String idPersona, @PathParam("offset") int offset,
+			@PathParam("size") int size) {
 		Response.ResponseBuilder builder = null;
 		try {
-			List<DTOUsuario> dtoUsuarios = controladorVisualizacionLocal.obtenerSugerenciaAmigos(idPersona, offset, size);
+			List<DTOUsuario> dtoUsuarios = controladorVisualizacionLocal.obtenerSugerenciaAmigos(idPersona, offset,
+					size);
 			builder = Response.ok();
 			builder.entity(dtoUsuarios);
-		} catch(Exception exception) {
+		} catch (Exception exception) {
 			Map<String, String> responseObj = new HashMap<>();
 			responseObj.put("error", exception.getMessage());
 			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
@@ -77,7 +77,7 @@ public class VisualizacionRest {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Devuelve los usuarios registrados en el sistema", notes = "")
@@ -88,7 +88,7 @@ public class VisualizacionRest {
 			List<DTOUsuario> dtoUsuarios = controladorVisualizacionLocal.obtenerUsuarios(offset, size);
 			builder = Response.ok();
 			builder.entity(dtoUsuarios);
-		} catch(Exception exception) {
+		} catch (Exception exception) {
 			Map<String, String> responseObj = new HashMap<>();
 			responseObj.put("error", exception.getMessage());
 			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
@@ -119,19 +119,22 @@ public class VisualizacionRest {
 		return null;
 	}
 
-	public List<DTOUsuario> obtenerCantidadUsuariosEnElSistema(int offset, int size) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public List<DTOUsuario> obtenerCantidadUsuariosSegunPais(String pais, int offset, int size) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public List<DTOUsuarioMedalla> obtenerCantidadUsuariosSegunMedallas(int idMedalla, int offset, int size) {
-		// TODO Auto-generated method stub
-		return null;
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Devuelve un Listado DTOEstadistica", notes = "Posibles valores del tipo estadistica: CantidadUsuariosTotal, UsuariosPorMedalla, CantidadVisitasPorUsuario, CantidadUsuariosPorPais")
+	@Path("/estadistica/{tipoEstadistica}")
+	public Response seleccionarTipoEstadistica(@PathParam("tipoEstadistica") String tipoEstadistica) {
+		Response.ResponseBuilder builder = null;
+		try {
+			List<DTOEstadistica> dtoEstadisticas = controladorVisualizacionLocal.seleccionarTipoEstadistica(tipoEstadistica);
+			builder = Response.ok();
+			builder.entity(dtoEstadisticas);
+		} catch (Exception exception) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", exception.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
 	}
 
 }

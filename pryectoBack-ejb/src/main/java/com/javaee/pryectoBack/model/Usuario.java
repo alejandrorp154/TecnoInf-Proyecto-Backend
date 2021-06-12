@@ -21,6 +21,7 @@ public class Usuario extends Persona implements Serializable {
 	private String nickname;
 	private String celular;
 	private String direccion;
+	private String pais;
 
 	@OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL,
     fetch = FetchType.LAZY, optional = false)
@@ -48,8 +49,6 @@ public class Usuario extends Persona implements Serializable {
 	@OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL,
     fetch = FetchType.LAZY, optional = false)
 	private PerfilUsuario perfil;
-
-	private String pais;
 
 	public Usuario() {
 	}
