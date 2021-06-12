@@ -18,4 +18,5 @@ public interface ControladorPublicacionComentarioLocal {
 	boolean modificarPublicacion(DTOPublicacion dtoPublicacion);
 	boolean reaccionPublicacion(DTOReaccion dtoReaccion);
 	DTOPublicacion altaPublicacion(DTOPublicacion dtoPublicacion);
+	boolean bajaPublicacion(int idPublicacion);
 }

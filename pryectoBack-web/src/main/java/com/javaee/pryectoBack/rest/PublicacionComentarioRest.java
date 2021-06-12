@@ -9,6 +9,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -63,6 +64,24 @@ public class PublicacionComentarioRest {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/publicacion/{idPublicacion}")
+	@ApiOperation(value = "Borra una publicacion del back", notes = "Se le pasa el id de una publicacion")
+	public Response bajaPublicacion(@PathParam("idPublicacion") int idPublicacion) {
+		Response.ResponseBuilder builder = null;
+		try {
+			controladorPublicacionComentario.bajaPublicacion(idPublicacion);
+            builder = Response.ok();
+        } catch (Exception e) {
+            Map<String, String> responseObj = new HashMap<>();
+            responseObj.put("error", e.getMessage());
+            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+        }
+        return builder.build();
+	}
 
 	public boolean modificarComentario(DTOComentario dtoComentario) {
 		// TODO Auto-generated method stub
@@ -79,9 +98,21 @@ public class PublicacionComentarioRest {
 		return null;
 	}
 
-	public boolean modificarPublicacion(DTOPublicacion dtoPublicacion) {
-		// TODO Auto-generated method stub
-		return false;
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Modifica una publicacion del back", notes = "se le pasa el objeto publicacion como sigue: {\"contenido\":\"test 3\",\"tipo\":{\"tipo\":\"mapa\"},\"fecha\":\"\",\"extension\":\"\",\"nombre\":\"\"} . Tambien quedamos que si el tipo es mapa se le pasa las coordenadas en contenido. Si el tipo es foto, se le pasa el nombre del archivo y la extension.")
+	public Response modificarPublicacion(DTOPublicacion dtoPublicacion) {
+		Response.ResponseBuilder builder = null;
+		try {
+			controladorPublicacionComentario.modificarPublicacion(dtoPublicacion);
+            builder = Response.ok();
+        } catch (Exception e) {
+            Map<String, String> responseObj = new HashMap<>();
+            responseObj.put("error", e.getMessage());
+            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+        }
+        return builder.build();
 	}
 
 	public boolean reaccionPublicacion(DTOReaccion dtoReaccion) {
