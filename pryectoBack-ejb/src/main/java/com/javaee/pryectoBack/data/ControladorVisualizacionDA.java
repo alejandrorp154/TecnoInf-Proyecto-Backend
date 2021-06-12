@@ -132,8 +132,16 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 
 	@Override
 	public DTOUsuarioMedalla visualizarProgreso(String idPersona) {
-		// TODO Auto-generated method stub
-		return null;
+		DTOUsuarioMedalla res = new DTOUsuarioMedalla();
+		try {
+			Usuario usuario = manager.find(Usuario.class, idPersona);
+			if (usuario != null) {
+				res = new DTOUsuarioMedalla(usuario);
+			}
+		} catch (Exception exception) {
+			return res;
+		}
+		return res;
 	}
 
 	@Override

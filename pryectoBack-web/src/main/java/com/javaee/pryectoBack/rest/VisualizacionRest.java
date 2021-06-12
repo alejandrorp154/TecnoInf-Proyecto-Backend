@@ -127,9 +127,22 @@ public class VisualizacionRest {
 		return builder.build();
 	}
 
-	public DTOUsuarioMedalla visualizarProgreso(String idPersona) {
-		// TODO Auto-generated method stub
-		return null;
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Devuelve una lista de solicitudes pendientes para el usuario logueado", notes = "el que corresponda el idPersona")
+	@Path("/visualizarProgreso/{idPersona}")
+	public Response visualizarProgreso(@PathParam("idPersona") String idPersona) {
+		Response.ResponseBuilder builder = null;
+		try {
+			DTOUsuarioMedalla dtoUsuarios = controladorVisualizacionLocal.visualizarProgreso(idPersona);
+			builder = Response.ok();
+			builder.entity(dtoUsuarios);
+		} catch(Exception exception) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", exception.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
 	}
 
 	@GET
