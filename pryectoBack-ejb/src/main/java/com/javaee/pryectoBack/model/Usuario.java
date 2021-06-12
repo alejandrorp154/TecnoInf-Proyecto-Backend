@@ -50,8 +50,6 @@ public class Usuario extends Persona implements Serializable {
     fetch = FetchType.LAZY, optional = false)
 	private PerfilUsuario perfil;
 
-	private String pais;
-
 	public Usuario() {
 	}
 
