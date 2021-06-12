@@ -6,5 +6,6 @@ import com.javaee.pryectoBack.datatypes.DTOConfiguracion;
 
 @Remote
 public interface ControladorConfigSistemaDARemote {
-	boolean configurarNotificaciones(DTOConfiguracion dtoConfiguracion);
+	DTOConfiguracion configurarNotificaciones(DTOConfiguracion dtoConfiguracion);
+	DTOConfiguracion getByIdPersona(String idPersona);
 }

@@ -15,8 +15,12 @@ public class ControladorConfigSistema implements ControladorConfigSistemaLocal, 
 	private ControladorConfigSistemaDALocal controladorConfigSistemaDA;
 	
 	@Override
-	public boolean configurarNotificaciones(DTOConfiguracion dtoConfiguracion) {
-		// TODO Auto-generated method stub
-		return false;
+	public DTOConfiguracion configurarNotificaciones(DTOConfiguracion dtoConfiguracion) {
+		return controladorConfigSistemaDA.configurarNotificaciones(dtoConfiguracion);
+	}
+
+	@Override
+	public DTOConfiguracion getByIdPersona(String idPersona) {
+		return controladorConfigSistemaDA.getByIdPersona(idPersona);
 	}
 }
