@@ -62,6 +62,7 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 				usuario.setNombre(dtoUsuario.getNombre());
 				usuario.setApellido(dtoUsuario.getApellido());
 				usuario.setEmail(dtoUsuario.getEmail());
+				usuario.setPais(dtoUsuario.getPais());
 				manager.merge(usuario);
 				dtoUsuarioRes = new DTOUsuario(usuario);
 			}

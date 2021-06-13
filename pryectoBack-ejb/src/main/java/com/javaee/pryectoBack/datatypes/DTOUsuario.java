@@ -48,6 +48,10 @@ public class DTOUsuario implements Serializable
 		this.nickname = usuario.getNickname();
 		this.direccion = usuario.getDireccion();
 		this.medalla = new DTOMedalla(usuario.getMedalla());
+		this.pais = usuario.getPais();
+		this.extensionImagen = usuario.getPerfil().getExtension();
+		this.imagenPerfil = usuario.getPerfil().getImagenPerfil();
+		this.nombreImagen = usuario.getPerfil().getNombreImagen();
 	}
 
 	public String getIdPersona() {

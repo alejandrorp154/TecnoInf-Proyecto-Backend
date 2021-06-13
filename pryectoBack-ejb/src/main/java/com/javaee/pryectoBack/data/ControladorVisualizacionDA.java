@@ -101,6 +101,11 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 			for (DTOUsuario dtoUsu : dtoUsuario3) {
 				dtoUsuario.add(dtoUsu);
 			}
+			
+			List<DTOUsuario> dtoUsuario4 = this.buscarAmigosSegunPais(dtoUsuario, idPersona);
+			for (DTOUsuario dtoUsu : dtoUsuario4) {
+				dtoUsuario.add(dtoUsu);
+			}
 			List<DTOUsuario> resDtoUsuarios = aplicarOffsetSeize(dtoUsuario, offset, size);
 			return resDtoUsuarios;
 		} catch (Exception exception) {
@@ -273,6 +278,33 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 								DTOUsuario dtoSugerencia = new DTOUsuario(usuarioSugerencia);
 								res.add(dtoSugerencia);
 							}
+						}
+					}
+				}
+			}
+		} catch (Exception exception) {
+			return res;
+		}
+		return res;
+	}
+
+	private List<DTOUsuario> buscarAmigosSegunPais(List<DTOUsuario> dtoUsuarios, String idPersona) {
+		List<DTOUsuario> res = new ArrayList<DTOUsuario>();
+		try {
+			Usuario usuarioLogueado = manager.find(Usuario.class, idPersona);
+			if (usuarioLogueado != null && usuarioLogueado.getPais() != null) {
+				// Obtengo todos los usuarios del mismo pais que el usuario logueado
+				TypedQuery<Usuario> query = manager.createQuery("SELECT usuario FROM Usuario usuario where usuario.pais = '" + usuarioLogueado.getPais() + "'", Usuario.class);
+				List<Usuario> usuarios = query.getResultList();
+				for (Usuario usuario : usuarios) {
+					TypedQuery<UsuarioContacto> query2 = manager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.idPersona = :idPersona", UsuarioContacto.class);
+					// Obtengo todos los amigos del usuario logueado para luego verificar que las posibleas sugerencias no sea un amigo
+					List<UsuarioContacto> usuariosContactosTotal = query2.setParameter("idPersona", idPersona).getResultList();
+					if (!usuariosContactosTotal.stream().anyMatch(o -> o.getContactoIdPersona().equals(usuario.getIdPersona())) && !usuario.getIdPersona().equals(idPersona)) {
+						// verifico que la sugerencia de amigo de se encuentra ya en la lista de sugerencia de amigos
+						if (!dtoUsuarios.stream().anyMatch(o -> o.getIdPersona().equals(usuario.getIdPersona()))) {
+							DTOUsuario dtoSugerencia = new DTOUsuario(usuario);
+							res.add(dtoSugerencia);
 						}
 					}
 				}
