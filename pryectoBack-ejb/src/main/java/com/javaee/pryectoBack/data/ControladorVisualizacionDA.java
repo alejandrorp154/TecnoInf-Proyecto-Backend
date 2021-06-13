@@ -17,6 +17,7 @@ import com.javaee.pryectoBack.datatypes.DTOPerfilUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioMedalla;
 import com.javaee.pryectoBack.model.Interes;
+import com.javaee.pryectoBack.model.Multimedia;
 import com.javaee.pryectoBack.model.PerfilUsuario;
 import com.javaee.pryectoBack.model.Persona;
 import com.javaee.pryectoBack.model.Ubicacion;
@@ -37,8 +38,34 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 	
 	@Override
 	public List<DTOMultimedia> obtenerGaleriaFoto(String idPersona, int offset, int size) {
-		// TODO Auto-generated method stub
-		return null;
+		List<DTOMultimedia> dtosMultimedia = new ArrayList<>();
+		try {
+			PerfilUsuario perfil = manager.find(PerfilUsuario.class, idPersona);
+			List<Multimedia> multimedias = perfil.getGalerias();
+			for(Multimedia multimedia : multimedias) {
+				DTOMultimedia dtoMultimedia = new DTOMultimedia(multimedia);
+				dtosMultimedia.add(dtoMultimedia);
+			}
+			dtosMultimedia = aplicarOffsetSeizeMultimedia(dtosMultimedia, offset, size);
+		} catch (Exception exception) {
+			return dtosMultimedia;
+		}
+		return dtosMultimedia;
+	}
+
+	private List<DTOMultimedia> aplicarOffsetSeizeMultimedia(List<DTOMultimedia> dtoMultimedia, int offset, int size) {
+		List<DTOMultimedia> res = new ArrayList<>();
+		int offsetAux = 0;
+		for (DTOMultimedia dtoMul : dtoMultimedia) {
+			if (res.size() == size) {
+				break;
+			}
+			if (offsetAux >= offset) {
+				res.add(dtoMul);
+			}
+			offsetAux ++;
+		}
+		return res;
 	}
 
 	@Override
@@ -132,8 +159,16 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 
 	@Override
 	public DTOUsuarioMedalla visualizarProgreso(String idPersona) {
-		// TODO Auto-generated method stub
-		return null;
+		DTOUsuarioMedalla res = new DTOUsuarioMedalla();
+		try {
+			Usuario usuario = manager.find(Usuario.class, idPersona);
+			if (usuario != null) {
+				res = new DTOUsuarioMedalla(usuario);
+			}
+		} catch (Exception exception) {
+			return res;
+		}
+		return res;
 	}
 
 	@Override

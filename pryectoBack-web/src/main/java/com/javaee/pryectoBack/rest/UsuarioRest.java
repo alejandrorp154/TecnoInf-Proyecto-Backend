@@ -33,58 +33,6 @@ public class UsuarioRest
 {
 	@EJB
 	private ControladorUsuarioLocal controladorUsuario;
-
-//	@GET
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @ApiOperation(value = "Devuelve una lista de objetos usuarios",
-//    notes = "el offset es la posicion donde empieza (0 por defecto) el size es el tamño de la lista, por ejemplo si la primera consulta es offset=0 y size=10 la segunda consulta va a ser offset=10 y size=10")
-//    @Path("/{offset}/{size}")
-//    public List<Usuario> getAll(@PathParam("offset") int offset, @PathParam("size") int size) 
-//	{
-//        return controladorLocal.getUsuarios(offset, size);
-//    }
-//	
-//	@GET
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @ApiOperation(value = "Devuelve un usuario",
-//    notes = "el que corresponda al id de usuario")
-//    @Path("/{idUsuario}")
-//	public Response get(@PathParam("idUsuario") String idUsuario) throws Exception
-//	{
-//		Response.ResponseBuilder builder = null;
-//		Usuario usuario = controladorLocal.getUsuario(idUsuario);
-//		if (((Persona)usuario).getIdPersona() != null)
-//		{
-//			builder = Response.ok();
-//			builder.entity(usuario);
-//		}
-//		else
-//		{
-//            Map<String, String> responseObj = new HashMap<>();
-//            responseObj.put("error", "El usuario con id = " + idUsuario + " no existe");
-//            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
-//		}
-//		return builder.build();
-//	}
-//	
-//	@POST
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @ApiOperation(value = "Agrega un usuario al back",
-//    notes = "se le pasa el objeto usuario como lo devuelve el get obvio que metiendo los datos del nuevo")
-//	public Response add(Usuario usuario)
-//	{
-//		Response.ResponseBuilder builder = null;
-//		try {
-//        	controladorLocal.addUsuario(usuario);
-//            builder = Response.ok();
-//        } catch (Exception e) {
-//            Map<String, String> responseObj = new HashMap<>();
-//            responseObj.put("error", e.getMessage());
-//            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
-//        }
-//        return builder.build();
-//	}
 	
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -177,9 +125,30 @@ public class UsuarioRest
 		return builder.build();
 	}
 
-	public boolean subirFoto(String idPersona, DTOMultimedia dtoMultimedia) {
-		// TODO Auto-generated method stub
-		return false;
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Agregar un nuevo contacto a la lista de contactos con estado pendiente", notes = "")
+	@Path("/subirFoto")
+	public Response subirFoto(DTOMultimedia dtoMultimedia) {
+		Response.ResponseBuilder builder = null;
+		try {
+			boolean agregado = controladorUsuario.subirFoto(dtoMultimedia);
+			if (agregado) {
+				builder = Response.ok();
+				builder.entity(agregado);
+			} else {
+				Map<String, String> responseObj = new HashMap<>();
+				responseObj.put("error", "algo salio mal al tratr de subir una foto a la galeria del usuario con id = " + dtoMultimedia.getIdPersona());
+				builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+			}
+
+		} catch (Exception e) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
 	}
 
 	@POST
@@ -290,9 +259,29 @@ public class UsuarioRest
 		return builder.build();
 	}
 
-	public boolean bajaUsuarioAdmin(String idPersona) {
-		// TODO Auto-generated method stub
-		return false;
+	@DELETE
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation( value = "Se da de baja al Usuario admin", notes = "")
+	@Path("/bajaAdmin/{idPersona}")
+	public Response bajaUsuarioAdmin(@PathParam("idPersona") String idPersona) {
+		Response.ResponseBuilder builder = null;
+		try{
+			boolean baja = controladorUsuario.bajaUsuarioAdmin(idPersona);
+			if (baja){
+				builder = Response.ok();
+				builder.entity(baja);
+			} else {
+				Map<String, String> responseObj = new HashMap<>();
+				responseObj.put("error", "algo salio mal al tratr de dar de baja al usuario administrador con idPersona = " + idPersona);
+				builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+			}
+		}catch (Exception e) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
 	}
 
 	@PUT

@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import com.javaee.pryectoBack.datatypes.DTOMultimedia;
+
 @Entity
 public class Multimedia implements Serializable
 {
@@ -26,6 +28,13 @@ public class Multimedia implements Serializable
 	public Multimedia() {
 	}
 	
+	public Multimedia(DTOMultimedia dtoMultimedia, PerfilUsuario perfil) {
+		this.contenido = dtoMultimedia.getContenido();
+		this.nombre = dtoMultimedia.getNombre();
+		this.extension = dtoMultimedia.getExtension();
+		this.perfil = perfil;
+	}
+
 	public int getIdMultimedia() {
 		return idMultimedia;
 	}

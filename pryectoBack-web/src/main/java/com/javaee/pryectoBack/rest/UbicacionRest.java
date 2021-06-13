@@ -7,7 +7,9 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.GET;
 import javax.ws.rs.PathParam;
@@ -65,14 +67,41 @@ public class UbicacionRest {
         return builder.build();
 	}
 
-	public boolean baja(int idUbicacion) {
-		// TODO Auto-generated method stub
-		return false;
+	@DELETE
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation( value = "Se elimina al Usuario", notes = "")
+	@Path("/{idUbicacion}")
+	public Response baja(@PathParam("idUbicacion") int idUbicacion) {
+		Response.ResponseBuilder builder = null;
+		try {
+			boolean baja = controladorUbicacionLocal.baja(idUbicacion);		
+			builder = Response.ok();
+			builder.entity(baja);		        
+        } catch (Exception e) {
+            Map<String, String> responseObj = new HashMap<>();
+            responseObj.put("error", e.getMessage());
+            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+        }
+        return builder.build();
 	}
 
-	public boolean modificar(DTOUbicacion dtoUbicacion) {
-		// TODO Auto-generated method stub
-		return false;
+
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response modificar(DTOUbicacion dtoUbicacion) {
+		Response.ResponseBuilder builder = null;
+		try {
+			boolean modificar = controladorUbicacionLocal.modificar(dtoUbicacion);		
+			builder = Response.ok();
+			builder.entity(modificar);		        
+        } catch (Exception e) {
+            Map<String, String> responseObj = new HashMap<>();
+            responseObj.put("error", e.getMessage());
+            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+        }
+        return builder.build();
 	}
 
 	public DTOUbicacion seleccionarUbicacion(int idUbicacion) {

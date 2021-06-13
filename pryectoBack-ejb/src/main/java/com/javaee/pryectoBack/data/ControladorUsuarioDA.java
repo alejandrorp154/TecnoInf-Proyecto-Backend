@@ -96,9 +96,19 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	}
 
 	@Override
-	public boolean subirFoto(String idPersona, DTOMultimedia dtoMultimedia) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean subirFoto(DTOMultimedia dtoMultimedia) {
+		boolean res = false;
+		try {
+			PerfilUsuario perfil = manager.find(PerfilUsuario.class, dtoMultimedia.getIdPersona());
+			if (perfil != null) {
+				Multimedia multimedia = new Multimedia(dtoMultimedia, perfil);
+				manager.merge(multimedia);
+				res = true;
+			}
+		} catch (Exception exception) {
+			return res;
+		}
+		return res;
 	}
 
 	@Override
@@ -253,8 +263,17 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 
 	@Override
 	public boolean bajaUsuarioAdmin(String idPersona) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean res = false;
+		try {
+			Administrador admin = manager.find(Administrador.class, idPersona);
+			if (admin != null) {
+				manager.remove(admin);
+				res = true;
+			}
+		} catch (Exception exception) {
+			return res;
+		}
+		return res;
 	}
 
 	@Override
