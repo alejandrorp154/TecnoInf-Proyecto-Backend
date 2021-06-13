@@ -330,13 +330,19 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	@Override
 	public DTOUsuarioInicioSesion datosUsuarioInicioSesion(String idPersona){
 
-		Usuario user = manager.find(Usuario.class, idPersona);
+		Persona persona = manager.find(Persona.class, idPersona);
 
-		if (user != null){
-			String imagen = user.getPerfil().getImagenPerfil();
-			String extension = user.getPerfil().getExtension();
-			String nombreImagen = user.getPerfil().getNombreImagen();
-			return new DTOUsuarioInicioSesion(user.getIdPersona(), user.getEmail(), user.getNombre(), user.getApellido(), user.getNickname(), imagen, extension, nombreImagen);
+		if (persona != null){
+			if (persona instanceof Usuario) {
+				Usuario user = (Usuario)persona;
+				String imagen = user.getPerfil().getImagenPerfil();
+				String extension = user.getPerfil().getExtension();
+				String nombreImagen = user.getPerfil().getNombreImagen();
+				return new DTOUsuarioInicioSesion(user.getIdPersona(), user.getEmail(), user.getNombre(), user.getApellido(), user.getNickname(), imagen, extension, nombreImagen, false);
+			} else {
+				Administrador admin = (Administrador)persona;
+				return new DTOUsuarioInicioSesion(admin.getIdPersona(), admin.getEmail(), admin.getNombre(), admin.getApellido(), null, null, null, null, true);
+			}
 		}
 		return null;
 	}
