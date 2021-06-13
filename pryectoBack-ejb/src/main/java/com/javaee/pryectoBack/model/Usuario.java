@@ -33,9 +33,6 @@ public class Usuario extends Persona implements Serializable {
 	@ManyToMany(mappedBy = "usuarios")
 	private List<Notificacion> notificaciones = new ArrayList<>();
 
-	@ManyToMany(mappedBy = "usuarios")
-	private List<Evento> eventos = new ArrayList<>();
-
 	@OneToMany(mappedBy = "usuario")
 	private List<Ubicacion> ubicaciones = new ArrayList<>();
 	
@@ -64,7 +61,6 @@ public class Usuario extends Persona implements Serializable {
 		this.direccion = dtoUsuario.getNickname();
 		this.medalla = new Medalla(dtoUsuario.getMedalla());
 		this.notificaciones = new ArrayList<>();
-		this.eventos = new ArrayList<>();
 		this.ubicaciones = new ArrayList<>();
 		this.configuracion = new Configuracion();
 		this.creadorDeEventos = new ArrayList<>();
@@ -82,14 +78,6 @@ public class Usuario extends Persona implements Serializable {
 
 	public void setNotificaciones(List<Notificacion> notificaciones) {
 		this.notificaciones = notificaciones;
-	}
-
-	public List<Evento> getEventos() {
-		return eventos;
-	}
-
-	public void setEventos(List<Evento> eventos) {
-		this.eventos = eventos;
 	}
 
 	public List<Ubicacion> getUbicaciones() {

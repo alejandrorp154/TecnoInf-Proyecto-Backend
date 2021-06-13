@@ -3,11 +3,12 @@ package com.javaee.pryectoBack.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
@@ -28,8 +29,7 @@ public class Ubicacion implements Serializable
 	@ManyToOne
 	private Usuario usuario;
 	
-	@OneToOne
-    @JoinColumn(name = "idEvento")
+	@OneToOne(mappedBy = "ubicacion", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
 	private Evento evento;
 
 	public Ubicacion() {
@@ -79,7 +79,7 @@ public class Ubicacion implements Serializable
 		this.usuario = usuario;
 	}
 	public DTOUbicacion getDTO() {
-		return new DTOUbicacion(this.idUbicacion,this.longitud,this.latitud,this.fecha,this.descripcion);
+		return new DTOUbicacion(this.idUbicacion,this.longitud,this.latitud,this.fecha,this.descripcion, this.pais);
 	}
 	
 	public double getDistancia(Ubicacion usuarioLogueado, Ubicacion sugerenciaAmigo) 

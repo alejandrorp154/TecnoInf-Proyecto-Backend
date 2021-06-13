@@ -14,9 +14,10 @@ public class DTOUbicacion implements Serializable
 	private Date fecha;
 	private String descripcion;
 	private String idPersona;
+	private String pais;
 	
 	public DTOUbicacion(int idUbicacion, float longitud, float latitud, Date fecha, String descripcion,
-			String idPersona) {
+			String idPersona, String pais) {
 		super();
 		this.idUbicacion = idUbicacion;
 		this.longitud = longitud;
@@ -24,15 +25,17 @@ public class DTOUbicacion implements Serializable
 		this.fecha = fecha;
 		this.descripcion = descripcion;
 		this.idPersona = idPersona;
+		this.pais = pais;
 	}
 	
-	public DTOUbicacion(int idUbicacion, float longitud, float latitud, Date fecha, String descripcion) {
+	public DTOUbicacion(int idUbicacion, float longitud, float latitud, Date fecha, String descripcion, String pais) {
 		super();
 		this.idUbicacion = idUbicacion;
 		this.longitud = longitud;
 		this.latitud = latitud;
 		this.fecha = fecha;
 		this.descripcion = descripcion;
+		this.pais = pais;
 	}
 
 	public DTOUbicacion() {
@@ -45,6 +48,16 @@ public class DTOUbicacion implements Serializable
 		this.fecha = ubicacion.getFecha();
 		this.descripcion = ubicacion.getDescripcion();
 		this.idPersona = idPersona;
+		this.pais = ubicacion.getPais();
+	}
+
+	public DTOUbicacion(Ubicacion ubicacion) {
+		this.idUbicacion = ubicacion.getIdUbicacion();
+		this.longitud = ubicacion.getLongitud();
+		this.latitud = ubicacion.getLatitud();
+		this.fecha = ubicacion.getFecha();
+		this.descripcion = ubicacion.getDescripcion();
+		this.pais = ubicacion.getPais();
 	}
 
 	public int getIdUbicacion() {
@@ -93,5 +106,13 @@ public class DTOUbicacion implements Serializable
 
 	public void setIdPersona(String idPersona) {
 		this.idPersona = idPersona;
+	}
+
+	public String getPais() {
+		return pais;
+	}
+
+	public void setPais(String pais) {
+		this.pais = pais;
 	}
 }

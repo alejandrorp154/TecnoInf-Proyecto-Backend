@@ -19,8 +19,6 @@ public class Evento implements Serializable {
 	private Date fechaInicio;
 	private Date fechaFin;
 	private estados estado;
-	@ManyToMany
-	private List<Usuario> usuarios = new ArrayList<>();
 	private String idChat;
 	@OneToMany(mappedBy = "evento")
 	private List<Publicacion> publicaciones = new ArrayList<>();
@@ -30,7 +28,8 @@ public class Evento implements Serializable {
 
 	private String nombre;
 
-	@OneToOne(mappedBy = "evento", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+	@OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "idUbicacion")
 	private Ubicacion ubicacion;
 	private String nombreImagen;
 	@Column(columnDefinition="text", length=10485760)
@@ -92,14 +91,6 @@ public class Evento implements Serializable {
 
 	public void setEstado(estados estado) {
 		this.estado = estado;
-	}
-
-	public List<Usuario> getUsuarios() {
-		return usuarios;
-	}
-
-	public void setUsuarios(List<Usuario> usuarios) {
-		this.usuarios = usuarios;
 	}
 
 	public String getIdChat() {

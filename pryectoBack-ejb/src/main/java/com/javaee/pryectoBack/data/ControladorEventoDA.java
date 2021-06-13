@@ -9,11 +9,15 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import com.javaee.pryectoBack.datatypes.DTOEvento;
+import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.model.Evento;
+import com.javaee.pryectoBack.model.EventoUsuario;
 import com.javaee.pryectoBack.model.Publicacion;
 import com.javaee.pryectoBack.model.Ubicacion;
 import com.javaee.pryectoBack.model.Usuario;
+import com.javaee.pryectoBack.model.estadosContactos;
 import com.javaee.pryectoBack.util.MongoDBConnector;
+import com.javaee.pryectoBack.util.PuntosUsuario;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -26,21 +30,30 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 	@PersistenceContext(unitName = "primary")
 	private EntityManager manager;
 
+	private PuntosUsuario puntoUsuario;
+	
+	public ControladorEventoDA()
+	{
+		puntoUsuario = new PuntosUsuario();
+	}
+
 	@Override
 	public DTOEvento crearEvento(DTOEvento dtoEvento) {
 		try {
 			Evento evento = new Evento(dtoEvento);
 			manager.persist(evento);
-			Ubicacion ubicacion = new Ubicacion(dtoEvento.getUbicacion());
-			ubicacion.setEvento(evento);
-			manager.merge(ubicacion);
 			Usuario owner = manager.find(Usuario.class, dtoEvento.getIdPersona());
-			owner.getEventos().add(evento);
-			owner.getCreadorDeEventos().add(evento);
+			EventoUsuario eventoUsuario = new EventoUsuario(owner.getIdPersona(), evento.getIdEvento(), estadosContactos.aceptada);
+			manager.persist(eventoUsuario);
 			evento.setUsuarioCreador(owner);
-			manager.merge(owner);	
+			manager.merge(owner);
+			evento.setUsuarioCreador(owner);
+			manager.merge(evento);
 			dtoEvento.setIdEvento(evento.getIdEvento());
-			//Falta Agregar logica de puntos
+			dtoEvento.getUbicacion().setIdUbicacion(evento.getUbicacion().getIdUbicacion());
+			dtoEvento.setIdPersona(owner.getIdPersona());
+			DTOUsuario dtoUsuario = new DTOUsuario(owner);
+			puntoUsuario.getPuntosUsuario("AltaEvento", dtoUsuario, manager);
 			return dtoEvento;
 		} catch (Exception exception) {
 			return null;
@@ -70,7 +83,12 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 						}
 					}
 					ownerEvent.getCreadorDeEventos().remove(event);
-					ownerEvent.getEventos().remove(event);
+					TypedQuery<EventoUsuario> query = manager.createQuery("SELECT eventoUsuario FROM EventoUsuario eventoUsuario where eventoUsuario.idEvento = '" + event.getIdEvento() + "'", EventoUsuario.class);
+					List<EventoUsuario> eventosUsuarios = query.getResultList();
+					//Dessasigna a Usuarios que asistiran al evento que se esta eliminando
+					for (EventoUsuario eventoUsuario : eventosUsuarios) {
+						manager.remove(eventoUsuario);
+					}
 
 					manager.remove(event);
 					return true;
@@ -88,6 +106,16 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 		try {
 			Evento evento = manager.find(Evento.class, dtoEvento.getIdEvento());
 			if (evento != null) {
+				if (evento.getUbicacion() != null && evento.getUbicacion().getIdUbicacion() != 0 
+						&& dtoEvento.getUbicacion() != null && dtoEvento.getUbicacion().getIdUbicacion() != 0) {
+					Ubicacion ubicacion = manager.find(Ubicacion.class, dtoEvento.getUbicacion().getIdUbicacion());
+					manager.remove(ubicacion);
+				}
+				evento.getUbicacion().setDescripcion(dtoEvento.getUbicacion().getDescripcion());
+				evento.getUbicacion().setFecha(dtoEvento.getUbicacion().getFecha());
+				evento.getUbicacion().setPais(dtoEvento.getUbicacion().getPais());
+				evento.getUbicacion().setLatitud(dtoEvento.getUbicacion().getLatitud());
+				evento.getUbicacion().setLongitud(dtoEvento.getUbicacion().getLongitud());
 				evento.setUbicacion(new Ubicacion(dtoEvento.getUbicacion()));
 				evento.setDescripcion(dtoEvento.getDescripcion());
 				evento.setFechaInicio(dtoEvento.getFechaInicio());
