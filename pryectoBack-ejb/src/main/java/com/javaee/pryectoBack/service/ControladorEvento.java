@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 
 import com.javaee.pryectoBack.data.ControladorEventoDALocal;
 import com.javaee.pryectoBack.datatypes.DTOEvento;
+import com.javaee.pryectoBack.datatypes.DTOEventoUsuario;
 
 @Stateless
 @Remote(ControladorEventoRemote.class)
@@ -32,26 +33,33 @@ public class ControladorEvento implements ControladorEventoLocal, ControladorEve
 	}
 
 	@Override
-	public boolean agregarUsuario(int idEvento, String idPersona) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean agregarUsuario(int idEvento, String idPersona, String idPersonaInvitador) {
+		return controladorEventoDA.agregarUsuario(idEvento, idPersona, idPersonaInvitador);
 	}
 
 	@Override
 	public boolean removerUsuario(int idEvento, String idPersona) {
-		// TODO Auto-generated method stub
-		return false;
+		return controladorEventoDA.removerUsuario(idEvento, idPersona);
 	}
 
 	@Override
 	public boolean dejar(int idEvento, String idPersona) {
-		// TODO Auto-generated method stub
-		return false;
+		return controladorEventoDA.dejar(idEvento, idPersona);
 	}
 
 	@Override
 	public List<DTOEvento> obtenerEventos(String idPersona, int offset, int size) {
 		return controladorEventoDA.obtenerEventos(idPersona, offset, size);
+	}
+
+	@Override
+	public List<DTOEvento> obtenerInvitacionesPendientes(String idPersona, int offset, int size) {
+		return controladorEventoDA.obtenerInvitacionesPendientes(idPersona, offset, size);
+	}
+
+	@Override
+	public boolean responderIvitacion(DTOEventoUsuario dtoEventoUsuario) {
+		return controladorEventoDA.responderIvitacion(dtoEventoUsuario);
 	}
 
 }

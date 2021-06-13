@@ -10,8 +10,6 @@ import com.javaee.pryectoBack.data.ControladorPublicacionComentarioDALocal;
 import com.javaee.pryectoBack.datatypes.DTOComentario;
 import com.javaee.pryectoBack.datatypes.DTOPublicacion;
 import com.javaee.pryectoBack.datatypes.DTOReaccion;
-import com.javaee.pryectoBack.model.Publicacion;
-import com.javaee.pryectoBack.model.Tipo;
 
 @Stateless
 @Remote(ControladorPublicacionComentarioRemote.class)

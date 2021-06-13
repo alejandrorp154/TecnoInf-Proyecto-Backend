@@ -17,6 +17,8 @@ public class EventoUsuario implements Serializable {
 	private String idPersona;
 	@Id
 	private int idEvento;
+	
+	private String idPersonaInvitador;
 
 	@Column(length=32, columnDefinition = "varchar(32) default 'pendiente'")
 	@Enumerated(value = EnumType.STRING)
@@ -25,10 +27,11 @@ public class EventoUsuario implements Serializable {
 	public EventoUsuario() {
 	}
 
-	public EventoUsuario(String idPersona, int idEvento, estadosContactos estado) {
+	public EventoUsuario(String idPersona, int idEvento, estadosContactos estado, String idPersonaInvitador) {
 		this.idPersona = idPersona;
 		this.idEvento = idEvento;
 		this.estadoContactos = estado;
+		this.idPersonaInvitador = idPersonaInvitador;
 	}
 
 	public String getIdPersona() {
@@ -53,5 +56,13 @@ public class EventoUsuario implements Serializable {
 
 	public void setEstadoContactos(estadosContactos estadoContactos) {
 		this.estadoContactos = estadoContactos;
+	}
+
+	public String getIdPersonaInvitador() {
+		return idPersonaInvitador;
+	}
+
+	public void setIdPersonaInvitador(String idPersonaInvitador) {
+		this.idPersonaInvitador = idPersonaInvitador;
 	}
 }

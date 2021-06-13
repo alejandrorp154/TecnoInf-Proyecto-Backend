@@ -21,6 +21,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.javaee.pryectoBack.datatypes.DTOEvento;
+import com.javaee.pryectoBack.datatypes.DTOEventoUsuario;
 import com.javaee.pryectoBack.service.ControladorEventoLocal;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -33,41 +34,29 @@ public class EventoRest {
 	@EJB
 	private ControladorEventoLocal controladorEvento;
 
-	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Agrega una evento al back", notes = "Se le pasa el objeto DTOEvento como sigue: {"
-			+ "    \"ubicacion\": {"
-					+ "	   \"descripcion\": \"deporte\" , "
-					+ "	   \"longitud\" : 60 , "
-					+ "    \"latitud\" : 60 , "
-					+ "    \"fecha\": \"2021-04-20\", "
-					+ "    \"idPersona\": \"1\"   "
-				+ " }\" , "
-			+ "    \"descripcion\": \"Descripcion de prueba\","
-			+ "    \"fechaInicio\": \"2021-02-20\","
-			+ "    \"fechaFin\": \"2021-02-30\","
-			+ "    \"estado\": \"enCurso\","
-			+ "    \"idPersona\": 1,"
-			+ "    \"idChat\": \"asdasd\", "
-			+ "    \"nombre\": \"nombreEvento\", "
-			+ "    \"nombreImagen\": \"nombreImagen\","
-			+ "    \"imagen\": \"asdasd\", "
-			+ "    \"extension\": \"extensionImagen\""
-			+ "}")
+			+ "    \"ubicacion\": {" + "	   \"descripcion\": \"deporte\" , " + "	   \"longitud\" : 60 , "
+			+ "    \"latitud\" : 60 , " + "    \"fecha\": \"2021-04-20\", " + "    \"idPersona\": \"1\"   " + " }\" , "
+			+ "    \"descripcion\": \"Descripcion de prueba\"," + "    \"fechaInicio\": \"2021-02-20\","
+			+ "    \"fechaFin\": \"2021-02-30\"," + "    \"estado\": \"enCurso\"," + "    \"idPersona\": 1,"
+			+ "    \"idChat\": \"asdasd\", " + "    \"nombre\": \"nombreEvento\", "
+			+ "    \"nombreImagen\": \"nombreImagen\"," + "    \"imagen\": \"asdasd\", "
+			+ "    \"extension\": \"extensionImagen\"" + "}")
 	public Response crearEvento(DTOEvento dtoEvento) {
 		Response.ResponseBuilder builder = null;
 		try {
 			DTOEvento dtoEventoAdded = controladorEvento.crearEvento(dtoEvento);
 			builder = Response.ok();
-	        builder.entity(dtoEventoAdded);
-        } catch (Exception e) {
-            Map<String, String> responseObj = new HashMap<>();
-            responseObj.put("error", e.getMessage());
-            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
-        }
-        return builder.build();
+			builder.entity(dtoEventoAdded);
+		} catch (Exception e) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
 	}
 
 	@DELETE
@@ -79,87 +68,61 @@ public class EventoRest {
 
 		Response.ResponseBuilder builder = null;
 
-		try{
+		try {
 			boolean eventoEliminado = controladorEvento.eliminarEvento(idEvento, idPersona);
 			if (eventoEliminado) {
 				builder = Response.ok();
 				builder.entity(eventoEliminado);
 			} else {
 				Map<String, String> responseObj = new HashMap<>();
-				responseObj.put("error", "El evento con idEvento "+ idEvento +" no se pudo eliminar o no existe mas en el servidor.");
+				responseObj.put("error",
+						"El evento con idEvento " + idEvento + " no se pudo eliminar o no existe mas en el servidor.");
 				builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
 			}
-		}catch (Exception e){
+		} catch (Exception e) {
 			Map<String, String> responseObj = new HashMap<>();
 			responseObj.put("error", e.getMessage());
 			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
 		}
-		return  builder.build();
+		return builder.build();
 	}
 
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Modifica un evento", notes = "Se le pasa el objeto DTOEvento como sigue: {"
-			+ "    \"idEvento\": \"idEvento\","
-			+ "    \"ubicacion\": {"
-					+ "	   \"descripcion\": \"deporte\" , "
-					+ "	   \"longitud\" : 60 , "
-					+ "    \"latitud\" : 60 , "
-					+ "    \"fecha\": \"2021-04-20\", "
-					+ "    \"idPersona\": \"1\"   "
-				+ " }\" , "
-			+ "    \"descripcion\": \"Descripcion de prueba\","
-			+ "    \"fechaInicio\": \"2021-02-20\","
-			+ "    \"fechaFin\": \"2021-02-30\","
-			+ "    \"estado\": \"enCurso\","
-			+ "    \"idPersona\": 1,"
-			+ "    \"idChat\": \"asdasd\", "
-			+ "    \"nombre\": \"nombreEvento\" ,"
-			+ "    \"nombreImagen\": \"nombreImagen\","
-			+ "    \"imagen\": \"asdasd\", "
-			+ "    \"extension\": \"extensionImagen\""
-			+ "}")
+			+ "    \"idEvento\": \"idEvento\"," + "    \"ubicacion\": {" + "	   \"descripcion\": \"deporte\" , "
+			+ "	   \"longitud\" : 60 , " + "    \"latitud\" : 60 , " + "    \"fecha\": \"2021-04-20\", "
+			+ "    \"idPersona\": \"1\"   " + " }\" , " + "    \"descripcion\": \"Descripcion de prueba\","
+			+ "    \"fechaInicio\": \"2021-02-20\"," + "    \"fechaFin\": \"2021-02-30\","
+			+ "    \"estado\": \"enCurso\"," + "    \"idPersona\": 1," + "    \"idChat\": \"asdasd\", "
+			+ "    \"nombre\": \"nombreEvento\" ," + "    \"nombreImagen\": \"nombreImagen\","
+			+ "    \"imagen\": \"asdasd\", " + "    \"extension\": \"extensionImagen\"" + "}")
 	public Response modificar(DTOEvento dtoEvento) {
 		Response.ResponseBuilder builder = null;
 		try {
 			DTOEvento dtoEventoModified = controladorEvento.modificar(dtoEvento);
 			builder = Response.ok();
-	        builder.entity(dtoEventoModified);           
-        } catch (Exception e) {
-            Map<String, String> responseObj = new HashMap<>();
-            responseObj.put("error", e.getMessage());
-            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
-        }
-        return builder.build();
+			builder.entity(dtoEventoModified);
+		} catch (Exception e) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
 	}
 
-	public boolean agregarUsuario(int idEvento, String idPersona) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean removerUsuario(int idEvento, String idPersona) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	public boolean dejar(int idEvento, String idPersona) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	@GET
+	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Devuelve la lista de eventos de un usuario", notes = "el que corresponda al id de persona")
-	@Path("/obtenerEventos/{idPersona}/{offset}/{size}")
-	public Response obtenerEventos(@PathParam("idPersona") String idPersona, @PathParam("offset") int offset, @PathParam("size") int size) {
+	@ApiOperation(value = "El usuario logueado con id = idPersonaInvitador invita a otro usuario a un evento", notes = "el idPersona corresponde al usuario que es invitado")
+	@Path("/invitar/{idEvento}/{idPersona}/{idPersonaInvitador}")
+	public Response agregarUsuario(@PathParam("idEvento") int idEvento, @PathParam("idPersona") String idPersona, @PathParam("idPersonaInvitador") String idPersonaInvitador) {
 		Response.ResponseBuilder builder = null;
 		try {
-			List<DTOEvento> dtoEventos = controladorEvento.obtenerEventos(idPersona, offset, size);
+			boolean res = controladorEvento.agregarUsuario(idEvento, idPersona, idPersonaInvitador);
 			builder = Response.ok();
-			builder.entity(dtoEventos);
-		} catch(Exception exception) {
+			builder.entity(res);
+		} catch (Exception exception) {
 			Map<String, String> responseObj = new HashMap<>();
 			responseObj.put("error", exception.getMessage());
 			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
@@ -167,4 +130,95 @@ public class EventoRest {
 		return builder.build();
 	}
 
+	@DELETE
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "El usuario que creo el evento remueve a un usuario del mismo", notes = "el idPersona corresponde al usuario que va a ser removido")
+	@Path("/removerUsuario/{idEvento}/{idPersona}")
+	public Response removerUsuario(@PathParam("idEvento") int idEvento, @PathParam("idPersona") String idPersona) {
+		Response.ResponseBuilder builder = null;
+		try {
+			boolean res = controladorEvento.removerUsuario(idEvento, idPersona);
+			builder = Response.ok();
+			builder.entity(res);
+		} catch (Exception exception) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", exception.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
+	}
+	
+	@DELETE
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "El usuario logueado deja un evento", notes = "")
+	@Path("/dejar/{idEvento}/{idPersona}")
+	public Response dejar(@PathParam("idEvento") int idEvento, @PathParam("idPersona") String idPersona) {
+		Response.ResponseBuilder builder = null;
+		try {
+			boolean res = controladorEvento.dejar(idEvento, idPersona);
+			builder = Response.ok();
+			builder.entity(res);
+		} catch (Exception exception) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", exception.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Devuelve la lista de eventos de un usuario", notes = "el que corresponda al id de persona")
+	@Path("/obtenerEventos/{idPersona}/{offset}/{size}")
+	public Response obtenerEventos(@PathParam("idPersona") String idPersona, @PathParam("offset") int offset,
+			@PathParam("size") int size) {
+		Response.ResponseBuilder builder = null;
+		try {
+			List<DTOEvento> dtoEventos = controladorEvento.obtenerEventos(idPersona, offset, size);
+			builder = Response.ok();
+			builder.entity(dtoEventos);
+		} catch (Exception exception) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", exception.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Devuelve la lista de invitaciones pendientes a eventos de un usuario", notes = "el que corresponda al id de persona")
+	@Path("/obtenerInvitacionesPendientes/{idPersona}/{offset}/{size}")
+	public Response obtenerInvitacionesPendientes(@PathParam("idPersona") String idPersona,
+			@PathParam("offset") int offset, @PathParam("size") int size) {
+		Response.ResponseBuilder builder = null;
+		try {
+			List<DTOEvento> dtoEventos = controladorEvento.obtenerInvitacionesPendientes(idPersona, offset, size);
+			builder = Response.ok();
+			builder.entity(dtoEventos);
+		} catch (Exception exception) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", exception.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
+	}
+
+	@PUT
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Actualiza la invitacion a un evento para el usuario logueado", notes = "el que corresponda al id de persona, estado es el mismo enum que para solicitud de amistad")
+	@Path("/responderIvitacion")
+	public Response responderIvitacion(DTOEventoUsuario dtoEventoUsuario) {
+		Response.ResponseBuilder builder = null;
+		try {
+			boolean res = controladorEvento.responderIvitacion(dtoEventoUsuario);
+			builder = Response.ok();
+			builder.entity(res);
+		} catch (Exception exception) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", exception.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
+	}
 }

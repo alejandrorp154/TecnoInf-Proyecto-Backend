@@ -1,8 +1,5 @@
 package com.javaee.pryectoBack.datatypes;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class DTOEstadistica {
 
 	// Estadistica de Cantidad de usuarios registrados en la plataforma
