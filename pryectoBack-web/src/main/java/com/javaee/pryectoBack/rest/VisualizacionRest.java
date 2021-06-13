@@ -30,9 +30,22 @@ public class VisualizacionRest {
 	@EJB
 	private ControladorVisualizacionLocal controladorVisualizacionLocal;
 
-	public List<DTOMultimedia> obtenerGaleriaFoto(String idPersona, int offset, int size) {
-		// TODO Auto-generated method stub
-		return null;
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Devuelve la galeria de fotos del usuario logueado", notes = "el que corresponda al id de persona")
+	@Path("/galeria/{idPersona}/{offset}/{size}")
+	public Response obtenerGaleriaFoto(@PathParam("idPersona") String idPersona, @PathParam("offset") int offset, @PathParam("size") int size) {
+		Response.ResponseBuilder builder = null;
+		try {
+			List<DTOMultimedia> dtosMultimedias = controladorVisualizacionLocal.obtenerGaleriaFoto(idPersona, offset, size);
+			builder = Response.ok();
+			builder.entity(dtosMultimedias);
+		} catch (Exception exception) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", exception.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
 	}
 
 	@GET

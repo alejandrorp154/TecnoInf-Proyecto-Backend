@@ -29,9 +29,8 @@ public class ControladorUsuario implements ControladorUsuarioRemote, Controlador
 	}
 
 	@Override
-	public boolean subirFoto(String idPersona, DTOMultimedia dtoMultimedia) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean subirFoto(DTOMultimedia dtoMultimedia) {
+		return controladorDA.subirFoto(dtoMultimedia);
 	}
 
 	@Override
