@@ -19,10 +19,10 @@ public class ControladorVisualizacion implements ControladorVisualizacionLocal, 
 	
 	@EJB
 	private ControladorVisualizacionDALocal controladorVisualizacionDA;
+	
 	@Override
 	public List<DTOMultimedia> obtenerGaleriaFoto(String idPersona, int offset, int size) {
-		// TODO Auto-generated method stub
-		return null;
+		return controladorVisualizacionDA.obtenerGaleriaFoto(idPersona, offset, size);
 	}
 
 	@Override

@@ -94,9 +94,19 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	}
 
 	@Override
-	public boolean subirFoto(String idPersona, DTOMultimedia dtoMultimedia) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean subirFoto(DTOMultimedia dtoMultimedia) {
+		boolean res = false;
+		try {
+			PerfilUsuario perfil = manager.find(PerfilUsuario.class, dtoMultimedia.getIdPersona());
+			if (perfil != null) {
+				Multimedia multimedia = new Multimedia(dtoMultimedia, perfil);
+				manager.merge(multimedia);
+				res = true;
+			}
+		} catch (Exception exception) {
+			return res;
+		}
+		return res;
 	}
 
 	@Override

@@ -177,9 +177,30 @@ public class UsuarioRest
 		return builder.build();
 	}
 
-	public boolean subirFoto(String idPersona, DTOMultimedia dtoMultimedia) {
-		// TODO Auto-generated method stub
-		return false;
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Agregar un nuevo contacto a la lista de contactos con estado pendiente", notes = "")
+	@Path("/subirFoto")
+	public Response subirFoto(DTOMultimedia dtoMultimedia) {
+		Response.ResponseBuilder builder = null;
+		try {
+			boolean agregado = controladorUsuario.subirFoto(dtoMultimedia);
+			if (agregado) {
+				builder = Response.ok();
+				builder.entity(agregado);
+			} else {
+				Map<String, String> responseObj = new HashMap<>();
+				responseObj.put("error", "algo salio mal al tratr de subir una foto a la galeria del usuario con id = " + dtoMultimedia.getIdPersona());
+				builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+			}
+
+		} catch (Exception e) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
 	}
 
 	@POST
