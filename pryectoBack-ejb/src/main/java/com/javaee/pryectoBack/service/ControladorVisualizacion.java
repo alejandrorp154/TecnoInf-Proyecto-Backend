@@ -47,8 +47,7 @@ public class ControladorVisualizacion implements ControladorVisualizacionLocal, 
 
 	@Override
 	public DTOUsuarioMedalla visualizarProgreso(String idPersona) {
-		// TODO Auto-generated method stub
-		return null;
+		return controladorVisualizacionDA.visualizarProgreso(idPersona);
 	}
 	
 	@Override

@@ -2,6 +2,7 @@ package com.javaee.pryectoBack.datatypes;
 
 import java.io.Serializable;
 
+import com.javaee.pryectoBack.model.Usuario;
 import com.javaee.pryectoBack.model.rangos;
 
 public class DTOUsuarioMedalla implements Serializable
@@ -32,6 +33,18 @@ public class DTOUsuarioMedalla implements Serializable
 	}
 
 	public DTOUsuarioMedalla() {
+	}
+
+	public DTOUsuarioMedalla(Usuario usuario) {
+		this.idPersona = usuario.getIdPersona();
+		this.email = usuario.getEmail();
+		this.nombre = usuario.getNombre();
+		this.apellido = usuario.getApellido();
+		this.nickname = usuario.getNickname();
+		this.idMedalla = usuario.getMedalla().getIdMedalla();
+		this.cantidadPuntos = usuario.getMedalla().getCantidadPuntos();
+		this.logros = usuario.getMedalla().getLogros();
+		this.rango = usuario.getMedalla().getRango();
 	}
 
 	public String getIdPersona() {
