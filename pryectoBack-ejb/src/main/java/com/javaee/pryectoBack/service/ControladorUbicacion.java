@@ -28,14 +28,12 @@ public class ControladorUbicacion implements ControladorUbicacionLocal, Controla
 
 	@Override
 	public boolean baja(int idUbicacion) {
-		// TODO Auto-generated method stub
-		return false;
+		return controladorUbicacionDA.baja(idUbicacion);
 	}
 
 	@Override
 	public boolean modificar(DTOUbicacion dtoUbicacion) {
-		// TODO Auto-generated method stub
-		return false;
+		return controladorUbicacionDA.modificar(dtoUbicacion);
 	}
 
 	@Override

@@ -79,7 +79,7 @@ public class Ubicacion implements Serializable
 		this.usuario = usuario;
 	}
 	public DTOUbicacion getDTO() {
-		return new DTOUbicacion(this.idUbicacion,this.longitud,this.latitud,this.fecha,this.descripcion);
+		return new DTOUbicacion(this.idUbicacion,this.longitud,this.latitud,this.fecha,this.descripcion, this.pais);
 	}
 	
 	public double getDistancia(Ubicacion usuarioLogueado, Ubicacion sugerenciaAmigo) 
