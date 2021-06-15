@@ -5,6 +5,7 @@ import java.util.Date;
 
 import com.javaee.pryectoBack.model.Evento;
 import com.javaee.pryectoBack.model.estados;
+import com.javaee.pryectoBack.model.estadosContactos;
 
 public class DTOEvento implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -21,6 +22,8 @@ public class DTOEvento implements Serializable {
 	private String nombreImagen;
 	private String imagen;
 	private String extension;
+	private boolean isOwner;
+	private estadosContactos estadoSolicitud;
 
 	public DTOEvento(int idEvento, String descripcion, Date fechaInicio, Date fechaFin,
 			estados estado, int idPublicacion, String idPersona, String nombre, DTOUbicacion dtoUbicacion, String nombreImagen, String imagen, String extension) {
@@ -159,5 +162,21 @@ public class DTOEvento implements Serializable {
 
 	public void setExtension(String extension) {
 		this.extension = extension;
-	}	
+	}
+
+	public boolean isOwner() {
+		return isOwner;
+	}
+
+	public void setOwner(boolean isOwner) {
+		this.isOwner = isOwner;
+	}
+
+	public estadosContactos getEstadoSolicitud() {
+		return estadoSolicitud;
+	}
+
+	public void setEstadoSolicitud(estadosContactos estadoSolicitud) {
+		this.estadoSolicitud = estadoSolicitud;
+	}
 }

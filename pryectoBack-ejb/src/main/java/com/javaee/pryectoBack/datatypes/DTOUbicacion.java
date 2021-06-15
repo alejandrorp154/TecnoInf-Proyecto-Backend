@@ -51,6 +51,15 @@ public class DTOUbicacion implements Serializable
 		this.pais = ubicacion.getPais();
 	}
 
+	public DTOUbicacion(Ubicacion ubicacion) {
+		this.idUbicacion = ubicacion.getIdUbicacion();
+		this.longitud = ubicacion.getLongitud();
+		this.latitud = ubicacion.getLatitud();
+		this.fecha = ubicacion.getFecha();
+		this.descripcion = ubicacion.getDescripcion();
+		this.pais = ubicacion.getPais();
+	}
+
 	public int getIdUbicacion() {
 		return idUbicacion;
 	}

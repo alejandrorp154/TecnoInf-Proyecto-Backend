@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
@@ -17,6 +18,7 @@ import com.javaee.pryectoBack.model.Medalla;
 import com.javaee.pryectoBack.model.Notificacion;
 import com.javaee.pryectoBack.model.Ubicacion;
 import com.javaee.pryectoBack.model.Evento;
+import com.javaee.pryectoBack.model.EventoUsuario;
 import com.javaee.pryectoBack.model.Publicacion;
 import com.javaee.pryectoBack.model.Multimedia;
 import com.javaee.pryectoBack.model.Interes;
@@ -181,12 +183,11 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 				if (!eventosCreadosPorUsuario.isEmpty()){
 					for (Evento event : eventosCreadosPorUsuario) {
 
+						TypedQuery<EventoUsuario> query = manager.createQuery("SELECT eventoUsuario FROM EventoUsuario eventoUsuario where eventoUsuario.idEvento = '" + event.getIdEvento() + "'", EventoUsuario.class);
+						List<EventoUsuario> eventosUsuarios = query.getResultList();
 						//Dessasigna a Usuarios que asistiran
-						List<Usuario> usuariosQueAsistiran = event.getUsuarios();
-						if (!usuariosQueAsistiran.isEmpty()) {
-							for (Usuario usuarioAsisteEvento : usuariosQueAsistiran) {
-								usuarioAsisteEvento.getEventos().remove(event);
-							}
+						for (EventoUsuario eventoUsuario : eventosUsuarios) {
+							manager.remove(eventoUsuario);
 						}
 
 						//Desasigno las publicaciones del evento borrando sus comentarios
@@ -208,13 +209,11 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 					}
 				}
 
+				TypedQuery<EventoUsuario> query = manager.createQuery("SELECT eventoUsuario FROM EventoUsuario eventoUsuario where eventoUsuario.idPersona = '" + user.getIdPersona() + "'", EventoUsuario.class);
+				List<EventoUsuario> eventosUsuarios = query.getResultList();
 				//Eventos a los que asistira el usuario
-				List<Evento> eventos = user.getEventos();
-
-				if (!eventos.isEmpty()){
-					for (Evento event : eventos){
-						event.getUsuarios().remove(user);
-					}
+				for (EventoUsuario eventoUsuario : eventosUsuarios) {
+					manager.remove(eventoUsuario);
 				}
 
 				//Remove Multimedia
