@@ -2,6 +2,8 @@ package com.javaee.pryectoBack.datatypes;
 
 import java.io.Serializable;
 
+import com.javaee.pryectoBack.model.Configuracion;
+
 public class DTOConfiguracion implements Serializable
 {
 	private static final long serialVersionUID = 1L;
@@ -44,6 +46,24 @@ public class DTOConfiguracion implements Serializable
 		this.bajaEvento = bajaEvento;
 		this.modificacionEvento = modificacionEvento;
 		this.idPersona = idPersona;
+	}
+
+	public DTOConfiguracion(Configuracion configuracion) {
+		this.idConfiguracion = configuracion.getIdConfiguracion();
+		this.altaPublicacion = configuracion.isAltaPublicacion();
+		this.altaContacto = configuracion.isAltaContacto();
+		this.reaccionPublicacion = configuracion.isReaccionPublicacion();
+		this.comentarPublicacion = configuracion.isComentarPublicacion();
+		this.altaEvento = configuracion.isAltaEvento();
+		this.invitacionUsuario = configuracion.isInvitacionUsuario();
+		this.salirEvento = configuracion.isSalirEvento();
+		this.recuperarContrasenia = configuracion.isRecuperarContrasenia();
+		this.bloquearUsuario = configuracion.isBloquearUsuario();
+		this.desbloquearUsuario = configuracion.isDesbloquearUsuario();
+		this.chatUsuario = configuracion.isChatUsuario();
+		this.bajaEvento = configuracion.isBajaEvento();
+		this.modificacionEvento = configuracion.isModificacionEvento();
+		this.idPersona = configuracion.getUsuario().getIdPersona();
 	}
 
 	public int getIdConfiguracion() {

@@ -142,7 +142,7 @@ public class InteresRest {
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Agrega un interes al back", notes = "se le pasa el data type interes como lo devuelve el get obvio que metiendo los datos del nuevo")
+	@ApiOperation(value = "El usuario logueado se suscribe a un interes", notes = "")
 	@Path("suscribe/{idPersona}/{idInteres}")
 	public Response suscribe(@PathParam("idPersona") String idPersona, @PathParam("idInteres") int idInteres) {
 		Response.ResponseBuilder builder = null;
@@ -161,8 +161,25 @@ public class InteresRest {
 		return builder.build();
 	}
 
-	public boolean desuscribe(String idPersona, int idInteres) {
-		// TODO Auto-generated method stub
-		return false;
+	@DELETE
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "El usuario logueado se desuscribe de un interes", notes = "")
+	@Path("desuscribe/{idPersona}/{idInteres}")
+	public Response desuscribe(@PathParam("idPersona") String idPersona, @PathParam("idInteres") int idInteres) {
+		Response.ResponseBuilder builder = null;
+		boolean result = controladorInteres.desuscribe(idPersona, idInteres);
+		if (result)
+		{
+			builder = Response.ok();
+			builder.entity(result);
+		}
+		else
+		{
+          Map<String, String> responseObj = new HashMap<>();
+          responseObj.put("error", "Algo salio mal cuando el usuario con id = " + idPersona + " intento desuscribirse al interes con id = " + idInteres);
+          builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
 	}
 }

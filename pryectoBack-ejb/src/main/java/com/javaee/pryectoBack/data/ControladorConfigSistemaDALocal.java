@@ -6,5 +6,6 @@ import com.javaee.pryectoBack.datatypes.DTOConfiguracion;
 
 @Local
 public interface ControladorConfigSistemaDALocal {
-	boolean configurarNotificaciones(DTOConfiguracion dtoConfiguracion);
+	DTOConfiguracion configurarNotificaciones(DTOConfiguracion dtoConfiguracion);
+	DTOConfiguracion getByIdPersona(String idPersona);
 }
