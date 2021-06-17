@@ -119,6 +119,10 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 				evento.setFechaFin(dtoEvento.getFechaFin());
 				evento.setEstado(dtoEvento.getEstado());
 				evento.getUbicacion().setEvento(evento);
+				evento.setNombre(dtoEvento.getNombre());
+				evento.setImagen(dtoEvento.getImagen());
+				evento.setNombreImagen(dtoEvento.getNombreImagen());
+				evento.setExtension(dtoEvento.getExtension());
 				manager.merge(evento);
 				dtoEventoRes = new DTOEvento(evento);
 			}

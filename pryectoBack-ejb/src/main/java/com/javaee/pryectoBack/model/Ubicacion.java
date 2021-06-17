@@ -40,6 +40,7 @@ public class Ubicacion implements Serializable
 		this.latitud = dtoUbicacion.getLatitud();
 		this.fecha = dtoUbicacion.getFecha();
 		this.descripcion = dtoUbicacion.getDescripcion();
+		this.pais = dtoUbicacion.getPais();
 	}
 	
 	public int getIdUbicacion() {
