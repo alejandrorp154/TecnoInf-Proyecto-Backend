@@ -8,9 +8,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import com.javaee.pryectoBack.datatypes.DTODetalleEvento;
 import com.javaee.pryectoBack.datatypes.DTOEvento;
 import com.javaee.pryectoBack.datatypes.DTOEventoUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
+import com.javaee.pryectoBack.datatypes.DTOUsuarioEvento;
 import com.javaee.pryectoBack.model.Evento;
 import com.javaee.pryectoBack.model.EventoUsuario;
 import com.javaee.pryectoBack.model.EventoUsuarioId;
@@ -119,6 +121,10 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 				evento.setFechaFin(dtoEvento.getFechaFin());
 				evento.setEstado(dtoEvento.getEstado());
 				evento.getUbicacion().setEvento(evento);
+				evento.setNombre(dtoEvento.getNombre());
+				evento.setImagen(dtoEvento.getImagen());
+				evento.setNombreImagen(dtoEvento.getNombreImagen());
+				evento.setExtension(dtoEvento.getExtension());
 				manager.merge(evento);
 				dtoEventoRes = new DTOEvento(evento);
 			}
@@ -226,5 +232,29 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 			return res;
 		}
 		return res;
+	}
+
+	@Override
+	public DTODetalleEvento obtenerEventoById(int idEvento) {
+		DTODetalleEvento dtoDetalleEvento = new DTODetalleEvento();
+		try {
+			Evento evento = manager.find(Evento.class, idEvento);
+			if (evento != null) {
+				TypedQuery<EventoUsuario> query = manager.createQuery("SELECT eventoUsuario FROM EventoUsuario eventoUsuario where eventoUsuario.idEvento = '" + idEvento + "'", EventoUsuario.class);
+				List<EventoUsuario> eventosUsuarios = query.getResultList();
+				List<DTOUsuarioEvento> dtoUsuariosEventos = new ArrayList<>();
+				for(EventoUsuario eventoUsuario : eventosUsuarios) {
+					Usuario usuario = manager.find(Usuario.class, eventoUsuario.getIdPersona());
+					DTOUsuarioEvento dtoUsuarioEvento = new DTOUsuarioEvento(usuario, eventoUsuario.getEstadoContactos());
+					boolean owner = evento.getUsuarioCreador().getIdPersona().equals(eventoUsuario.getIdPersona()) ? true : false;
+					dtoUsuarioEvento.setOwner(owner);
+					dtoUsuariosEventos.add(dtoUsuarioEvento);
+				}
+				dtoDetalleEvento = new DTODetalleEvento(evento, dtoUsuariosEventos);
+			}
+		} catch (Exception exception) {
+			return dtoDetalleEvento;
+		}
+		return dtoDetalleEvento;
 	}
 }

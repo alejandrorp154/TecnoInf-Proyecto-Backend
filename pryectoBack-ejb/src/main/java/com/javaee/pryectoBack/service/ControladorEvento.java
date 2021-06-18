@@ -7,6 +7,7 @@ import javax.ejb.Remote;
 import javax.ejb.Stateless;
 
 import com.javaee.pryectoBack.data.ControladorEventoDALocal;
+import com.javaee.pryectoBack.datatypes.DTODetalleEvento;
 import com.javaee.pryectoBack.datatypes.DTOEvento;
 import com.javaee.pryectoBack.datatypes.DTOEventoUsuario;
 
@@ -60,6 +61,11 @@ public class ControladorEvento implements ControladorEventoLocal, ControladorEve
 	@Override
 	public boolean responderIvitacion(DTOEventoUsuario dtoEventoUsuario) {
 		return controladorEventoDA.responderIvitacion(dtoEventoUsuario);
+	}
+
+	@Override
+	public DTODetalleEvento obtenerEventoById(int idEvento) {
+		return controladorEventoDA.obtenerEventoById(idEvento);
 	}
 
 }
