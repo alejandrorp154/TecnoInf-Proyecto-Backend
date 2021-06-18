@@ -18,29 +18,30 @@ public class ControladorPublicacionComentario
 
 	@EJB
 	private ControladorPublicacionComentarioDALocal controladorPublicacionComentarioDA;
-		
-	
+
 	@Override
 	public boolean altaComentario(DTOComentario dtoComentario) {
 		return controladorPublicacionComentarioDA.altaComentario(dtoComentario);
 	}
 
 	@Override
-	public boolean bajaComentario(int idComentario) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean bajaComentario(String idComentario) {
+		return controladorPublicacionComentarioDA.bajaComentario(idComentario);
 	}
 
 	@Override
 	public boolean modificarComentario(DTOComentario dtoComentario) {
-		// TODO Auto-generated method stub
-		return false;
+		return controladorPublicacionComentarioDA.modificarComentario(dtoComentario);
 	}
 
 	@Override
-	public boolean reaccionarComentario(int idComentario, DTOReaccion dtoReaccion) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean reaccionarComentario(DTOReaccion dtoReaccion) {
+		return controladorPublicacionComentarioDA.reaccionarComentario(dtoReaccion);
+	}
+
+	@Override
+	public boolean reaccionPublicacion(DTOReaccion dtoReaccion) {
+		return controladorPublicacionComentarioDA.reaccionPublicacion(dtoReaccion);
 	}
 
 	@Override
@@ -53,15 +54,10 @@ public class ControladorPublicacionComentario
 	public boolean modificarPublicacion(DTOPublicacion dtoPublicacion) {
 		return controladorPublicacionComentarioDA.modificarPublicacion(dtoPublicacion);
 	}
+
 	@Override
 	public boolean bajaPublicacion(int idPublicacion) {
 		return controladorPublicacionComentarioDA.bajaPublicacion(idPublicacion);
-	}
-
-	@Override
-	public boolean reaccionPublicacion(DTOReaccion dtoReaccion) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override
