@@ -35,29 +35,34 @@ import javax.persistence.PersistenceContext;
 import static org.junit.Assert.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ControladorUsuarioTest {
+public class testt {
 
-	@Mock
-	ControladorUsuarioDALocal ctrlUserD;
+	//@Mock
+	//ControladorUsuarioDALocal ctrlUserD;
 
     @InjectMocks
-    private ControladorUsuarioLocal controladorUsuario = new ControladorUsuario();
+    private ControladorUsuarioDALocal controladorUsuario = new ControladorUsuarioDA();
 
     @PersistenceContext(unitName = "primary")
 	private EntityManager manager;
  
+    EntityManagerFactory emf  = mock(EntityManagerFactory.class);;
+	EntityManager em=emf.createEntityManager();	
     
     Date f = new Date(02/02/2020);
-	DTOUsuario dtoUser = new DTOUsuario("10", "probanto1@gmail.com", "German", "Gutierrez", "elguti", "en su casa", "099111111", "Uruguay","imagen", "imagenPerfil", "jpg");
+    DTOUsuario dtoUser = new DTOUsuario("10", "probanto1@gmail.com", "German", "Gutierrez", "elguti", "en su casa", "099111111", "Uruguay","imagen", "imagenPerfil", "jpg");
 	
+  
+    
     @Test
     public void registrarUsuario(){
+    	DTOUsuario dtoUser = new DTOUsuario("10", "probanto1@gmail.com", "German", "Gutierrez", "elguti", "en su casa", "099111111", "Uruguay","imagen", "imagenPerfil", "jpg");
     	MockitoAnnotations.initMocks(this);
+    	System.out.println("test: " + dtoUser.getApellido() );
+    	//Mockito.when(controladorUsuario.registrarUsuario(Mockito.any(DTOUsuario.class))).thenReturn(dtoUser);
+    	DTOUsuario resdto = controladorUsuario.registrarUsuario(dtoUser);
+    	//assertEquals(dtoUser,resdto);
+    	//assertEquals(resdto.getApellido(),dtoUser.getApellido());
     	
-    	Mockito.when(ctrlUserD.registrarUsuario(Mockito.any(DTOUsuario.class))).thenReturn(dtoUser);
-    	DTOUsuario resdto = ctrlUserD.registrarUsuario(dtoUser);
-    	assertEquals(dtoUser,resdto);
-    	assertEquals(resdto.getApellido(),dtoUser.getApellido());
-    	System.out.println("test: " + resdto.getApellido() + " y:  " + dtoUser.getApellido());
     }  
 }
