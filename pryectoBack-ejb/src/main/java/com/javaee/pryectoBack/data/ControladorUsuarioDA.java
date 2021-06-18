@@ -12,6 +12,7 @@ import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioContacto;
 import com.javaee.pryectoBack.datatypes.DTOAdministrador;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
+import com.javaee.pryectoBack.datatypes.DTOUsuarioPerfil;
 import com.javaee.pryectoBack.model.PerfilUsuario;
 import com.javaee.pryectoBack.model.Persona;
 import com.javaee.pryectoBack.model.Medalla;
@@ -53,7 +54,7 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	}
 
 	@Override
-	public DTOUsuario editarPerfil(DTOUsuario dtoUsuario) {
+	public DTOUsuario editarPerfil(DTOUsuarioPerfil dtoUsuario) {
 		DTOUsuario dtoUsuarioRes = new DTOUsuario();
 		try{
 			Usuario usuario = manager.find(Usuario.class, dtoUsuario.getIdPersona());
@@ -384,5 +385,19 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 		}catch ( Exception exception){
 			return null;
 		}
+	}
+
+	@Override
+	public DTOUsuarioPerfil getPerfil(String idPersona) {
+		DTOUsuarioPerfil dtoUsuarioPerfil = new DTOUsuarioPerfil();
+		try {
+			Usuario usuario = manager.find(Usuario.class, idPersona);
+			if (usuario != null) {
+				dtoUsuarioPerfil = new DTOUsuarioPerfil(usuario);
+			}
+		} catch (Exception exception) {
+			return dtoUsuarioPerfil;
+		}
+		return dtoUsuarioPerfil;
 	}
 }
