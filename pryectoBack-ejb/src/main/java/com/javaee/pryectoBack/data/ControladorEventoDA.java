@@ -213,7 +213,6 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 		}
 		return res;
 	}
-
 	
 	@Override
 	public boolean responderIvitacion(DTOEventoUsuario dtoEventoUsuario) {

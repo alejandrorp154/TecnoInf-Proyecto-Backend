@@ -269,8 +269,12 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 		try {
 			Administrador admin = manager.find(Administrador.class, idPersona);
 			if (admin != null) {
-				manager.remove(admin);
-				res = true;
+				TypedQuery<Administrador> query = manager.createQuery("SELECT administrador FROM Administrador administrador ", Administrador.class);
+				List<Administrador> administradores =  query.getResultList();
+				if (administradores.size() > 1) {
+					manager.remove(admin);
+					res = true;
+				}
 			}
 		} catch (Exception exception) {
 			return res;

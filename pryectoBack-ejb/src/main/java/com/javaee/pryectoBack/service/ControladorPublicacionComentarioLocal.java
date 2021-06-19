@@ -14,10 +14,11 @@ public interface ControladorPublicacionComentarioLocal {
 	boolean bajaComentario(String idComentario);
 	boolean modificarComentario(DTOComentario dtoComentario);
 	boolean reaccionarComentario(DTOReaccion dtoReaccion);
-	List<DTOPublicacion> obtenerPublicaciones(String idPersona);
+	List<DTOPublicacion> obtenerPublicaciones(String idPersona, int offset, int size);
 	boolean modificarPublicacion(DTOPublicacion dtoPublicacion);
 	boolean reaccionPublicacion(DTOReaccion dtoReaccion);
 	DTOPublicacion altaPublicacion(DTOPublicacion dtoPublicacion);
 	boolean bajaPublicacion(int idPublicacion);
 	List<DTOComentario> getComentarios(int idPublicacion);
+	DTOPublicacion obtenerPublicacion(int idPublicacion);
 }

@@ -85,11 +85,4 @@ public class ControladorUbicacionDA implements ControladorUbicacionDALocal, Cont
 		}
 		return res;
 	}
-
-	@Override
-	public DTOUbicacion seleccionarUbicacion(int idUbicacion) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

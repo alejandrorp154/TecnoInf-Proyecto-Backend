@@ -14,10 +14,12 @@ import com.javaee.pryectoBack.datatypes.DTOComentario;
 import com.javaee.pryectoBack.datatypes.DTOPublicacion;
 import com.javaee.pryectoBack.datatypes.DTOReaccion;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
+import com.javaee.pryectoBack.model.PerfilUsuario;
 import com.javaee.pryectoBack.model.Publicacion;
 import com.javaee.pryectoBack.model.Tipo;
 import com.javaee.pryectoBack.model.Usuario;
 import com.javaee.pryectoBack.model.reacciones;
+import com.javaee.pryectoBack.model.tipos;
 import com.javaee.pryectoBack.util.MongoDBConnector;
 import com.javaee.pryectoBack.util.PuntosUsuario;
 
@@ -42,9 +44,56 @@ public class ControladorPublicacionComentarioDA
 	}
 
 	@Override
-	public List<DTOPublicacion> obtenerPublicaciones(String idPersona) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<DTOPublicacion> obtenerPublicaciones(String idPersona, int offset, int size) {
+		List<DTOPublicacion> res = new ArrayList<>();
+		try {
+			PerfilUsuario perfil = manager.find(PerfilUsuario.class, idPersona);
+			if (perfil != null) {
+				for (Publicacion publicacion : perfil.getPublicaciones()) {
+					if (!publicacion.getTipo().getTipo().equals(tipos.mapa)) {
+						DTOPublicacion dtoPublicacion = new DTOPublicacion();
+						List<DTOComentario> dtoComentarios = getComentarios(dtoPublicacion.getIdPublicacion());
+						dtoPublicacion.setComentarioReacciones(dtoComentarios);
+						res.add(dtoPublicacion);
+					}
+				}
+				res = aplicarOffsetSeizePublicaciones(res, offset, size);
+			}
+		} catch (Exception exception) {
+			return res;
+		}
+		return res;
+	}
+
+	private List<DTOPublicacion> aplicarOffsetSeizePublicaciones(List<DTOPublicacion> dtoPublicaciones, int offset, int size) {
+		List<DTOPublicacion> res = new ArrayList<>();
+		int offsetAux = 0;
+		for (DTOPublicacion dtoMul : dtoPublicaciones) {
+			if (res.size() == size) {
+				break;
+			}
+			if (offsetAux >= offset) {
+				res.add(dtoMul);
+			}
+			offsetAux ++;
+		}
+		return res;
+	}
+
+	@Override
+	public DTOPublicacion obtenerPublicacion(int idPublicacion) {
+		DTOPublicacion dtoPublicacion = new DTOPublicacion();
+		try {
+			Publicacion publicacion = manager.find(Publicacion.class, idPublicacion);
+			if (publicacion != null) {
+				List<DTOComentario> dtoComentarios = getComentarios(publicacion.getIdPublicacion());
+				dtoPublicacion = new DTOPublicacion(publicacion);
+				dtoPublicacion.setComentarioReacciones(dtoComentarios);
+			}
+		} catch (Exception exception) {
+			return dtoPublicacion;
+		}
+		return dtoPublicacion;
 	}
 
 	@Override

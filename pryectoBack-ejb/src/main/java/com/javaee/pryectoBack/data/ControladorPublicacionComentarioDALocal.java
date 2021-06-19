@@ -10,7 +10,7 @@ import com.javaee.pryectoBack.datatypes.DTOReaccion;
 
 @Local
 public interface ControladorPublicacionComentarioDALocal {
-	List<DTOPublicacion> obtenerPublicaciones(String idPersona);
+	List<DTOPublicacion> obtenerPublicaciones(String idPersona, int offset, int size);
 	boolean modificarPublicacion(DTOPublicacion dtoPublicacion);
 	boolean reaccionPublicacion(DTOReaccion dtoReaccion);
 	boolean reaccionarComentario(DTOReaccion dtoReaccion);
@@ -20,4 +20,5 @@ public interface ControladorPublicacionComentarioDALocal {
 	boolean bajaComentario(String idComentario);
 	boolean modificarComentario(DTOComentario dtoComentario);	
 	List<DTOComentario> getComentarios(int idPublicacion);
+	DTOPublicacion obtenerPublicacion(int idPublicacion);
 }

@@ -55,7 +55,7 @@ public class ConfigSistemaRest {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Devuelve un interes", notes = "el que corresponda al id de interes")
+	@ApiOperation(value = "Devuelve las configuraciones de un usuario", notes = "el que corresponda al id de persona")
 	@Path("/{idPersona}")
 	public Response get(@PathParam("idPersona") String idPersona) throws Exception
 	{

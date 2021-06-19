@@ -67,5 +67,4 @@ public class ControladorEvento implements ControladorEventoLocal, ControladorEve
 	public DTODetalleEvento obtenerEventoById(int idEvento) {
 		return controladorEventoDA.obtenerEventoById(idEvento);
 	}
-
 }
