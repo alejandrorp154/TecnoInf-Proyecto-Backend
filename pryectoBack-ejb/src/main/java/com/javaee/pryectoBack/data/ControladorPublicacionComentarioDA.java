@@ -235,8 +235,8 @@ public class ControladorPublicacionComentarioDA
 	private Integer getCantidadReaccion(reacciones reaccion, Document comentario,
 			MongoCollection<Document> collection) {
 		Integer cantidad = 0;
-		FindIterable<Document> reacciones = collection
-				.find(and(eq("idComentario", String.valueOf(comentario.get("_id"))), eq("reaccion", String.valueOf(reaccion))));
+		FindIterable<Document> reacciones = collection.find(and(
+				eq("idComentario", String.valueOf(comentario.get("_id"))), eq("reaccion", String.valueOf(reaccion))));
 		for (Document document : reacciones) {
 			cantidad++;
 		}
