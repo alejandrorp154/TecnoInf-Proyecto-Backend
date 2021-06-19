@@ -51,7 +51,7 @@ public class ControladorPublicacionComentarioDA
 			if (perfil != null) {
 				for (Publicacion publicacion : perfil.getPublicaciones()) {
 					if (!publicacion.getTipo().getTipo().equals(tipos.mapa)) {
-						DTOPublicacion dtoPublicacion = new DTOPublicacion();
+						DTOPublicacion dtoPublicacion = new DTOPublicacion(publicacion);
 						List<DTOComentario> dtoComentarios = getComentarios(dtoPublicacion.getIdPublicacion());
 						dtoPublicacion.setComentarioReacciones(dtoComentarios);
 						res.add(dtoPublicacion);
@@ -103,12 +103,6 @@ public class ControladorPublicacionComentarioDA
 			publicacion.setContenido(dtoPublicacion.getContenido());
 			publicacion.setExtension(dtoPublicacion.getExtension());
 			publicacion.setFecha(dtoPublicacion.getFecha());
-			if (publicacion.getTipo().getTipo() == dtoPublicacion.getTipo().getTipo()) {
-				manager.remove(publicacion.getTipo());
-				Tipo tipoNuevo = new Tipo(dtoPublicacion.getTipo());
-				publicacion.setTipo(tipoNuevo);
-				manager.merge(tipoNuevo);
-			}
 			publicacion.setNombre(dtoPublicacion.getNombre());
 			manager.merge(publicacion);
 		}
@@ -119,13 +113,14 @@ public class ControladorPublicacionComentarioDA
 	public boolean bajaPublicacion(int idPublicacion) {
 		Publicacion publicacion = manager.find(Publicacion.class, idPublicacion);
 		if (publicacion != null) {
-			manager.remove(publicacion.getTipo());
 			MongoDBConnector mongoConnector = new MongoDBConnector();
 			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosPublicacion");
 			collection.deleteMany(eq("idPublicacion", idPublicacion));
 			collection = mongoConnector.getCollection("ReaccionesPublicacion");
 			collection.deleteMany(eq("idPublicacion", idPublicacion));
+			Tipo tipo = manager.find(Tipo.class, publicacion.getIdPublicacion());
 			manager.remove(publicacion);
+			manager.remove(tipo);
 		}
 		return true;
 	}

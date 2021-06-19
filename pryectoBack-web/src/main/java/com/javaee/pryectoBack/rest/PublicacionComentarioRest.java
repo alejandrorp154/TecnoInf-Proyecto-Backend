@@ -36,7 +36,7 @@ public class PublicacionComentarioRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/comentario")
 	@ApiOperation(value = "Agrega un comentario", notes = "Se le pasa el objeto comentario como sigue: {\r\n"
-			+ "    \"idComentarioReaccion\": \"Test\","
+			+ "    \"idComentario\": \"Test\","
 			+ "    \"contenido\": \"Contenido de prueba 2\","
 			+ "    \"fecha\": \"2020-03-10\","
 			+ "    \"idPublicacion\": 1,"
