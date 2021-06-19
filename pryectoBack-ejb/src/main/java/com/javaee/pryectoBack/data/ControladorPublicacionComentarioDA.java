@@ -149,31 +149,34 @@ public class ControladorPublicacionComentarioDA
 			return new DTOPublicacion();
 		}
 	}
+	
+	private Integer obtenerCantidadPadre(MongoCollection<Document> collection, String idPadre) {
+		Document comentarioPadre = collection
+				.find(eq("_id", new ObjectId(idPadre))).first();
+		Integer count = 0;
+		List<Document> comentariosHijo = (List) comentarioPadre.get("comentarioHijo");
+		if (comentariosHijo.size() > 0) {
+			for (Document document : comentariosHijo) {
+				count++;
+			}
+		}		
+		return count;
+	}
 
 	@Override
 	public DTOComentario altaComentario(DTOComentario dtoComentario) {
 		try {
 			MongoDBConnector mongoConnector = new MongoDBConnector();
 			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosPublicacion");
-
-			if (dtoComentario.getIdComentarioPadre() != "" && dtoComentario.getIdComentarioPadre() != null) {
-				Long count = collection.countDocuments();
-				dtoComentario.setInternalId((count++).toString());
-				Document comentario = dtoComentario.getDocument();
-				Bson updateOperation = push("comentarioHijo", comentario);
-				Document old = collection.findOneAndUpdate(
-						eq("_id", new ObjectId(dtoComentario.getIdComentarioPadre())), updateOperation);
-				dtoComentario.setIdComentario(String.valueOf(comentario.getObjectId("_id")));
-			} else {
-				Document comentario = dtoComentario.getDocument();
-				collection.insertOne(comentario);
-				dtoComentario.setIdComentario(String.valueOf(comentario.getObjectId("_id")));
-			}
+			Document comentario = dtoComentario.getDocument();			
+			collection.insertOne(comentario);
+			dtoComentario.setIdComentario(String.valueOf(comentario.getObjectId("_id")));
 			DTOUsuario dtoUsuario = new DTOUsuario();
 			dtoUsuario.setIdPersona(dtoComentario.getIdPersona());
 			puntoUsuario.getPuntosUsuario("ComentarPublicacion", dtoUsuario, manager);
 			return dtoComentario;
 		} catch (Exception exception) {
+			System.out.println(exception.getMessage());
 			return null;
 		}
 	}
@@ -184,11 +187,11 @@ public class ControladorPublicacionComentarioDA
 			MongoDBConnector mongoConnector = new MongoDBConnector();
 			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosPublicacion");
 			collection.deleteMany(eq("_id", new ObjectId(idComentario)));
-			collection.deleteMany(eq("internalId", idComentario));
 			collection = mongoConnector.getCollection("ReaccionesComentario");
 			collection.deleteMany(eq("idComentario", new ObjectId(idComentario)));			
 			return true;
 		} catch (Exception exception) {
+			System.out.println(exception.getMessage());
 			return false;
 		}
 	}
@@ -203,13 +206,15 @@ public class ControladorPublicacionComentarioDA
 					updateOperation);
 			return true;
 		} catch (Exception exception) {
+			System.out.println(exception.getMessage());
 			return false;
 		}
 	}
 
-	private DTOComentario getArbolComentario(Document comentarioPadre) {
+	private DTOComentario getArbolComentario(Document comentarioPadre, MongoCollection<Document> collection) {
 		DTOComentario comentarioPadreDTO = new DTOComentario(comentarioPadre);
-		List<Document> comentariosHijo = (List) comentarioPadre.get("comentarioHijo");
+		FindIterable<Document> comentariosHijo = collection
+				.find(eq("idComentarioPadre", comentarioPadreDTO.getIdComentario()));
 		if (comentariosHijo != null) {
 			for (Document comentario : comentariosHijo) {
 				comentarioPadreDTO.getComentariosHijos().add(new DTOComentario(comentario));
@@ -227,7 +232,7 @@ public class ControladorPublicacionComentarioDA
 			FindIterable<Document> comentariosPadre = collection
 					.find(and(eq("idPublicacion", idPublicacion), eq("idComentarioPadre", null)));
 			for (Document comentario : comentariosPadre) {
-				result.add(getArbolComentario(comentario));
+				result.add(getArbolComentario(comentario, collection));
 			}
 			return result;
 		} catch (Exception exception) {

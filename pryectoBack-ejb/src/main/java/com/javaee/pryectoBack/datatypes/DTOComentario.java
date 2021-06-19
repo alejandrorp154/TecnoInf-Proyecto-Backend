@@ -12,7 +12,6 @@ public class DTOComentario implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	protected String idComentario;
-	private String internalId;
 	private String contenido;
 	private Date fecha;
 	private int idPublicacion;
@@ -88,7 +87,6 @@ public class DTOComentario implements Serializable
 		newDocument.append("idPersona", this.idPersona);
 		newDocument.append("contenido", this.contenido);
 		newDocument.append("fecha", this.fecha);
-		newDocument.append("internalId", this.internalId);
 		return newDocument;
 	}
 	
@@ -96,8 +94,6 @@ public class DTOComentario implements Serializable
 		ObjectId idObj = (ObjectId) comentario.get("_id");
 		if (idObj != null) {
 			this.idComentario = (String) idObj.toString();		
-		} else {
-			this.internalId = (String) comentario.get("internalId"); 
 		}
 		this.idPersona = (String) comentario.get("idPersona");
 		this.contenido = (String) comentario.get("contenido");
@@ -114,11 +110,4 @@ public class DTOComentario implements Serializable
 		this.comentariosHijos = comentariosHijos;
 	}
 
-	public String getInternalId() {
-		return internalId;
-	}
-
-	public void setInternalId(String internalId) {
-		this.internalId = internalId;
-	}
 }
