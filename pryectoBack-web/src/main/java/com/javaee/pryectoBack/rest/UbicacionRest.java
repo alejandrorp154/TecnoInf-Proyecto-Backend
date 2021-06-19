@@ -29,9 +29,10 @@ public class UbicacionRest {
 
 	@EJB
 	private ControladorUbicacionLocal controladorUbicacionLocal;
+	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Obtiene las ubicaciones del usuario", notes = "Se le pasa el id")
+	@ApiOperation(value = "Obtiene las ubicaciones del usuario", notes = "Se le pasa el id de la persona")
 	@Path("/{idPersona}")
 	public Response obtenerUbicaciones(@PathParam("idPersona") String idPersona) {
 		Response.ResponseBuilder builder = null;
@@ -70,7 +71,7 @@ public class UbicacionRest {
 	@DELETE
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation( value = "Se elimina al Usuario", notes = "")
+	@ApiOperation( value = "Se elimina una ubicacion", notes = "")
 	@Path("/{idUbicacion}")
 	public Response baja(@PathParam("idUbicacion") int idUbicacion) {
 		Response.ResponseBuilder builder = null;
@@ -86,10 +87,12 @@ public class UbicacionRest {
         return builder.build();
 	}
 
-
 	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Modifica una ubicacion para el usuario al back", notes = "Se le pasa el datatype de DTOUbicacion de la siguiente forma: "
+			+ "{" + "    \"descripcion\": \"Descripcion de prueba\"," + "    \"longitud\": 60," + "    \"latitud\": 60,"
+			+ "    \"fecha\": \"2021-04-20\"," + "    \"idPersona\": 1" + "}")
 	public Response modificar(DTOUbicacion dtoUbicacion) {
 		Response.ResponseBuilder builder = null;
 		try {
@@ -102,10 +105,5 @@ public class UbicacionRest {
             builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
         }
         return builder.build();
-	}
-
-	public DTOUbicacion seleccionarUbicacion(int idUbicacion) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }

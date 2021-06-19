@@ -105,6 +105,9 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 			if (perfil != null) {
 				Multimedia multimedia = new Multimedia(dtoMultimedia, perfil);
 				manager.merge(multimedia);
+				Usuario usuario1 = manager.find(Usuario.class, perfil.getIdPersona());
+				DTOUsuario dtoUsuario1 = new DTOUsuario(usuario1);
+				puntoUsuario.getPuntosUsuario("SubirFotoGaleria", dtoUsuario1, manager);
 				res = true;
 			}
 		} catch (Exception exception) {
@@ -269,8 +272,12 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 		try {
 			Administrador admin = manager.find(Administrador.class, idPersona);
 			if (admin != null) {
-				manager.remove(admin);
-				res = true;
+				TypedQuery<Administrador> query = manager.createQuery("SELECT administrador FROM Administrador administrador ", Administrador.class);
+				List<Administrador> administradores =  query.getResultList();
+				if (administradores.size() > 1) {
+					manager.remove(admin);
+					res = true;
+				}
 			}
 		} catch (Exception exception) {
 			return res;

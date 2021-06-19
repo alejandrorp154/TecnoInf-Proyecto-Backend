@@ -59,5 +59,4 @@ public class ControladorVisualizacion implements ControladorVisualizacionLocal, 
 	public List<DTOUsuario> obtenerSolicitudesPendientes(String idPersona, int offset, int size) {
 		return controladorVisualizacionDA.obtenerSolicitudesPendientes(idPersona, offset, size);
 	}
-
 }

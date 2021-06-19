@@ -35,11 +35,4 @@ public class ControladorUbicacion implements ControladorUbicacionLocal, Controla
 	public boolean modificar(DTOUbicacion dtoUbicacion) {
 		return controladorUbicacionDA.modificar(dtoUbicacion);
 	}
-
-	@Override
-	public DTOUbicacion seleccionarUbicacion(int idUbicacion) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

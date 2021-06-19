@@ -17,13 +17,15 @@ public class DTOPublicacion implements Serializable
 	protected String idPersona;
 	private String extension;
 	private String nombre;
-	private List<DTOComentarioReaccion> comentarioReacciones = new ArrayList<>();
+	private List<DTOComentario> comentarioReacciones = new ArrayList<>();
 	private DTOEvento evento;
 	private DTOPerfilUsuario perfil;
+	private Integer cantidadLikes;
+	private Integer cantidadDislikes;
 
 
 	public DTOPublicacion(int idPublicacion, String contenido, Date fecha, DTOTipo dtoTipo, String idPersona,
-			String extension, String nombre, List<DTOComentarioReaccion> dtoComentarioReacciones, DTOEvento dtoEvento,
+			String extension, String nombre, List<DTOComentario> dtoComentarioReacciones, DTOEvento dtoEvento,
 			DTOPerfilUsuario dtoPerfil) {
 		super();
 		this.idPublicacion = idPublicacion;
@@ -107,11 +109,11 @@ public class DTOPublicacion implements Serializable
 		this.nombre = nombre;
 	}
 
-	public List<DTOComentarioReaccion> getComentarioReacciones() {
+	public List<DTOComentario> getComentarioReacciones() {
 		return comentarioReacciones;
 	}
 
-	public void setComentarioReacciones(List<DTOComentarioReaccion> dtoComentarioReacciones) {
+	public void setComentarioReacciones(List<DTOComentario> dtoComentarioReacciones) {
 		this.comentarioReacciones = dtoComentarioReacciones;
 	}
 
@@ -129,5 +131,21 @@ public class DTOPublicacion implements Serializable
 
 	public void setPerfil(DTOPerfilUsuario dtoPerfil) {
 		this.perfil = dtoPerfil;
+	}
+
+	public Integer getCantidadLikes() {
+		return cantidadLikes;
+	}
+
+	public void setCantidadLikes(Integer cantidadLikes) {
+		this.cantidadLikes = cantidadLikes;
+	}
+
+	public Integer getCantidadDislikes() {
+		return cantidadDislikes;
+	}
+
+	public void setCantidadDislikes(Integer cantidadDislikes) {
+		this.cantidadDislikes = cantidadDislikes;
 	}
 }

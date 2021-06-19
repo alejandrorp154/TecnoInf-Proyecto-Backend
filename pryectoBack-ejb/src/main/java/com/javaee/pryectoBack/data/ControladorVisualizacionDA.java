@@ -127,7 +127,6 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 		}
 		return res;
 	}
-
 	
 	@Override
 	public List<DTOUsuario> obtenerAmigos(String idPersona, int offset, int size) {
@@ -399,5 +398,4 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 		}
 		return res;
 	}
-
 }

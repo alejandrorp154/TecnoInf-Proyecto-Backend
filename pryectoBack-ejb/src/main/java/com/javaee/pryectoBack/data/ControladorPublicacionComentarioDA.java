@@ -14,10 +14,12 @@ import com.javaee.pryectoBack.datatypes.DTOComentario;
 import com.javaee.pryectoBack.datatypes.DTOPublicacion;
 import com.javaee.pryectoBack.datatypes.DTOReaccion;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
+import com.javaee.pryectoBack.model.PerfilUsuario;
 import com.javaee.pryectoBack.model.Publicacion;
 import com.javaee.pryectoBack.model.Tipo;
 import com.javaee.pryectoBack.model.Usuario;
 import com.javaee.pryectoBack.model.reacciones;
+import com.javaee.pryectoBack.model.tipos;
 import com.javaee.pryectoBack.util.MongoDBConnector;
 import com.javaee.pryectoBack.util.PuntosUsuario;
 
@@ -42,9 +44,58 @@ public class ControladorPublicacionComentarioDA
 	}
 
 	@Override
-	public List<DTOPublicacion> obtenerPublicaciones(String idPersona) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<DTOPublicacion> obtenerPublicaciones(String idPersona, int offset, int size) {
+		List<DTOPublicacion> res = new ArrayList<>();
+		try {
+			PerfilUsuario perfil = manager.find(PerfilUsuario.class, idPersona);
+			if (perfil != null) {
+				for (Publicacion publicacion : perfil.getPublicaciones()) {
+					if (!publicacion.getTipo().getTipo().equals(tipos.mapa)) {
+						DTOPublicacion dtoPublicacion = new DTOPublicacion(publicacion);
+						List<DTOComentario> dtoComentarios = getComentarios(dtoPublicacion.getIdPublicacion());
+						dtoPublicacion.setComentarioReacciones(dtoComentarios);
+						dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
+						res.add(dtoPublicacion);
+					}
+				}
+				res = aplicarOffsetSeizePublicaciones(res, offset, size);
+			}
+		} catch (Exception exception) {
+			return res;
+		}
+		return res;
+	}
+
+	private List<DTOPublicacion> aplicarOffsetSeizePublicaciones(List<DTOPublicacion> dtoPublicaciones, int offset, int size) {
+		List<DTOPublicacion> res = new ArrayList<>();
+		int offsetAux = 0;
+		for (DTOPublicacion dtoMul : dtoPublicaciones) {
+			if (res.size() == size) {
+				break;
+			}
+			if (offsetAux >= offset) {
+				res.add(dtoMul);
+			}
+			offsetAux ++;
+		}
+		return res;
+	}
+
+	@Override
+	public DTOPublicacion obtenerPublicacion(int idPublicacion) {
+		DTOPublicacion dtoPublicacion = new DTOPublicacion();
+		try {
+			Publicacion publicacion = manager.find(Publicacion.class, idPublicacion);
+			if (publicacion != null) {
+				List<DTOComentario> dtoComentarios = getComentarios(publicacion.getIdPublicacion());
+				dtoPublicacion = new DTOPublicacion(publicacion);
+				dtoPublicacion.setComentarioReacciones(dtoComentarios);
+				dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
+			}
+		} catch (Exception exception) {
+			return dtoPublicacion;
+		}
+		return dtoPublicacion;
 	}
 
 	@Override
@@ -54,12 +105,6 @@ public class ControladorPublicacionComentarioDA
 			publicacion.setContenido(dtoPublicacion.getContenido());
 			publicacion.setExtension(dtoPublicacion.getExtension());
 			publicacion.setFecha(dtoPublicacion.getFecha());
-			if (publicacion.getTipo().getTipo() == dtoPublicacion.getTipo().getTipo()) {
-				manager.remove(publicacion.getTipo());
-				Tipo tipoNuevo = new Tipo(dtoPublicacion.getTipo());
-				publicacion.setTipo(tipoNuevo);
-				manager.merge(tipoNuevo);
-			}
 			publicacion.setNombre(dtoPublicacion.getNombre());
 			manager.merge(publicacion);
 		}
@@ -70,13 +115,14 @@ public class ControladorPublicacionComentarioDA
 	public boolean bajaPublicacion(int idPublicacion) {
 		Publicacion publicacion = manager.find(Publicacion.class, idPublicacion);
 		if (publicacion != null) {
-			manager.remove(publicacion.getTipo());
 			MongoDBConnector mongoConnector = new MongoDBConnector();
 			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosPublicacion");
 			collection.deleteMany(eq("idPublicacion", idPublicacion));
 			collection = mongoConnector.getCollection("ReaccionesPublicacion");
 			collection.deleteMany(eq("idPublicacion", idPublicacion));
+			Tipo tipo = manager.find(Tipo.class, publicacion.getIdPublicacion());
 			manager.remove(publicacion);
+			manager.remove(tipo);
 		}
 		return true;
 	}
@@ -262,5 +308,31 @@ public class ControladorPublicacionComentarioDA
 			return null;
 
 		}
+	}
+	
+	private DTOPublicacion getCantidadReaccionPublicacion(DTOPublicacion dtoPublicacion)
+	{
+		try {
+			MongoDBConnector mongoConnector = new MongoDBConnector();
+			MongoCollection<Document> collection = mongoConnector.getCollection("ReaccionesPublicacion");
+			dtoPublicacion.setCantidadDislikes(getCantidadReaccionPublicacion(reacciones.NoMeGusta, dtoPublicacion, collection));
+			dtoPublicacion.setCantidadLikes(getCantidadReaccionPublicacion(reacciones.MeGusta, dtoPublicacion, collection));
+		} catch (Exception exception) {
+			System.out.println(exception.getMessage());
+			return null;
+		}
+		return dtoPublicacion;
+	}
+	
+	@SuppressWarnings("unused")
+	private Integer getCantidadReaccionPublicacion(reacciones reaccion, DTOPublicacion publicacion,
+			MongoCollection<Document> collection) {
+		Integer cantidad = 0;
+		FindIterable<Document> reacciones = collection.find(and(
+				eq("idPublicacion", publicacion.getIdPublicacion()), eq("reaccion", String.valueOf(reaccion))));
+		for (Document document : reacciones) {
+			cantidad++;
+		}
+		return cantidad;
 	}
 }

@@ -45,9 +45,13 @@ public class ControladorPublicacionComentario
 	}
 
 	@Override
-	public List<DTOPublicacion> obtenerPublicaciones(String idPersona) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<DTOPublicacion> obtenerPublicaciones(String idPersona, int offset, int size) {
+		return controladorPublicacionComentarioDA.obtenerPublicaciones(idPersona, offset, size);
+	}
+
+	@Override
+	public DTOPublicacion obtenerPublicacion(int idPublicacion) {
+		return controladorPublicacionComentarioDA.obtenerPublicacion(idPublicacion);
 	}
 
 	@Override
@@ -69,5 +73,4 @@ public class ControladorPublicacionComentario
 	public List<DTOComentario> getComentarios(int idPublicacion) {
 		return controladorPublicacionComentarioDA.getComentarios(idPublicacion);
 	}
-
 }

@@ -9,6 +9,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -35,7 +36,7 @@ public class PublicacionComentarioRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/comentario")
 	@ApiOperation(value = "Agrega un comentario", notes = "Se le pasa el objeto comentario como sigue: {\r\n"
-			+ "    \"idComentarioReaccion\": \"Test\","
+			+ "    \"idComentario\": \"Test\","
 			+ "    \"contenido\": \"Contenido de prueba 2\","
 			+ "    \"fecha\": \"2020-03-10\","
 			+ "    \"idPublicacion\": 1,"
@@ -93,7 +94,6 @@ public class PublicacionComentarioRest {
         return builder.build();
 	}
 	
-	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -130,9 +130,40 @@ public class PublicacionComentarioRest {
         return builder.build();
 	}
 
-	public List<DTOPublicacion> obtenerPublicaciones(String idPersona) {
-		// TODO Auto-generated method stub
-		return null;
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/{idPersona}/{offset}/{size}")
+	public Response obtenerPublicaciones(@PathParam("idPersona") String idPersona, @PathParam("offset") int offset, @PathParam("size") int size) {
+		Response.ResponseBuilder builder = null;
+		try {
+			List<DTOPublicacion> res = controladorPublicacionComentario.obtenerPublicaciones(idPersona, offset, size);
+            builder = Response.ok();
+            builder.entity(res);
+        } catch (Exception e) {
+            Map<String, String> responseObj = new HashMap<>();
+            responseObj.put("error", e.getMessage());
+            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+        }
+        return builder.build();
+	}
+
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/{idPublicacion}")
+	public Response obtenerPublicacion(@PathParam("idPublicacion") int idPublicacion) {
+		Response.ResponseBuilder builder = null;
+		try {
+			DTOPublicacion publicacion = controladorPublicacionComentario.obtenerPublicacion(idPublicacion);
+            builder = Response.ok();
+            builder.entity(publicacion);
+        } catch (Exception e) {
+            Map<String, String> responseObj = new HashMap<>();
+            responseObj.put("error", e.getMessage());
+            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+        }
+        return builder.build();
 	}
 	
 	@POST
@@ -143,7 +174,7 @@ public class PublicacionComentarioRest {
 	public Response reaccionPublicacion(DTOReaccion dtoReaccion) {
 		Response.ResponseBuilder builder = null;
 		try {
-			controladorPublicacionComentario.reaccionarComentario(dtoReaccion);
+			controladorPublicacionComentario.reaccionPublicacion(dtoReaccion);
             builder = Response.ok();
         } catch (Exception e) {
             Map<String, String> responseObj = new HashMap<>();
@@ -153,7 +184,7 @@ public class PublicacionComentarioRest {
         return builder.build();
 	}
 
-	@POST
+	@PUT
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@ApiOperation(value = "Modifica una publicacion del back", notes = "se le pasa el objeto publicacion como sigue: {\"contenido\":\"test 3\",\"tipo\":{\"tipo\":\"mapa\"},\"fecha\":\"\",\"extension\":\"\",\"nombre\":\"\"} . Tambien quedamos que si el tipo es mapa se le pasa las coordenadas en contenido. Si el tipo es foto, se le pasa el nombre del archivo y la extension.")
@@ -169,8 +200,6 @@ public class PublicacionComentarioRest {
         }
         return builder.build();
 	}
-
-	
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -194,6 +223,7 @@ public class PublicacionComentarioRest {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("comentarios/{idPublicacion}")
+	@ApiOperation(value = "Obtiene la lista de comentarios correspondiente al idPublicacion", notes = "")
 	public Response getComentarios(@PathParam("idPublicacion") int idPublicacion){
 		Response.ResponseBuilder builder = null;
 		try {

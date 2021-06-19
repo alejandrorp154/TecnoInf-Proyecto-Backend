@@ -95,7 +95,6 @@ public class UsuarioRest
 		return builder.build();
 	}
 
-
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -127,7 +126,7 @@ public class UsuarioRest
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Agregar un nuevo contacto a la lista de contactos con estado pendiente", notes = "")
+	@ApiOperation(value = "Agregar una foto a la galeria del usuario logueado", notes = "")
 	@Path("/subirFoto")
 	public Response subirFoto(DTOMultimedia dtoMultimedia) {
 		Response.ResponseBuilder builder = null;

@@ -57,7 +57,6 @@ public class ControladorInteresDA implements ControladorInteresDALocal, Controla
 		}
 	}
 
-
 	@Override
 	public DTOInteres getById(int idInteres) {
 		DTOInteres dtoInteres = new DTOInteres();
