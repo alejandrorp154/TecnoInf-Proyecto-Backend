@@ -105,6 +105,9 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 			if (perfil != null) {
 				Multimedia multimedia = new Multimedia(dtoMultimedia, perfil);
 				manager.merge(multimedia);
+				Usuario usuario1 = manager.find(Usuario.class, perfil.getIdPersona());
+				DTOUsuario dtoUsuario1 = new DTOUsuario(usuario1);
+				puntoUsuario.getPuntosUsuario("SubirFotoGaleria", dtoUsuario1, manager);
 				res = true;
 			}
 		} catch (Exception exception) {

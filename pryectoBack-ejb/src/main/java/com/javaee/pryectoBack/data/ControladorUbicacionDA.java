@@ -8,14 +8,23 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import com.javaee.pryectoBack.datatypes.DTOUbicacion;
+import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.model.Ubicacion;
 import com.javaee.pryectoBack.model.Usuario;
+import com.javaee.pryectoBack.util.PuntosUsuario;
 
 @Singleton
 public class ControladorUbicacionDA implements ControladorUbicacionDALocal, ControladorUbicacionDARemote {
 
 	@PersistenceContext(unitName = "primary")
 	private EntityManager manager;
+
+	private PuntosUsuario puntoUsuario;
+	
+	public ControladorUbicacionDA()
+	{
+		puntoUsuario = new PuntosUsuario();
+	}
 	
 	@Override
 	public DTOUbicacion alta(DTOUbicacion dtoUbicacion) {
@@ -30,6 +39,9 @@ public class ControladorUbicacionDA implements ControladorUbicacionDALocal, Cont
 				manager.merge(owner);
 				DTOUbicacion ubicacionCreada = dtoUbicacion;
 				ubicacionCreada.setIdUbicacion(ubicacion.getIdUbicacion());
+				Usuario usuario1 = manager.find(Usuario.class, owner.getIdPersona());
+				DTOUsuario dtoUsuario1 = new DTOUsuario(usuario1);
+				puntoUsuario.getPuntosUsuario("AltaUbicacion", dtoUsuario1, manager);
 				return ubicacionCreada;
 			}			
 			return null;
