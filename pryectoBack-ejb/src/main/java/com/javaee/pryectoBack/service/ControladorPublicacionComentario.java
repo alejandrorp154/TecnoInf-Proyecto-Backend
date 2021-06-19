@@ -20,7 +20,7 @@ public class ControladorPublicacionComentario
 	private ControladorPublicacionComentarioDALocal controladorPublicacionComentarioDA;
 
 	@Override
-	public boolean altaComentario(DTOComentario dtoComentario) {
+	public DTOComentario altaComentario(DTOComentario dtoComentario) {
 		return controladorPublicacionComentarioDA.altaComentario(dtoComentario);
 	}
 

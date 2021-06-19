@@ -69,7 +69,7 @@ public class ControladorPublicacionComentarioDA
 		if (publicacion != null) {
 			manager.remove(publicacion.getTipo());
 			MongoDBConnector mongoConnector = new MongoDBConnector();
-			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosYReacciones");
+			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosPublicacion");
 			collection.deleteMany(eq("idPublicacion", idPublicacion));
 			collection = mongoConnector.getCollection("ReaccionesPublicacion");
 			collection.deleteMany(eq("idPublicacion", idPublicacion));
@@ -149,26 +149,26 @@ public class ControladorPublicacionComentarioDA
 	}
 
 	@Override
-	public boolean altaComentario(DTOComentario dtoComentario) {
+	public DTOComentario altaComentario(DTOComentario dtoComentario) {
 		try {
 			MongoDBConnector mongoConnector = new MongoDBConnector();
-			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosYReacciones");
+			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosPublicacion");
 			Document comentario = dtoComentario.getDocument();
 			if (dtoComentario.getIdComentarioPadre() != "" && dtoComentario.getIdComentarioPadre() != null) {
 				Bson updateOperation = push("comentarioHijo", comentario);
 				Document old = collection.findOneAndUpdate(
 						eq("_id", new ObjectId(dtoComentario.getIdComentarioPadre())), updateOperation);
-				System.out.println(old.toJson());
+				dtoComentario.setIdComentario(String.valueOf(comentario.getObjectId("_id")));
 			} else {
 				collection.insertOne(comentario);
-				DTOUsuario dtoUsuario = new DTOUsuario();
-				dtoUsuario.setIdPersona(dtoComentario.getIdPersona());
-				puntoUsuario.getPuntosUsuario("ComentarPublicacion", dtoUsuario, manager);
+				dtoComentario.setIdComentario(String.valueOf(comentario.getObjectId("_id")));				
 			}
-			// Falta agregar que le de puntos al usuario
-			return true;
+			DTOUsuario dtoUsuario = new DTOUsuario();
+			dtoUsuario.setIdPersona(dtoComentario.getIdPersona());
+			puntoUsuario.getPuntosUsuario("ComentarPublicacion", dtoUsuario, manager);
+			return dtoComentario;
 		} catch (Exception exception) {
-			return false;
+			return null;
 		}
 	}
 
@@ -176,7 +176,7 @@ public class ControladorPublicacionComentarioDA
 	public boolean bajaComentario(String idComentario) {
 		try {
 			MongoDBConnector mongoConnector = new MongoDBConnector();
-			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosYReacciones");
+			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosPublicacion");
 			collection.deleteMany(eq("_id", new ObjectId(idComentario)));
 			collection = mongoConnector.getCollection("ReaccionesComentario");
 			collection.deleteMany(eq("idComentario", new ObjectId(idComentario)));
@@ -193,7 +193,7 @@ public class ControladorPublicacionComentarioDA
 			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosYReacciones");
 			Bson updateOperation = push("contenido", dtoComentario.getContenido());
 			Document old = collection.findOneAndUpdate(
-					eq("_id", new ObjectId(dtoComentario.getIdComentarioReaccion())), updateOperation);
+					eq("_id", new ObjectId(dtoComentario.getIdComentario())), updateOperation);
 			return true;
 		} catch (Exception exception) {
 			return false;

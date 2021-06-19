@@ -15,7 +15,7 @@ public interface ControladorPublicacionComentarioDARemote {
 	boolean reaccionPublicacion(DTOReaccion dtoReaccion);
 	boolean reaccionarComentario(DTOReaccion dtoReaccion);
 	DTOPublicacion altaPublicacion(DTOPublicacion dtoPublicacion);
-	public boolean altaComentario(DTOComentario dtoComentario);
+	public DTOComentario altaComentario(DTOComentario dtoComentario);
 	boolean bajaPublicacion(int idPublicacion);
 	boolean bajaComentario(String idComentario);
 	boolean modificarComentario(DTOComentario dtoComentario);

@@ -45,13 +45,9 @@ public class PublicacionComentarioRest {
 	public Response altaComentario(DTOComentario dtoComentario) {
 		Response.ResponseBuilder builder = null;
 		try {			
-			boolean error = controladorPublicacionComentario.altaComentario(dtoComentario);
-			if (!error) {
-				Map<String, String> responseObj = new HashMap<>();
-	            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);	
-			} else {
-				builder = Response.ok();				
-			}            
+			DTOComentario comentario = controladorPublicacionComentario.altaComentario(dtoComentario);			
+			builder = Response.ok();	
+			builder.entity(comentario);
         } catch (Exception e) {
             Map<String, String> responseObj = new HashMap<>();
             responseObj.put("error", e.getMessage());

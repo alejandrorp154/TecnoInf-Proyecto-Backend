@@ -10,7 +10,7 @@ import com.javaee.pryectoBack.datatypes.DTOReaccion;
 
 @Remote
 public interface ControladorPublicacionComentarioRemote {
-	boolean altaComentario(DTOComentario dtoComentario);
+	DTOComentario altaComentario(DTOComentario dtoComentario);
 	boolean bajaComentario(String idComentario);
 	boolean modificarComentario(DTOComentario dtoComentario);
 	boolean reaccionarComentario(DTOReaccion dtoReaccion);
