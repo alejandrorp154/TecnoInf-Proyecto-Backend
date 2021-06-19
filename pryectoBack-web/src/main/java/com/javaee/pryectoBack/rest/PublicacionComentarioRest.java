@@ -45,13 +45,9 @@ public class PublicacionComentarioRest {
 	public Response altaComentario(DTOComentario dtoComentario) {
 		Response.ResponseBuilder builder = null;
 		try {			
-			boolean error = controladorPublicacionComentario.altaComentario(dtoComentario);
-			if (!error) {
-				Map<String, String> responseObj = new HashMap<>();
-	            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);	
-			} else {
-				builder = Response.ok();				
-			}            
+			DTOComentario comentario = controladorPublicacionComentario.altaComentario(dtoComentario);			
+			builder = Response.ok();	
+			builder.entity(comentario);
         } catch (Exception e) {
             Map<String, String> responseObj = new HashMap<>();
             responseObj.put("error", e.getMessage());
@@ -60,9 +56,22 @@ public class PublicacionComentarioRest {
 		return builder.build();
 	}
 
-	public boolean bajaComentario(int idComentario) {
-		// TODO Auto-generated method stub
-		return false;
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/comentario/{idComentario}")
+	@ApiOperation(value = "Borra un comentario del back", notes = "Se le pasa el id de un comentario")
+	public Response bajaComentario(@PathParam("idComentario") String idComentario) {
+		Response.ResponseBuilder builder = null;
+		try {
+			controladorPublicacionComentario.bajaComentario(idComentario);
+            builder = Response.ok();
+        } catch (Exception e) {
+            Map<String, String> responseObj = new HashMap<>();
+            responseObj.put("error", e.getMessage());
+            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+        }
+        return builder.build();
 	}
 	
 	@POST
@@ -82,20 +91,65 @@ public class PublicacionComentarioRest {
         }
         return builder.build();
 	}
-
-	public boolean modificarComentario(DTOComentario dtoComentario) {
-		// TODO Auto-generated method stub
-		return false;
+	
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/comentario/modificar")
+	@ApiOperation(value = "Modifica un Comentario del back", notes = "Se le pasa {\"contenido\":\"test 3\", \"idComentarioReaccion\": \"id\" }")
+	public Response modificarComentario(DTOComentario dtoComentario) {
+		Response.ResponseBuilder builder = null;
+		try {
+			controladorPublicacionComentario.modificarComentario(dtoComentario);
+            builder = Response.ok();
+        } catch (Exception e) {
+            Map<String, String> responseObj = new HashMap<>();
+            responseObj.put("error", e.getMessage());
+            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+        }
+        return builder.build();
 	}
 
-	public boolean reaccionarComentario(int idComentario, DTOReaccion dtoReaccion) {
-		// TODO Auto-generated method stub
-		return false;
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/comentario/reaccionar")
+	@ApiOperation(value = "Reacciona a una Comentario", notes = "Se le pasa {\"idPersona\":\"test 3\", \"idComentario\": \"adsfasdf\", \"reaccion\" : \"MeGusta\" }")
+	public Response reaccionarComentario(DTOReaccion dtoReaccion) {
+		Response.ResponseBuilder builder = null;
+		try {
+			controladorPublicacionComentario.reaccionarComentario(dtoReaccion);
+            builder = Response.ok();
+        } catch (Exception e) {
+            Map<String, String> responseObj = new HashMap<>();
+            responseObj.put("error", e.getMessage());
+            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+        }
+        return builder.build();
 	}
 
 	public List<DTOPublicacion> obtenerPublicaciones(String idPersona) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/publicacion/reaccionar")
+	@ApiOperation(value = "Reacciona a una Publicacion", notes = "Se le pasa {\"idPersona\":\"test 3\", \"idPublicacion\": \"1\", \"reaccion\" : \"MeGusta\" }")
+	public Response reaccionPublicacion(DTOReaccion dtoReaccion) {
+		Response.ResponseBuilder builder = null;
+		try {
+			controladorPublicacionComentario.reaccionarComentario(dtoReaccion);
+            builder = Response.ok();
+        } catch (Exception e) {
+            Map<String, String> responseObj = new HashMap<>();
+            responseObj.put("error", e.getMessage());
+            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+        }
+        return builder.build();
 	}
 
 	@POST
@@ -115,10 +169,7 @@ public class PublicacionComentarioRest {
         return builder.build();
 	}
 
-	public boolean reaccionPublicacion(DTOReaccion dtoReaccion) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)

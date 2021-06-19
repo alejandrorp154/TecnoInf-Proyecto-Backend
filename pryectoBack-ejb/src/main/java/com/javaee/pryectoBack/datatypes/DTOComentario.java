@@ -8,17 +8,17 @@ import org.bson.Document;
 public class DTOComentario implements Serializable
 {
 	private static final long serialVersionUID = 1L;
-	protected String idComentarioReaccion;
+	protected String idComentario;
 	private String contenido;
 	private Date fecha;
 	private int idPublicacion;
 	private String idComentarioPadre;
 	protected String idPersona;
 	
-	public DTOComentario(String idComentarioReaccion, String contenido, Date fecha, int idPublicacion, String idPersona, String idComentarioPadre) {
+	public DTOComentario(String idComentario, String contenido, Date fecha, int idPublicacion, String idPersona, String idComentarioPadre) {
 		super();
 		this.idComentarioPadre = idComentarioPadre;
-		this.idComentarioReaccion = idComentarioReaccion;
+		this.idComentario = idComentario;
 		this.contenido = contenido;
 		this.fecha = fecha;
 		this.idPublicacion = idPublicacion;
@@ -28,12 +28,12 @@ public class DTOComentario implements Serializable
 	public DTOComentario() {
 	}
 
-	public String getIdComentarioReaccion() {
-		return idComentarioReaccion;
+	public String getIdComentario() {
+		return idComentario;
 	}
 
-	public void setIdComentarioReaccion(String idComentarioReaccion) {
-		this.idComentarioReaccion = idComentarioReaccion;
+	public void setIdComentario(String idComentario) {
+		this.idComentario = idComentario;
 	}
 
 	public String getContenido() {

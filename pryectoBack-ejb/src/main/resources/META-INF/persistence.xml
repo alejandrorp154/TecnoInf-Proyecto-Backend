@@ -40,6 +40,7 @@
 	  	<class>com.javaee.pryectoBack.model.Usuario</class>
 	  	<class>com.javaee.pryectoBack.model.Configuracion</class>
 	  	<class>com.javaee.pryectoBack.model.UsuarioContacto</class>
+	  	<class>com.javaee.pryectoBack.model.EventoUsuario</class>
       
 		<properties>
 	         <property name="hibernate.hbm2ddl.auto" value="update" />

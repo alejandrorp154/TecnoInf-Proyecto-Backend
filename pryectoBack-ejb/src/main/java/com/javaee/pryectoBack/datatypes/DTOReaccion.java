@@ -2,19 +2,21 @@ package com.javaee.pryectoBack.datatypes;
 
 import java.io.Serializable;
 
+import org.bson.Document;
+
 import com.javaee.pryectoBack.model.reacciones;
 
 public class DTOReaccion implements Serializable
 {
 	private static final long serialVersionUID = 1L;
-	protected int idComentarioReaccion;
-	private int idPublicacion;
+	protected String idComentario;
+	private int idPublicacion; 
 	protected String idPersona;
 	private reacciones reaccion;
 	
-	public DTOReaccion(int idComentarioReaccion, int idPublicacion, String idPersona, reacciones reaccion) {
+	public DTOReaccion(String idComentario, int idPublicacion, String idPersona, reacciones reaccion) {
 		super();
-		this.idComentarioReaccion = idComentarioReaccion;
+		this.idComentario = idComentario;
 		this.idPublicacion = idPublicacion;
 		this.idPersona = idPersona;
 		this.reaccion = reaccion;
@@ -23,12 +25,12 @@ public class DTOReaccion implements Serializable
 	public DTOReaccion() {
 	}
 
-	public int getIdComentarioReaccion() {
-		return idComentarioReaccion;
+	public String getIdComentario() {
+		return idComentario;
 	}
 
-	public void setIdComentarioReaccion(int idComentarioReaccion) {
-		this.idComentarioReaccion = idComentarioReaccion;
+	public void setIdComentarioReaccion(String idComentario) {
+		this.idComentario = idComentario;
 	}
 
 	public int getIdPublicacion() {
@@ -53,5 +55,21 @@ public class DTOReaccion implements Serializable
 
 	public void setReaccion(reacciones reaccion) {
 		this.reaccion = reaccion;
+	}
+	
+	public Document getDocumentPublicacion() {
+		Document newDocument = new Document();
+		newDocument.append("idPublicacion", this.idPublicacion);
+		newDocument.append("idPersona", this.idPersona);
+		newDocument.append("reaccion", String.valueOf(this.reaccion));
+		return newDocument;
+	}
+	
+	public Document getDocumentComentario() {
+		Document newDocument = new Document();
+		newDocument.append("idComentario", this.idComentario);
+		newDocument.append("idPersona", this.idPersona);
+		newDocument.append("reaccion", String.valueOf(this.reaccion));
+		return newDocument;
 	}
 }

@@ -10,10 +10,10 @@ import com.javaee.pryectoBack.datatypes.DTOReaccion;
 
 @Remote
 public interface ControladorPublicacionComentarioRemote {
-	boolean altaComentario(DTOComentario dtoComentario);
-	boolean bajaComentario(int idComentario);
+	DTOComentario altaComentario(DTOComentario dtoComentario);
+	boolean bajaComentario(String idComentario);
 	boolean modificarComentario(DTOComentario dtoComentario);
-	boolean reaccionarComentario(int idComentario, DTOReaccion dtoReaccion);
+	boolean reaccionarComentario(DTOReaccion dtoReaccion);
 	List<DTOPublicacion> obtenerPublicaciones(String idPersona);
 	boolean modificarPublicacion(DTOPublicacion dtoPublicacion);
 	boolean reaccionPublicacion(DTOReaccion dtoReaccion);
