@@ -20,6 +20,8 @@ public class DTOPublicacion implements Serializable
 	private List<DTOComentario> comentarioReacciones = new ArrayList<>();
 	private DTOEvento evento;
 	private DTOPerfilUsuario perfil;
+	private Integer cantidadLikes;
+	private Integer cantidadDislikes;
 
 
 	public DTOPublicacion(int idPublicacion, String contenido, Date fecha, DTOTipo dtoTipo, String idPersona,
@@ -129,5 +131,21 @@ public class DTOPublicacion implements Serializable
 
 	public void setPerfil(DTOPerfilUsuario dtoPerfil) {
 		this.perfil = dtoPerfil;
+	}
+
+	public Integer getCantidadLikes() {
+		return cantidadLikes;
+	}
+
+	public void setCantidadLikes(Integer cantidadLikes) {
+		this.cantidadLikes = cantidadLikes;
+	}
+
+	public Integer getCantidadDislikes() {
+		return cantidadDislikes;
+	}
+
+	public void setCantidadDislikes(Integer cantidadDislikes) {
+		this.cantidadDislikes = cantidadDislikes;
 	}
 }

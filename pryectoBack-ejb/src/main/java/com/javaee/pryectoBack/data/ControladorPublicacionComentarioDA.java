@@ -54,6 +54,7 @@ public class ControladorPublicacionComentarioDA
 						DTOPublicacion dtoPublicacion = new DTOPublicacion(publicacion);
 						List<DTOComentario> dtoComentarios = getComentarios(dtoPublicacion.getIdPublicacion());
 						dtoPublicacion.setComentarioReacciones(dtoComentarios);
+						dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
 						res.add(dtoPublicacion);
 					}
 				}
@@ -89,6 +90,7 @@ public class ControladorPublicacionComentarioDA
 				List<DTOComentario> dtoComentarios = getComentarios(publicacion.getIdPublicacion());
 				dtoPublicacion = new DTOPublicacion(publicacion);
 				dtoPublicacion.setComentarioReacciones(dtoComentarios);
+				dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
 			}
 		} catch (Exception exception) {
 			return dtoPublicacion;
@@ -306,5 +308,31 @@ public class ControladorPublicacionComentarioDA
 			return null;
 
 		}
+	}
+	
+	private DTOPublicacion getCantidadReaccionPublicacion(DTOPublicacion dtoPublicacion)
+	{
+		try {
+			MongoDBConnector mongoConnector = new MongoDBConnector();
+			MongoCollection<Document> collection = mongoConnector.getCollection("ReaccionesPublicacion");
+			dtoPublicacion.setCantidadDislikes(getCantidadReaccionPublicacion(reacciones.NoMeGusta, dtoPublicacion, collection));
+			dtoPublicacion.setCantidadLikes(getCantidadReaccionPublicacion(reacciones.MeGusta, dtoPublicacion, collection));
+		} catch (Exception exception) {
+			System.out.println(exception.getMessage());
+			return null;
+		}
+		return dtoPublicacion;
+	}
+	
+	@SuppressWarnings("unused")
+	private Integer getCantidadReaccionPublicacion(reacciones reaccion, DTOPublicacion publicacion,
+			MongoCollection<Document> collection) {
+		Integer cantidad = 0;
+		FindIterable<Document> reacciones = collection.find(and(
+				eq("idPublicacion", publicacion.getIdPublicacion()), eq("reaccion", String.valueOf(reaccion))));
+		for (Document document : reacciones) {
+			cantidad++;
+		}
+		return cantidad;
 	}
 }

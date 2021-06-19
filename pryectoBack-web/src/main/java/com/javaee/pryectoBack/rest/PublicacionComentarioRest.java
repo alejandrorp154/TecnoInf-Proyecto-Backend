@@ -174,7 +174,7 @@ public class PublicacionComentarioRest {
 	public Response reaccionPublicacion(DTOReaccion dtoReaccion) {
 		Response.ResponseBuilder builder = null;
 		try {
-			controladorPublicacionComentario.reaccionarComentario(dtoReaccion);
+			controladorPublicacionComentario.reaccionPublicacion(dtoReaccion);
             builder = Response.ok();
         } catch (Exception e) {
             Map<String, String> responseObj = new HashMap<>();
