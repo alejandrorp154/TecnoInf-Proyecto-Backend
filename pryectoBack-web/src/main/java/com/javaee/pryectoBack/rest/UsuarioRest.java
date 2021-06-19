@@ -74,9 +74,7 @@ public class UsuarioRest
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{idUsuario}")
 	public Response inicioSesionDatos(@PathParam("idUsuario") String idPersona){
-
 		Response.ResponseBuilder builder = null;
-
 		try{
 			DTOUsuarioInicioSesion dtUserInicioSesion = controladorUsuario.datosUsuarioInicioSesion(idPersona);
 

@@ -1,5 +1,6 @@
 package com.javaee.pryectoBack.data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Singleton;
@@ -20,6 +21,7 @@ import com.javaee.pryectoBack.util.MongoDBConnector;
 import com.javaee.pryectoBack.util.PuntosUsuario;
 
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Updates.*;
 
 import com.mongodb.client.FindIterable;
@@ -153,15 +155,19 @@ public class ControladorPublicacionComentarioDA
 		try {
 			MongoDBConnector mongoConnector = new MongoDBConnector();
 			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosPublicacion");
-			Document comentario = dtoComentario.getDocument();
+
 			if (dtoComentario.getIdComentarioPadre() != "" && dtoComentario.getIdComentarioPadre() != null) {
+				Long count = collection.countDocuments();
+				dtoComentario.setInternalId((count++).toString());
+				Document comentario = dtoComentario.getDocument();
 				Bson updateOperation = push("comentarioHijo", comentario);
 				Document old = collection.findOneAndUpdate(
 						eq("_id", new ObjectId(dtoComentario.getIdComentarioPadre())), updateOperation);
 				dtoComentario.setIdComentario(String.valueOf(comentario.getObjectId("_id")));
 			} else {
+				Document comentario = dtoComentario.getDocument();
 				collection.insertOne(comentario);
-				dtoComentario.setIdComentario(String.valueOf(comentario.getObjectId("_id")));				
+				dtoComentario.setIdComentario(String.valueOf(comentario.getObjectId("_id")));
 			}
 			DTOUsuario dtoUsuario = new DTOUsuario();
 			dtoUsuario.setIdPersona(dtoComentario.getIdPersona());
@@ -178,8 +184,9 @@ public class ControladorPublicacionComentarioDA
 			MongoDBConnector mongoConnector = new MongoDBConnector();
 			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosPublicacion");
 			collection.deleteMany(eq("_id", new ObjectId(idComentario)));
+			collection.deleteMany(eq("internalId", idComentario));
 			collection = mongoConnector.getCollection("ReaccionesComentario");
-			collection.deleteMany(eq("idComentario", new ObjectId(idComentario)));
+			collection.deleteMany(eq("idComentario", new ObjectId(idComentario)));			
 			return true;
 		} catch (Exception exception) {
 			return false;
@@ -190,13 +197,43 @@ public class ControladorPublicacionComentarioDA
 	public boolean modificarComentario(DTOComentario dtoComentario) {
 		try {
 			MongoDBConnector mongoConnector = new MongoDBConnector();
-			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosYReacciones");
+			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosPublicacion");
 			Bson updateOperation = push("contenido", dtoComentario.getContenido());
-			Document old = collection.findOneAndUpdate(
-					eq("_id", new ObjectId(dtoComentario.getIdComentario())), updateOperation);
+			Document old = collection.findOneAndUpdate(eq("_id", new ObjectId(dtoComentario.getIdComentario())),
+					updateOperation);
 			return true;
 		} catch (Exception exception) {
 			return false;
+		}
+	}
+
+	private DTOComentario getArbolComentario(Document comentarioPadre) {
+		DTOComentario comentarioPadreDTO = new DTOComentario(comentarioPadre);
+		List<Document> comentariosHijo = (List) comentarioPadre.get("comentarioHijo");
+		if (comentariosHijo != null) {
+			for (Document comentario : comentariosHijo) {
+				comentarioPadreDTO.getComentariosHijos().add(new DTOComentario(comentario));
+			}
+		}
+		return comentarioPadreDTO;
+	}
+
+	@Override
+	public List<DTOComentario> getComentarios(int idPublicacion) {
+		try {
+			List<DTOComentario> result = new ArrayList<DTOComentario>();
+			MongoDBConnector mongoConnector = new MongoDBConnector();
+			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosPublicacion");
+			FindIterable<Document> comentariosPadre = collection
+					.find(and(eq("idPublicacion", idPublicacion), eq("idComentarioPadre", null)));
+			for (Document comentario : comentariosPadre) {
+				result.add(getArbolComentario(comentario));
+			}
+			return result;
+		} catch (Exception exception) {
+			System.out.println(exception.getMessage());
+			return null;
+
 		}
 	}
 }
