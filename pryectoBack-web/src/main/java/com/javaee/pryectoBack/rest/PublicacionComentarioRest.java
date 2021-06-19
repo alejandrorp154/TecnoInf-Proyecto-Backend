@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.ejb.EJB;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -115,7 +116,7 @@ public class PublicacionComentarioRest {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/comentario/reaccionar")
-	@ApiOperation(value = "Reacciona a una Comentario", notes = "Se le pasa {\"idPersona\":\"test 3\", \"idComentario\": \"adsfasdf\", \"reaccion\" : \"MeGusta\" }")
+	@ApiOperation(value = "Reacciona a una Comentario", notes = "Se le pasa {\"idPersona\":\"test 3\", \"idComentario\": \"adsfasdf\", \"reaccion\" : \"MeGusta\" } en caso de un comentario hijo, se pasa el internalId")
 	public Response reaccionarComentario(DTOReaccion dtoReaccion) {
 		Response.ResponseBuilder builder = null;
 		try {
@@ -187,5 +188,23 @@ public class PublicacionComentarioRest {
             builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
         }
         return builder.build();
+	}
+	
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("comentarios/{idPublicacion}")
+	public Response getComentarios(@PathParam("idPublicacion") int idPublicacion){
+		Response.ResponseBuilder builder = null;
+		try {
+			List<DTOComentario> comentarios = controladorPublicacionComentario.getComentarios(idPublicacion);
+            builder = Response.ok();
+            builder.entity(comentarios);
+        } catch (Exception e) {
+            Map<String, String> responseObj = new HashMap<>();
+            responseObj.put("error", e.getMessage());
+            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+        }
+        return builder.build();	
 	}
 }

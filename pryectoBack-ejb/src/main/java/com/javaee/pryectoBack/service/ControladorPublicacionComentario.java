@@ -64,5 +64,10 @@ public class ControladorPublicacionComentario
 	public DTOPublicacion altaPublicacion(DTOPublicacion dtoPublicacion) {
 		return controladorPublicacionComentarioDA.altaPublicacion(dtoPublicacion);
 	}
+	
+	@Override
+	public List<DTOComentario> getComentarios(int idPublicacion) {
+		return controladorPublicacionComentarioDA.getComentarios(idPublicacion);
+	}
 
 }

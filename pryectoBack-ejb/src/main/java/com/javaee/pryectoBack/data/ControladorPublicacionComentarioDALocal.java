@@ -19,4 +19,5 @@ public interface ControladorPublicacionComentarioDALocal {
 	boolean bajaPublicacion(int idPublicacion);
 	boolean bajaComentario(String idComentario);
 	boolean modificarComentario(DTOComentario dtoComentario);	
+	List<DTOComentario> getComentarios(int idPublicacion);
 }
