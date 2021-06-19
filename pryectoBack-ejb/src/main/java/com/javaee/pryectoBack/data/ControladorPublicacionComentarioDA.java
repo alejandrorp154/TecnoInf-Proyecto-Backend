@@ -17,6 +17,7 @@ import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.model.Publicacion;
 import com.javaee.pryectoBack.model.Tipo;
 import com.javaee.pryectoBack.model.Usuario;
+import com.javaee.pryectoBack.model.reacciones;
 import com.javaee.pryectoBack.util.MongoDBConnector;
 import com.javaee.pryectoBack.util.PuntosUsuario;
 
@@ -149,17 +150,16 @@ public class ControladorPublicacionComentarioDA
 			return new DTOPublicacion();
 		}
 	}
-	
+
 	private Integer obtenerCantidadPadre(MongoCollection<Document> collection, String idPadre) {
-		Document comentarioPadre = collection
-				.find(eq("_id", new ObjectId(idPadre))).first();
+		Document comentarioPadre = collection.find(eq("_id", new ObjectId(idPadre))).first();
 		Integer count = 0;
 		List<Document> comentariosHijo = (List) comentarioPadre.get("comentarioHijo");
 		if (comentariosHijo.size() > 0) {
 			for (Document document : comentariosHijo) {
 				count++;
 			}
-		}		
+		}
 		return count;
 	}
 
@@ -168,7 +168,7 @@ public class ControladorPublicacionComentarioDA
 		try {
 			MongoDBConnector mongoConnector = new MongoDBConnector();
 			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosPublicacion");
-			Document comentario = dtoComentario.getDocument();			
+			Document comentario = dtoComentario.getDocument();
 			collection.insertOne(comentario);
 			dtoComentario.setIdComentario(String.valueOf(comentario.getObjectId("_id")));
 			DTOUsuario dtoUsuario = new DTOUsuario();
@@ -188,7 +188,7 @@ public class ControladorPublicacionComentarioDA
 			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosPublicacion");
 			collection.deleteMany(eq("_id", new ObjectId(idComentario)));
 			collection = mongoConnector.getCollection("ReaccionesComentario");
-			collection.deleteMany(eq("idComentario", new ObjectId(idComentario)));			
+			collection.deleteMany(eq("idComentario", new ObjectId(idComentario)));
 			return true;
 		} catch (Exception exception) {
 			System.out.println(exception.getMessage());
@@ -211,16 +211,36 @@ public class ControladorPublicacionComentarioDA
 		}
 	}
 
-	private DTOComentario getArbolComentario(Document comentarioPadre, MongoCollection<Document> collection) {
+	private DTOComentario getArbolComentario(Document comentarioPadre,
+			MongoCollection<Document> collectionComentariosPublicacion,
+			MongoCollection<Document> reaccionesComentarios) {
 		DTOComentario comentarioPadreDTO = new DTOComentario(comentarioPadre);
-		FindIterable<Document> comentariosHijo = collection
+		FindIterable<Document> comentariosHijo = collectionComentariosPublicacion
 				.find(eq("idComentarioPadre", comentarioPadreDTO.getIdComentario()));
+		comentarioPadreDTO
+				.setCantidadLikes(getCantidadReaccion(reacciones.MeGusta, comentarioPadre, reaccionesComentarios));
+		comentarioPadreDTO
+				.setCantidadDislikes(getCantidadReaccion(reacciones.NoMeGusta, comentarioPadre, reaccionesComentarios));
 		if (comentariosHijo != null) {
 			for (Document comentario : comentariosHijo) {
-				comentarioPadreDTO.getComentariosHijos().add(new DTOComentario(comentario));
+				DTOComentario hijo = new DTOComentario(comentario);
+				hijo.setCantidadLikes(getCantidadReaccion(reacciones.MeGusta, comentario, reaccionesComentarios));
+				hijo.setCantidadDislikes(getCantidadReaccion(reacciones.NoMeGusta, comentario, reaccionesComentarios));
+				comentarioPadreDTO.getComentariosHijos().add(hijo);
 			}
 		}
 		return comentarioPadreDTO;
+	}
+
+	private Integer getCantidadReaccion(reacciones reaccion, Document comentario,
+			MongoCollection<Document> collection) {
+		Integer cantidad = 0;
+		FindIterable<Document> reacciones = collection
+				.find(and(eq("idComentario", String.valueOf(comentario.get("_id"))), eq("reaccion", String.valueOf(reaccion))));
+		for (Document document : reacciones) {
+			cantidad++;
+		}
+		return cantidad;
 	}
 
 	@Override
@@ -228,11 +248,13 @@ public class ControladorPublicacionComentarioDA
 		try {
 			List<DTOComentario> result = new ArrayList<DTOComentario>();
 			MongoDBConnector mongoConnector = new MongoDBConnector();
-			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosPublicacion");
-			FindIterable<Document> comentariosPadre = collection
+			MongoCollection<Document> collectionComentariosPublicacion = mongoConnector
+					.getCollection("ComentariosPublicacion");
+			MongoCollection<Document> reaccionesComentarios = mongoConnector.getCollection("ReaccionesComentario");
+			FindIterable<Document> comentariosPadre = collectionComentariosPublicacion
 					.find(and(eq("idPublicacion", idPublicacion), eq("idComentarioPadre", null)));
 			for (Document comentario : comentariosPadre) {
-				result.add(getArbolComentario(comentario, collection));
+				result.add(getArbolComentario(comentario, collectionComentariosPublicacion, reaccionesComentarios));
 			}
 			return result;
 		} catch (Exception exception) {

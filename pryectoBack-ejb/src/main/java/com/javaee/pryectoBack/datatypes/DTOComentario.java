@@ -18,6 +18,8 @@ public class DTOComentario implements Serializable
 	private String idComentarioPadre;
 	protected String idPersona;
 	private List<DTOComentario> comentariosHijos;
+	private Integer cantidadLikes;
+	private Integer cantidadDislikes;
 	
 	public DTOComentario(String idComentario, String contenido, Date fecha, int idPublicacion, String idPersona, String idComentarioPadre) {
 		super();
@@ -108,6 +110,22 @@ public class DTOComentario implements Serializable
 
 	public void setComentariosHijos(List<DTOComentario> comentariosHijos) {
 		this.comentariosHijos = comentariosHijos;
+	}
+
+	public Integer getCantidadLikes() {
+		return cantidadLikes;
+	}
+
+	public void setCantidadLikes(Integer cantidadLikes) {
+		this.cantidadLikes = cantidadLikes;
+	}
+
+	public Integer getCantidadDislikes() {
+		return cantidadDislikes;
+	}
+
+	public void setCantidadDislikes(Integer cantidadDislikes) {
+		this.cantidadDislikes = cantidadDislikes;
 	}
 
 }
