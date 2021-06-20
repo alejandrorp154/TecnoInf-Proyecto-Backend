@@ -155,11 +155,10 @@ public class ControladorPublicacionComentarioDA
 			MongoDBConnector mongoConnector = new MongoDBConnector();
 			MongoCollection<Document> collection = mongoConnector.getCollection("ReaccionesComentario");
 			Document reaccionComentario = dtoReaccion.getDocumentComentario();
-			Document reaccion = collection.find(eq("idComentario", dtoReaccion.getIdComentario())).first();
+			Document reaccion = collection.find(and(eq("idComentario", dtoReaccion.getIdComentario()), eq("idPersona", dtoReaccion.getIdPersona()))).first();
 			if (reaccion != null) {
-				Bson updateOperation = push("reaccion", String.valueOf(dtoReaccion.getReaccion()));
-				Document update = collection.findOneAndUpdate(eq("idComentario", dtoReaccion.getIdComentario()),
-						updateOperation);
+				collection.updateOne(and(eq("idComentario", dtoReaccion.getIdComentario()), eq("idPersona", dtoReaccion.getIdPersona())),
+						Updates.set("reaccion", String.valueOf(dtoReaccion.getReaccion())));
 			} else {
 				collection.insertOne(reaccionComentario);
 				DTOUsuario dtoUsuario = new DTOUsuario();
@@ -246,9 +245,8 @@ public class ControladorPublicacionComentarioDA
 		try {
 			MongoDBConnector mongoConnector = new MongoDBConnector();
 			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosPublicacion");
-			Bson updateOperation = push("contenido", dtoComentario.getContenido());
-			Document old = collection.findOneAndUpdate(eq("_id", new ObjectId(dtoComentario.getIdComentario())),
-					updateOperation);
+			collection.updateOne(eq("_id", new ObjectId(dtoComentario.getIdComentario())),
+					Updates.set("contenido", dtoComentario.getContenido()));
 			return true;
 		} catch (Exception exception) {
 			System.out.println(exception.getMessage());
