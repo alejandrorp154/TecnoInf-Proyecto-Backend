@@ -29,6 +29,8 @@ import static com.mongodb.client.model.Updates.*;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 
 @Singleton
 public class ControladorPublicacionComentarioDA
@@ -133,9 +135,8 @@ public class ControladorPublicacionComentarioDA
 			Document reaccionPublicacion = dtoReaccion.getDocumentPublicacion();
 			Document reaccion = collection.find(and(eq("idPublicacion", dtoReaccion.getIdPublicacion()), eq("idPersona", dtoReaccion.getIdPersona()))).first();
 			if (reaccion != null) {
-				Bson updateOperation = push("reaccion", String.valueOf(dtoReaccion.getReaccion()));
-				Document update = collection.findOneAndUpdate(and(eq("idPublicacion", dtoReaccion.getIdPublicacion()), eq("idPersona", dtoReaccion.getIdPersona())),
-						updateOperation);
+				collection.updateOne(and(eq("idPublicacion", dtoReaccion.getIdPublicacion()), eq("idPersona", dtoReaccion.getIdPersona())),
+						Updates.set("reaccion", String.valueOf(dtoReaccion.getReaccion())));
 			} else {
 				collection.insertOne(reaccionPublicacion);
 				DTOUsuario dtoUsuario = new DTOUsuario();
