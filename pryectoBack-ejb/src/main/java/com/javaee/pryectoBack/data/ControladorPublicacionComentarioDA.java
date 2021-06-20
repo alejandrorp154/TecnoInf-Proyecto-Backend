@@ -52,8 +52,6 @@ public class ControladorPublicacionComentarioDA
 				for (Publicacion publicacion : perfil.getPublicaciones()) {
 					if (!publicacion.getTipo().getTipo().equals(tipos.mapa)) {
 						DTOPublicacion dtoPublicacion = new DTOPublicacion(publicacion);
-						List<DTOComentario> dtoComentarios = getComentarios(dtoPublicacion.getIdPublicacion());
-						dtoPublicacion.setComentarioReacciones(dtoComentarios);
 						dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
 						res.add(dtoPublicacion);
 					}
@@ -133,10 +131,10 @@ public class ControladorPublicacionComentarioDA
 			MongoDBConnector mongoConnector = new MongoDBConnector();
 			MongoCollection<Document> collection = mongoConnector.getCollection("ReaccionesPublicacion");
 			Document reaccionPublicacion = dtoReaccion.getDocumentPublicacion();
-			Document reaccion = collection.find(eq("idPublicacion", dtoReaccion.getIdPublicacion())).first();
+			Document reaccion = collection.find(and(eq("idPublicacion", dtoReaccion.getIdPublicacion()), eq("idPersona", dtoReaccion.getIdPersona()))).first();
 			if (reaccion != null) {
 				Bson updateOperation = push("reaccion", String.valueOf(dtoReaccion.getReaccion()));
-				Document update = collection.findOneAndUpdate(eq("idPublicacion", dtoReaccion.getIdPublicacion()),
+				Document update = collection.findOneAndUpdate(and(eq("idPublicacion", dtoReaccion.getIdPublicacion()), eq("idPersona", dtoReaccion.getIdPersona())),
 						updateOperation);
 			} else {
 				collection.insertOne(reaccionPublicacion);
