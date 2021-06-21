@@ -346,10 +346,10 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 				String imagen = user.getPerfil().getImagenPerfil();
 				String extension = user.getPerfil().getExtension();
 				String nombreImagen = user.getPerfil().getNombreImagen();
-				return new DTOUsuarioInicioSesion(user.getIdPersona(), user.getEmail(), user.getNombre(), user.getApellido(), user.getNickname(), imagen, extension, nombreImagen, false);
+				return new DTOUsuarioInicioSesion(user.getIdPersona(), user.getEmail(), user.getNombre(), user.getApellido(), user.getNickname(), imagen, extension, nombreImagen, false, user.getEstaBloqueado());
 			} else {
 				Administrador admin = (Administrador)persona;
-				return new DTOUsuarioInicioSesion(admin.getIdPersona(), admin.getEmail(), admin.getNombre(), admin.getApellido(), null, null, null, null, true);
+				return new DTOUsuarioInicioSesion(admin.getIdPersona(), admin.getEmail(), admin.getNombre(), admin.getApellido(), null, null, null, null, true, false);
 			}
 		}
 		return null;
