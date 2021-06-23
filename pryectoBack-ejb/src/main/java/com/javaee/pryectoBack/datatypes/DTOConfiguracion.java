@@ -21,6 +21,7 @@ public class DTOConfiguracion implements Serializable
 	private boolean chatUsuario;
 	private boolean bajaEvento;
 	private boolean modificacionEvento;
+	private boolean isEmailNotification;
 	private String idPersona;
 	
 	public DTOConfiguracion() {
@@ -29,7 +30,7 @@ public class DTOConfiguracion implements Serializable
 	public DTOConfiguracion(int idConfiguracion, boolean altaPublicacion, boolean altaContacto,
 			boolean reaccionPublicacion, boolean comentarPublicacion, boolean altaEvento, boolean invitacionUsuario,
 			boolean salirEvento, boolean recuperarContrasenia, boolean bloquearUsuario, boolean desbloquearUsuario,
-			boolean chatUsuario, boolean bajaEvento, boolean modificacionEvento, String idPersona) {
+			boolean chatUsuario, boolean bajaEvento, boolean modificacionEvento, boolean isEmailNotification, String idPersona) {
 		super();
 		this.idConfiguracion = idConfiguracion;
 		this.altaPublicacion = altaPublicacion;
@@ -45,6 +46,7 @@ public class DTOConfiguracion implements Serializable
 		this.chatUsuario = chatUsuario;
 		this.bajaEvento = bajaEvento;
 		this.modificacionEvento = modificacionEvento;
+		this.isEmailNotification = isEmailNotification;
 		this.idPersona = idPersona;
 	}
 
@@ -63,7 +65,8 @@ public class DTOConfiguracion implements Serializable
 		this.chatUsuario = configuracion.isChatUsuario();
 		this.bajaEvento = configuracion.isBajaEvento();
 		this.modificacionEvento = configuracion.isModificacionEvento();
-		this.idPersona = configuracion.getUsuario().getIdPersona();
+		this.isEmailNotification = configuracion.isEmailNotification();
+		this.idPersona = configuracion.getIdPersona();
 	}
 
 	public int getIdConfiguracion() {
@@ -184,5 +187,13 @@ public class DTOConfiguracion implements Serializable
 
 	public void setIdPersona(String idPersona) {
 		this.idPersona = idPersona;
+	}
+
+	public boolean isEmailNotification() {
+		return isEmailNotification;
+	}
+
+	public void setEmailNotification(boolean isEmailNotification) {
+		this.isEmailNotification = isEmailNotification;
 	}
 }

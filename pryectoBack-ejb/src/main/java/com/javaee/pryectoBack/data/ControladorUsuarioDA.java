@@ -11,6 +11,7 @@ import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioContacto;
 import com.javaee.pryectoBack.datatypes.DTOAdministrador;
+import com.javaee.pryectoBack.datatypes.DTOConfiguracion;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioPerfil;
 import com.javaee.pryectoBack.model.PerfilUsuario;
@@ -24,6 +25,7 @@ import com.javaee.pryectoBack.model.Publicacion;
 import com.javaee.pryectoBack.model.Multimedia;
 import com.javaee.pryectoBack.model.Interes;
 import com.javaee.pryectoBack.model.Administrador;
+import com.javaee.pryectoBack.model.Configuracion;
 import com.javaee.pryectoBack.util.MongoDBConnector;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
@@ -86,10 +88,15 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 			if (usuario == null) {
 				Usuario user = new Usuario(dtoUsuario);
 				user.getMedalla().setUsuario(user);
-				user.getConfiguracion().setUsuario(user);
 				PerfilUsuario perfil = new PerfilUsuario(user, dtoUsuario);
 				user.setPerfil(perfil);
 				manager.merge(user);
+				Configuracion configuracionEmail = new Configuracion(true);
+				configuracionEmail.setIdPersona(user.getIdPersona());
+				manager.persist(configuracionEmail);
+				Configuracion configuracionPush = new Configuracion(false);
+				configuracionPush.setIdPersona(user.getIdPersona());
+				manager.persist(configuracionPush);
 				res = new DTOUsuario(user);
 			} else {
 				res = dtoUsuario;
@@ -168,9 +175,14 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 				Medalla medalla = user.getMedalla();
 				manager.remove(medalla);
 				
-
-				//Configuracion
-				manager.remove(user.getConfiguracion());
+				// Remover configuraciones
+				TypedQuery<Configuracion> queryConfiguraciones = manager.createQuery("SELECT configuracion FROM Configuracion configuracion where configuracion.idPersona = '" + idPersona + "'", Configuracion.class);
+				List<Configuracion> configuraciones =  queryConfiguraciones.getResultList();
+				if (configuraciones.size() > 0) {
+					for (Configuracion configuracion : configuraciones) {
+						manager.remove(configuracion);
+					}	
+				}
 
 				//Notificaciones
 				List<Notificacion> notificaciones = user.getNotificaciones();
