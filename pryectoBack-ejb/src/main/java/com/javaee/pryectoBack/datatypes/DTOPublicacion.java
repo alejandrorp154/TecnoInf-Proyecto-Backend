@@ -22,6 +22,7 @@ public class DTOPublicacion implements Serializable
 	private DTOPerfilUsuario perfil;
 	private Integer cantidadLikes;
 	private Integer cantidadDislikes;
+	private Integer cantidadComentarios;
 
 
 	public DTOPublicacion(int idPublicacion, String contenido, Date fecha, DTOTipo dtoTipo, String idPersona,
@@ -147,5 +148,13 @@ public class DTOPublicacion implements Serializable
 
 	public void setCantidadDislikes(Integer cantidadDislikes) {
 		this.cantidadDislikes = cantidadDislikes;
+	}
+
+	public Integer getCantidadComentarios() {
+		return cantidadComentarios;
+	}
+
+	public void setCantidadComentarios(Integer cantidadComentarios) {
+		this.cantidadComentarios = cantidadComentarios;
 	}
 }

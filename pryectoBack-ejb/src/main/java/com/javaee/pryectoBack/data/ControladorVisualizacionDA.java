@@ -1,5 +1,8 @@
 package com.javaee.pryectoBack.data;
 
+import static com.mongodb.client.model.Filters.and;
+import static com.mongodb.client.model.Filters.eq;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,9 +14,13 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import org.bson.Document;
+
+import com.javaee.pryectoBack.datatypes.DTOComentario;
 import com.javaee.pryectoBack.datatypes.DTOEstadistica;
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOPerfilUsuario;
+import com.javaee.pryectoBack.datatypes.DTOPublicacion;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioMedalla;
 import com.javaee.pryectoBack.model.Interes;
@@ -24,6 +31,10 @@ import com.javaee.pryectoBack.model.Ubicacion;
 import com.javaee.pryectoBack.model.Usuario;
 import com.javaee.pryectoBack.model.UsuarioContacto;
 import com.javaee.pryectoBack.model.estadosContactos;
+import com.javaee.pryectoBack.model.reacciones;
+import com.javaee.pryectoBack.util.MongoDBConnector;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCollection;
 
 @Singleton
 public class ControladorVisualizacionDA implements ControladorVisualizacionDALocal, ControladorVisualizacionDARemote {
@@ -77,6 +88,10 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 			if (perfil != null)
 			{
 				dtoPerfil = new DTOPerfilUsuario(perfil);
+				for (DTOPublicacion dtoPublicacion : dtoPerfil.getPublicaciones()) {
+					dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
+					dtoPublicacion.setCantidadComentarios(getCantidadComentarios(dtoPublicacion.getIdPublicacion()));
+				}
 			}
 		}
 		return dtoPerfil;
@@ -397,5 +412,67 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 			return res;
 		}
 		return res;
+	}
+	
+	private DTOPublicacion getCantidadReaccionPublicacion(DTOPublicacion dtoPublicacion)
+	{
+		try {
+			MongoDBConnector mongoConnector = new MongoDBConnector();
+			MongoCollection<Document> collection = mongoConnector.getCollection("ReaccionesPublicacion");
+			dtoPublicacion.setCantidadDislikes(getCantidadReaccionPublicacion(reacciones.NoMeGusta, dtoPublicacion, collection));
+			dtoPublicacion.setCantidadLikes(getCantidadReaccionPublicacion(reacciones.MeGusta, dtoPublicacion, collection));
+		} catch (Exception exception) {
+			System.out.println(exception.getMessage());
+			return null;
+		}
+		return dtoPublicacion;
+	}
+	
+	@SuppressWarnings("unused")
+	private Integer getCantidadReaccionPublicacion(reacciones reaccion, DTOPublicacion publicacion,
+			MongoCollection<Document> collection) {
+		Integer cantidad = 0;
+		FindIterable<Document> reacciones = collection.find(and(
+				eq("idPublicacion", publicacion.getIdPublicacion()), eq("reaccion", String.valueOf(reaccion))));
+		for (Document document : reacciones) {
+			cantidad++;
+		}
+		return cantidad;
+	}
+
+	public Integer getCantidadComentarios(int idPublicacion) {
+		Integer cantidad = 0;
+		try {
+			MongoDBConnector mongoConnector = new MongoDBConnector();
+			MongoCollection<Document> collectionComentariosPublicacion = mongoConnector
+					.getCollection("ComentariosPublicacion");
+			MongoCollection<Document> reaccionesComentarios = mongoConnector.getCollection("ReaccionesComentario");
+			FindIterable<Document> comentariosPadre = collectionComentariosPublicacion
+					.find(and(eq("idPublicacion", idPublicacion), eq("idComentarioPadre", null)));
+			for (Document comentario : comentariosPadre) {
+				cantidad = cantidad + getCantidadArbolComentario(comentario, collectionComentariosPublicacion, reaccionesComentarios);
+			}
+			return cantidad;
+		} catch (Exception exception) {
+			System.out.println(exception.getMessage());
+			return null;
+
+		}
+	}
+
+	@SuppressWarnings("unused")
+	private Integer getCantidadArbolComentario(Document comentarioPadre,
+			MongoCollection<Document> collectionComentariosPublicacion,
+			MongoCollection<Document> reaccionesComentarios) {
+		Integer cantidad = 1;
+		DTOComentario comentarioPadreDTO = new DTOComentario(comentarioPadre);
+		FindIterable<Document> comentariosHijo = collectionComentariosPublicacion
+				.find(eq("idComentarioPadre", comentarioPadreDTO.getIdComentario()));
+		if (comentariosHijo != null) {
+			for (Document comentario : comentariosHijo) {
+				cantidad++;
+			}
+		}
+		return cantidad;
 	}
 }
