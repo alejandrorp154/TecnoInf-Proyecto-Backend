@@ -78,8 +78,4 @@ public class ControladorUbicacionTest {
         Assert.assertTrue(res);
 
     }
-
-    @Test
-    public void seleccionarUbicacion() {
-    }
 }

@@ -31,7 +31,7 @@ public class ControladorConfigSistemaTest {
 
     @Test
     public void configurarNotificaciones() {
-        DTOConfiguracion dtoConfig = new DTOConfiguracion(1,true,true,true,true,true,true,true,true,true,true,true,true,true,"1");
+        DTOConfiguracion dtoConfig = new DTOConfiguracion(1,true,true,true,true,true,true,true,true,true,true,true,true,true,true,"1");
         Mockito.when(controladorConfigSistemaDA.configurarNotificaciones(Mockito.any(DTOConfiguracion.class))).thenReturn(dtoConfig);
         DTOConfiguracion res = controladorConfigSistema.configurarNotificaciones(dtoConfig);
         Assert.assertNotNull(res);
@@ -39,9 +39,9 @@ public class ControladorConfigSistemaTest {
 
     @Test
     public void getByIdPersona() {
-        DTOConfiguracion dtoConfig = new DTOConfiguracion(1,true,true,true,true,true,true,true,true,true,true,true,true,true,"1");
-        Mockito.when(controladorConfigSistemaDA.getByIdPersona(Mockito.anyString())).thenReturn(dtoConfig);
-        DTOConfiguracion res = controladorConfigSistema.getByIdPersona("1");
+        DTOConfiguracion dtoConfig = new DTOConfiguracion(1,true,true,true,true,true,true,true,true,true,true,true,true,true,true,"1");
+        Mockito.when(controladorConfigSistemaDA.getByIdPersona(Mockito.anyString(),Mockito.anyBoolean())).thenReturn(dtoConfig);
+        DTOConfiguracion res = controladorConfigSistema.getByIdPersona("1",true);
         Assert.assertNotNull(res);
     }
 }

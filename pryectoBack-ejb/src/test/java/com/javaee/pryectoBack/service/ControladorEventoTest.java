@@ -2,9 +2,7 @@ package com.javaee.pryectoBack.service;
 
 import com.javaee.pryectoBack.data.ControladorEventoDA;
 import com.javaee.pryectoBack.data.ControladorEventoDALocal;
-import com.javaee.pryectoBack.datatypes.DTOEvento;
-import com.javaee.pryectoBack.datatypes.DTOEventoUsuario;
-import com.javaee.pryectoBack.datatypes.DTOUbicacion;
+import com.javaee.pryectoBack.datatypes.*;
 import com.javaee.pryectoBack.model.estados;
 import com.javaee.pryectoBack.model.estadosContactos;
 import org.junit.Assert;
@@ -122,7 +120,7 @@ public class ControladorEventoTest {
 
         Date date = new Date(2021, Calendar.JUNE,21);
         Date date2 = new Date(2021,Calendar.JUNE,23);
-        Date date3 = new Date(2021,Calendar.JUNE,21);
+        Date date3 = new Date(2021,Calendar.JUNE,25);
         DTOUbicacion dtoub = new DTOUbicacion(22,5433354,534235,date3,"Detalles de la ubicación del evento","Uruguay");
         DTOEvento evento = new DTOEvento(1,"Evento de prueba",date, date2, estados.pendiente,1,"1","Javier",dtoub,"nombre imagen para mostrar del evento","image249824","jpg");
 
@@ -150,5 +148,60 @@ public class ControladorEventoTest {
         Mockito.when(controladorEventoDA.responderIvitacion(Mockito.any(DTOEventoUsuario.class))).thenReturn(true);
         boolean res = controladorEvento.responderIvitacion(dtoEventoUsuario);
         Assert.assertTrue(res);
+    }
+
+    @Test
+    public void obtenerEventoById(){
+        DTODetalleEvento dtoDetalleEvent = new DTODetalleEvento();
+        dtoDetalleEvent.setIdEvento(1);
+        dtoDetalleEvent.setDescripcion("Un evento");
+        Date date = new Date(2021, Calendar.JUNE,21);
+        Date date2 = new Date(2021,Calendar.JUNE,23);
+        Date date3 = new Date(2021,Calendar.JUNE,23);
+        dtoDetalleEvent.setFechaInicio(date);
+        dtoDetalleEvent.setFechaFin(date2);
+        dtoDetalleEvent.setEstado(estados.enCurso);
+        dtoDetalleEvent.setIdPublicacion(1);
+        dtoDetalleEvent.setIdChat("1");
+        dtoDetalleEvent.setNombre("Event name");
+        DTOUbicacion dtoUb = new DTOUbicacion(22,5433354,534235,date3,"Detalles de la ubicación del evento","Uruguay");
+        dtoDetalleEvent.setUbicacion(dtoUb);
+        dtoDetalleEvent.setNombreImagen("Image name");
+        dtoDetalleEvent.setImagen("ImageItSelf8274924");
+        dtoDetalleEvent.setExtension("jpg");
+        dtoDetalleEvent.setOwner(false);
+        dtoDetalleEvent.setEstadoSolicitud(estadosContactos.aceptada);
+
+        List<DTOUsuarioEvento> invitados = new ArrayList<>();
+
+        DTOUsuarioEvento dtoUsuarioEvento = new DTOUsuarioEvento();
+        dtoUsuarioEvento.setIdPersona("1");
+        dtoUsuarioEvento.setNombre("Sam");
+        dtoUsuarioEvento.setApellido("Gomyi");
+        dtoUsuarioEvento.setNickname("samG");
+        dtoUsuarioEvento.setImagenPerfil("Imagen perfil");
+        dtoUsuarioEvento.setNombreImagen("nombre imagen");
+        dtoUsuarioEvento.setExtensionImagen("jpg");
+        dtoUsuarioEvento.setEstadoContactos(estadosContactos.aceptada);
+        dtoUsuarioEvento.setOwner(false);
+
+        DTOUsuarioEvento dtoUsuarioEvento2 = new DTOUsuarioEvento();
+        dtoUsuarioEvento2.setIdPersona("2");
+        dtoUsuarioEvento2.setNombre("Tony");
+        dtoUsuarioEvento2.setApellido("Alvez");
+        dtoUsuarioEvento2.setNickname("tonyA");
+        dtoUsuarioEvento2.setImagenPerfil("Imagen perfil2");
+        dtoUsuarioEvento2.setNombreImagen("nombre imagen2");
+        dtoUsuarioEvento2.setExtensionImagen("jpg");
+        dtoUsuarioEvento2.setEstadoContactos(estadosContactos.aceptada);
+        dtoUsuarioEvento2.setOwner(false);
+
+        invitados.add(dtoUsuarioEvento);
+        invitados.add(dtoUsuarioEvento2);
+        dtoDetalleEvent.setInvitados(invitados);
+
+        Mockito.when(controladorEventoDA.obtenerEventoById(Mockito.anyInt())).thenReturn(dtoDetalleEvent);
+        DTODetalleEvento res = controladorEvento.obtenerEventoById(1);
+        Assert.assertNotNull(res);
     }
 }

@@ -35,10 +35,24 @@ public class ControladorUsuarioTest {
 
     @Test
     public void editarPerfil() {
+        DTOUsuarioPerfil dtoUserPerfil = new DTOUsuarioPerfil();
+        dtoUserPerfil.setIdPersona("1");
+        dtoUserPerfil.setEmail("probanto1@gmail.com");
+        dtoUserPerfil.setNombre("German");
+        dtoUserPerfil.setApellido("Gutierrez");
+        dtoUserPerfil.setNickname("elguti");
+        dtoUserPerfil.setImagenPerfil("imagenPerfil9238453");
+        dtoUserPerfil.setNombreImagen("imagen");
+        dtoUserPerfil.setPais("Uruguay");
+        dtoUserPerfil.setExtensionImagen("jpg");
+        dtoUserPerfil.setDireccion("en su casa");
+        dtoUserPerfil.setCelular("099111111");
+
         DTOUsuario dtoUser = new DTOUsuario("1", "probanto1@gmail.com", "German", "Gutierrez", "elguti", "en su casa", "099111111", "Uruguay","imagen", "imagenPerfil", "jpg");
-        Mockito.when(controladorUsuarioDAMock.editarPerfil(Mockito.any(DTOUsuario.class))).thenReturn(dtoUser);
-        DTOUsuario dtoUsuarioControler = controladorUsuario.editarPerfil(dtoUser);
-        Assert.assertNotNull(dtoUsuarioControler);
+
+        Mockito.when(controladorUsuarioDAMock.editarPerfil(Mockito.any(DTOUsuarioPerfil.class))).thenReturn(dtoUser);
+        DTOUsuario res = controladorUsuario.editarPerfil(dtoUserPerfil);
+        Assert.assertNotNull(res);
     }
 
     @Test
@@ -140,6 +154,26 @@ public class ControladorUsuarioTest {
         DTOAdministrador result = new DTOAdministrador();
         Mockito.when(controladorUsuarioDAMock.altaUsuarioAdmin(Mockito.any(DTOAdministrador.class))).thenReturn(result);
         DTOAdministrador res = controladorUsuario.altaUsuarioAdmin(dtoAdministrador);
+        Assert.assertNotNull(res);
+    }
+
+    @Test
+    public void getPerfil(){
+        DTOUsuarioPerfil dtoUsuarioPerfil = new DTOUsuarioPerfil();
+        dtoUsuarioPerfil.setIdPersona("1");
+        dtoUsuarioPerfil.setEmail("probando@gmail.com");
+        dtoUsuarioPerfil.setNombre("Andrés");
+        dtoUsuarioPerfil.setApellido("Gutierrez");
+        dtoUsuarioPerfil.setNickname("andresG");
+        dtoUsuarioPerfil.setImagenPerfil("imagenItSelf9281732123");
+        dtoUsuarioPerfil.setNombreImagen("image");
+        dtoUsuarioPerfil.setPais("Uruguay");
+        dtoUsuarioPerfil.setExtensionImagen("jpg");
+        dtoUsuarioPerfil.setDireccion("en el estadio centenario");
+        dtoUsuarioPerfil.setCelular("099111111");
+
+        Mockito.when(controladorUsuarioDAMock.getPerfil(Mockito.anyString())).thenReturn(dtoUsuarioPerfil);
+        DTOUsuarioPerfil res = controladorUsuario.getPerfil("1");
         Assert.assertNotNull(res);
     }
 }

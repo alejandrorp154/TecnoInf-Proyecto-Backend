@@ -85,7 +85,7 @@ public class ControladorVisualizacionTest {
         Date date2 = new Date(2021,Calendar.JUNE,23);
         Date date3 = new Date(2021,Calendar.JUNE,21);
         DTOTipo dtoTipo = new DTOTipo(1, tipos.texto);
-        List<DTOComentarioReaccion> dtocoment = new ArrayList<>();
+        List<DTOComentario> dtocoment = new ArrayList<>();
         DTOUbicacion dtoub = new DTOUbicacion(22,5433354,534235,date3,"Detalles de la ubicación del evento","Uruguay");
         DTOEvento event = new DTOEvento(1,"Esto es un evento",date,date2, estados.enCurso,1,"1","Gabriel",dtoub,"image","esta en la imagen en si","jpg");
         DTOPublicacion dtoPub1 = new DTOPublicacion(1,"HAciendo pruebas",date,dtoTipo,"1","text","pruebas",dtocoment,event,dtoPerfilU);
@@ -94,7 +94,7 @@ public class ControladorVisualizacionTest {
         Date date31 = new Date(2021,Calendar.DECEMBER,23);
         Date date41 = new Date(2021,Calendar.DECEMBER,21);
         DTOTipo dtoTipo2 = new DTOTipo(1, tipos.texto);
-        List<DTOComentarioReaccion> dtocoment2 = new ArrayList<>();
+        List<DTOComentario> dtocoment2 = new ArrayList<>();
         DTOUbicacion dtoub2 = new DTOUbicacion(31,746456,553434,date21,"Detalles de la ubicación del evento 2","Jamaica");
         DTOEvento event2 = new DTOEvento(1,"Esto es un evento 2",date31,date41, estados.enCurso,1,"1","Juan",dtoub2,"image","esta en la imagen en si 2","jpg");
         DTOPublicacion dtoPub2 = new DTOPublicacion(1,"HAciendo pruebas 2",date21,dtoTipo2,"1","text","pruebas 2",dtocoment2,event2,dtoPerfilU);
