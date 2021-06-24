@@ -6,6 +6,7 @@ import javax.ejb.Remote;
 
 import com.javaee.pryectoBack.datatypes.DTOComentario;
 import com.javaee.pryectoBack.datatypes.DTOPublicacion;
+import com.javaee.pryectoBack.datatypes.DTOPublicacionPerfilUsuario;
 import com.javaee.pryectoBack.datatypes.DTOReaccion;
 
 @Remote
@@ -14,11 +15,11 @@ public interface ControladorPublicacionComentarioRemote {
 	boolean bajaComentario(String idComentario);
 	boolean modificarComentario(DTOComentario dtoComentario);
 	boolean reaccionarComentario(DTOReaccion dtoReaccion);
-	List<DTOPublicacion> obtenerPublicaciones(String idPersona, int offset, int size);
+	List<DTOPublicacionPerfilUsuario> obtenerPublicaciones(String idPersona, int offset, int size);
 	boolean modificarPublicacion(DTOPublicacion dtoPublicacion);
 	boolean reaccionPublicacion(DTOReaccion dtoReaccion);
 	DTOPublicacion altaPublicacion(DTOPublicacion dtoPublicacion);
 	boolean bajaPublicacion(int idPublicacion);
 	List<DTOComentario> getComentarios(int idPublicacion);
-	DTOPublicacion obtenerPublicacion(int idPublicacion);
+	DTOPublicacionPerfilUsuario obtenerPublicacion(int idPublicacion);
 }

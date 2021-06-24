@@ -11,7 +11,6 @@ import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioContacto;
 import com.javaee.pryectoBack.datatypes.DTOAdministrador;
-import com.javaee.pryectoBack.datatypes.DTOConfiguracion;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioPerfil;
 import com.javaee.pryectoBack.model.PerfilUsuario;

@@ -8,9 +8,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import com.javaee.pryectoBack.datatypes.DTOConfiguracion;
-import com.javaee.pryectoBack.model.Administrador;
 import com.javaee.pryectoBack.model.Configuracion;
-import com.javaee.pryectoBack.model.Usuario;
 
 @Singleton
 public class ControladorConfigSistemaDA implements ControladorConfigSistemaDALocal, ControladorConfigSistemaDARemote {

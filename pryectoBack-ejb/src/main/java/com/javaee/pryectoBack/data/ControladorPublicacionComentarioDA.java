@@ -12,6 +12,7 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import com.javaee.pryectoBack.datatypes.DTOComentario;
 import com.javaee.pryectoBack.datatypes.DTOPublicacion;
+import com.javaee.pryectoBack.datatypes.DTOPublicacionPerfilUsuario;
 import com.javaee.pryectoBack.datatypes.DTOReaccion;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.model.PerfilUsuario;
@@ -46,17 +47,18 @@ public class ControladorPublicacionComentarioDA
 	}
 
 	@Override
-	public List<DTOPublicacion> obtenerPublicaciones(String idPersona, int offset, int size) {
-		List<DTOPublicacion> res = new ArrayList<>();
+	public List<DTOPublicacionPerfilUsuario> obtenerPublicaciones(String idPersona, int offset, int size) {
+		List<DTOPublicacionPerfilUsuario> res = new ArrayList<>();
 		try {			
 			TypedQuery<UsuarioContacto> query = manager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.idPersona = '" + idPersona + "' and usuariocontacto.estadoContactos = '" + estadosContactos.aceptada + "' order by usuariocontacto.fechaContactos", UsuarioContacto.class);
 			List<UsuarioContacto> usuariosContactos = query.getResultList();
 			for(UsuarioContacto usuarioContacto : usuariosContactos) {
 				PerfilUsuario perfil = manager.find(PerfilUsuario.class, usuarioContacto.getContactoIdPersona());
 				if (perfil != null) {
+					Usuario usuario = manager.find(Usuario.class, perfil.getIdPersona());
 					for (Publicacion publicacion : perfil.getPublicaciones()) {
 						if (!publicacion.getTipo().getTipo().equals(tipos.mapa)) {
-							DTOPublicacion dtoPublicacion = new DTOPublicacion(publicacion);
+							DTOPublicacionPerfilUsuario dtoPublicacion = new DTOPublicacionPerfilUsuario(publicacion, usuario);
 							dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
 							dtoPublicacion.setCantidadComentarios(getCantidadComentarios(dtoPublicacion.getIdPublicacion()));
 							res.add(dtoPublicacion);
@@ -66,9 +68,10 @@ public class ControladorPublicacionComentarioDA
 			}
 			PerfilUsuario perfilUsuarioLogueado = manager.find(PerfilUsuario.class, idPersona);
 			if (perfilUsuarioLogueado != null) {
+				Usuario usuarioLogueado = manager.find(Usuario.class, perfilUsuarioLogueado.getIdPersona());
 				for (Publicacion publicacion : perfilUsuarioLogueado.getPublicaciones()) {
 					if (!publicacion.getTipo().getTipo().equals(tipos.mapa)) {
-						DTOPublicacion dtoPublicacion = new DTOPublicacion(publicacion);
+						DTOPublicacionPerfilUsuario dtoPublicacion = new DTOPublicacionPerfilUsuario(publicacion, usuarioLogueado);
 						dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
 						dtoPublicacion.setCantidadComentarios(getCantidadComentarios(dtoPublicacion.getIdPublicacion()));
 						res.add(dtoPublicacion);
@@ -82,10 +85,10 @@ public class ControladorPublicacionComentarioDA
 		return res;
 	}
 
-	private List<DTOPublicacion> aplicarOffsetSeizePublicaciones(List<DTOPublicacion> dtoPublicaciones, int offset, int size) {
-		List<DTOPublicacion> res = new ArrayList<>();
+	private List<DTOPublicacionPerfilUsuario> aplicarOffsetSeizePublicaciones(List<DTOPublicacionPerfilUsuario> dtoPublicaciones, int offset, int size) {
+		List<DTOPublicacionPerfilUsuario> res = new ArrayList<>();
 		int offsetAux = 0;
-		for (DTOPublicacion dtoMul : dtoPublicaciones) {
+		for (DTOPublicacionPerfilUsuario dtoMul : dtoPublicaciones) {
 			if (res.size() == size) {
 				break;
 			}
@@ -98,13 +101,14 @@ public class ControladorPublicacionComentarioDA
 	}
 
 	@Override
-	public DTOPublicacion obtenerPublicacion(int idPublicacion) {
-		DTOPublicacion dtoPublicacion = new DTOPublicacion();
+	public DTOPublicacionPerfilUsuario obtenerPublicacion(int idPublicacion) {
+		DTOPublicacionPerfilUsuario dtoPublicacion = new DTOPublicacionPerfilUsuario();
 		try {
 			Publicacion publicacion = manager.find(Publicacion.class, idPublicacion);
 			if (publicacion != null) {
 				List<DTOComentario> dtoComentarios = getComentarios(publicacion.getIdPublicacion());
-				dtoPublicacion = new DTOPublicacion(publicacion);
+				Usuario usuario = manager.find(Usuario.class, publicacion.getPerfil().getIdPersona());
+				dtoPublicacion = new DTOPublicacionPerfilUsuario(publicacion, usuario);
 				dtoPublicacion.setComentarioReacciones(dtoComentarios);
 				dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
 				dtoPublicacion.setCantidadComentarios(getCantidadComentarios(dtoPublicacion.getIdPublicacion()));
@@ -324,7 +328,7 @@ public class ControladorPublicacionComentarioDA
 		}
 	}
 	
-	private DTOPublicacion getCantidadReaccionPublicacion(DTOPublicacion dtoPublicacion)
+	private DTOPublicacionPerfilUsuario getCantidadReaccionPublicacion(DTOPublicacionPerfilUsuario dtoPublicacion)
 	{
 		try {
 			MongoDBConnector mongoConnector = new MongoDBConnector();
@@ -339,7 +343,7 @@ public class ControladorPublicacionComentarioDA
 	}
 	
 	@SuppressWarnings("unused")
-	private Integer getCantidadReaccionPublicacion(reacciones reaccion, DTOPublicacion publicacion,
+	private Integer getCantidadReaccionPublicacion(reacciones reaccion, DTOPublicacionPerfilUsuario publicacion,
 			MongoCollection<Document> collection) {
 		Integer cantidad = 0;
 		FindIterable<Document> reacciones = collection.find(and(
