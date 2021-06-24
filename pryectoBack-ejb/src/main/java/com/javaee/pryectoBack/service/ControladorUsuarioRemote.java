@@ -7,10 +7,11 @@ import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioContacto;
 import com.javaee.pryectoBack.datatypes.DTOAdministrador;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
+import com.javaee.pryectoBack.datatypes.DTOUsuarioPerfil;
 
 @Remote
 public interface ControladorUsuarioRemote {
-	DTOUsuario editarPerfil(DTOUsuario dtoUsuario);
+	DTOUsuario editarPerfil(DTOUsuarioPerfil dtoUsuario);
 	DTOUsuario registrarUsuario(DTOUsuario dtoUsuario);
 	boolean subirFoto(DTOMultimedia dtoMultimedia);
 	boolean agregarContacto(String idPersona, String idPersona2);
@@ -23,4 +24,5 @@ public interface ControladorUsuarioRemote {
 	DTOUsuarioInicioSesion datosUsuarioInicioSesion(String idPersona);
 	DTOUsuarioContacto respuestaContacto(DTOUsuarioContacto dtoUsuarioContacto);
 	DTOAdministrador altaUsuarioAdmin(DTOAdministrador dtoAdministrador);
+	DTOUsuarioPerfil getPerfil(String idPersona);
 }

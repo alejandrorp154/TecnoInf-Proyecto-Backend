@@ -1,24 +1,30 @@
 package com.javaee.pryectoBack.datatypes;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 public class DTOComentario implements Serializable
 {
 	private static final long serialVersionUID = 1L;
-	protected String idComentarioReaccion;
+	protected String idComentario;
 	private String contenido;
 	private Date fecha;
 	private int idPublicacion;
 	private String idComentarioPadre;
 	protected String idPersona;
+	private List<DTOComentario> comentariosHijos;
+	private Integer cantidadLikes;
+	private Integer cantidadDislikes;
 	
-	public DTOComentario(String idComentarioReaccion, String contenido, Date fecha, int idPublicacion, String idPersona, String idComentarioPadre) {
+	public DTOComentario(String idComentario, String contenido, Date fecha, int idPublicacion, String idPersona, String idComentarioPadre) {
 		super();
 		this.idComentarioPadre = idComentarioPadre;
-		this.idComentarioReaccion = idComentarioReaccion;
+		this.idComentario = idComentario;
 		this.contenido = contenido;
 		this.fecha = fecha;
 		this.idPublicacion = idPublicacion;
@@ -28,12 +34,12 @@ public class DTOComentario implements Serializable
 	public DTOComentario() {
 	}
 
-	public String getIdComentarioReaccion() {
-		return idComentarioReaccion;
+	public String getIdComentario() {
+		return idComentario;
 	}
 
-	public void setIdComentarioReaccion(String idComentarioReaccion) {
-		this.idComentarioReaccion = idComentarioReaccion;
+	public void setIdComentario(String idComentario) {
+		this.idComentario = idComentario;
 	}
 
 	public String getContenido() {
@@ -85,4 +91,41 @@ public class DTOComentario implements Serializable
 		newDocument.append("fecha", this.fecha);
 		return newDocument;
 	}
+	
+	public DTOComentario(Document comentario) {
+		ObjectId idObj = (ObjectId) comentario.get("_id");
+		if (idObj != null) {
+			this.idComentario = (String) idObj.toString();		
+		}
+		this.idPersona = (String) comentario.get("idPersona");
+		this.contenido = (String) comentario.get("contenido");
+		this.fecha = (Date) comentario.get("fecha");
+		this.idComentarioPadre = (String) comentario.get("idComentarioPadre");		
+		this.comentariosHijos = new ArrayList<DTOComentario>();
+	}
+
+	public List<DTOComentario> getComentariosHijos() {
+		return comentariosHijos;
+	}
+
+	public void setComentariosHijos(List<DTOComentario> comentariosHijos) {
+		this.comentariosHijos = comentariosHijos;
+	}
+
+	public Integer getCantidadLikes() {
+		return cantidadLikes;
+	}
+
+	public void setCantidadLikes(Integer cantidadLikes) {
+		this.cantidadLikes = cantidadLikes;
+	}
+
+	public Integer getCantidadDislikes() {
+		return cantidadDislikes;
+	}
+
+	public void setCantidadDislikes(Integer cantidadDislikes) {
+		this.cantidadDislikes = cantidadDislikes;
+	}
+
 }

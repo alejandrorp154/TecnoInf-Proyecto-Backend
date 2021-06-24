@@ -12,6 +12,7 @@ import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioContacto;
 import com.javaee.pryectoBack.datatypes.DTOAdministrador;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
+import com.javaee.pryectoBack.datatypes.DTOUsuarioPerfil;
 import com.javaee.pryectoBack.model.PerfilUsuario;
 import com.javaee.pryectoBack.model.Persona;
 import com.javaee.pryectoBack.model.Medalla;
@@ -23,6 +24,7 @@ import com.javaee.pryectoBack.model.Publicacion;
 import com.javaee.pryectoBack.model.Multimedia;
 import com.javaee.pryectoBack.model.Interes;
 import com.javaee.pryectoBack.model.Administrador;
+import com.javaee.pryectoBack.model.Configuracion;
 import com.javaee.pryectoBack.util.MongoDBConnector;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
@@ -53,7 +55,7 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	}
 
 	@Override
-	public DTOUsuario editarPerfil(DTOUsuario dtoUsuario) {
+	public DTOUsuario editarPerfil(DTOUsuarioPerfil dtoUsuario) {
 		DTOUsuario dtoUsuarioRes = new DTOUsuario();
 		try{
 			Usuario usuario = manager.find(Usuario.class, dtoUsuario.getIdPersona());
@@ -65,6 +67,9 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 				usuario.setApellido(dtoUsuario.getApellido());
 				usuario.setEmail(dtoUsuario.getEmail());
 				usuario.setPais(dtoUsuario.getPais());
+				usuario.getPerfil().setImagenPerfil(dtoUsuario.getImagenPerfil());
+				usuario.getPerfil().setExtension(dtoUsuario.getExtensionImagen());
+				usuario.getPerfil().setNombreImagen(dtoUsuario.getNombreImagen());
 				manager.merge(usuario);
 				dtoUsuarioRes = new DTOUsuario(usuario);
 			}
@@ -82,10 +87,15 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 			if (usuario == null) {
 				Usuario user = new Usuario(dtoUsuario);
 				user.getMedalla().setUsuario(user);
-				user.getConfiguracion().setUsuario(user);
 				PerfilUsuario perfil = new PerfilUsuario(user, dtoUsuario);
 				user.setPerfil(perfil);
 				manager.merge(user);
+				Configuracion configuracionEmail = new Configuracion(true);
+				configuracionEmail.setIdPersona(user.getIdPersona());
+				manager.persist(configuracionEmail);
+				Configuracion configuracionPush = new Configuracion(false);
+				configuracionPush.setIdPersona(user.getIdPersona());
+				manager.persist(configuracionPush);
 				res = new DTOUsuario(user);
 			} else {
 				res = dtoUsuario;
@@ -104,6 +114,9 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 			if (perfil != null) {
 				Multimedia multimedia = new Multimedia(dtoMultimedia, perfil);
 				manager.merge(multimedia);
+				Usuario usuario1 = manager.find(Usuario.class, perfil.getIdPersona());
+				DTOUsuario dtoUsuario1 = new DTOUsuario(usuario1);
+				puntoUsuario.getPuntosUsuario("SubirFotoGaleria", dtoUsuario1, manager);
 				res = true;
 			}
 		} catch (Exception exception) {
@@ -161,9 +174,14 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 				Medalla medalla = user.getMedalla();
 				manager.remove(medalla);
 				
-
-				//Configuracion
-				manager.remove(user.getConfiguracion());
+				// Remover configuraciones
+				TypedQuery<Configuracion> queryConfiguraciones = manager.createQuery("SELECT configuracion FROM Configuracion configuracion where configuracion.idPersona = '" + idPersona + "'", Configuracion.class);
+				List<Configuracion> configuraciones =  queryConfiguraciones.getResultList();
+				if (configuraciones.size() > 0) {
+					for (Configuracion configuracion : configuraciones) {
+						manager.remove(configuracion);
+					}	
+				}
 
 				//Notificaciones
 				List<Notificacion> notificaciones = user.getNotificaciones();
@@ -268,8 +286,12 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 		try {
 			Administrador admin = manager.find(Administrador.class, idPersona);
 			if (admin != null) {
-				manager.remove(admin);
-				res = true;
+				TypedQuery<Administrador> query = manager.createQuery("SELECT administrador FROM Administrador administrador ", Administrador.class);
+				List<Administrador> administradores =  query.getResultList();
+				if (administradores.size() > 1) {
+					manager.remove(admin);
+					res = true;
+				}
 			}
 		} catch (Exception exception) {
 			return res;
@@ -338,10 +360,10 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 				String imagen = user.getPerfil().getImagenPerfil();
 				String extension = user.getPerfil().getExtension();
 				String nombreImagen = user.getPerfil().getNombreImagen();
-				return new DTOUsuarioInicioSesion(user.getIdPersona(), user.getEmail(), user.getNombre(), user.getApellido(), user.getNickname(), imagen, extension, nombreImagen, false);
+				return new DTOUsuarioInicioSesion(user.getIdPersona(), user.getEmail(), user.getNombre(), user.getApellido(), user.getNickname(), imagen, extension, nombreImagen, false, user.getEstaBloqueado());
 			} else {
 				Administrador admin = (Administrador)persona;
-				return new DTOUsuarioInicioSesion(admin.getIdPersona(), admin.getEmail(), admin.getNombre(), admin.getApellido(), null, null, null, null, true);
+				return new DTOUsuarioInicioSesion(admin.getIdPersona(), admin.getEmail(), admin.getNombre(), admin.getApellido(), null, null, null, null, true, false);
 			}
 		}
 		return null;
@@ -384,5 +406,19 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 		}catch ( Exception exception){
 			return null;
 		}
+	}
+
+	@Override
+	public DTOUsuarioPerfil getPerfil(String idPersona) {
+		DTOUsuarioPerfil dtoUsuarioPerfil = new DTOUsuarioPerfil();
+		try {
+			Usuario usuario = manager.find(Usuario.class, idPersona);
+			if (usuario != null) {
+				dtoUsuarioPerfil = new DTOUsuarioPerfil(usuario);
+			}
+		} catch (Exception exception) {
+			return dtoUsuarioPerfil;
+		}
+		return dtoUsuarioPerfil;
 	}
 }

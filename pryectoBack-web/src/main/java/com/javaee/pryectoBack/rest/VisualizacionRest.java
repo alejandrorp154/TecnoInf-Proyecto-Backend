@@ -142,7 +142,7 @@ public class VisualizacionRest {
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Devuelve una lista de solicitudes pendientes para el usuario logueado", notes = "el que corresponda el idPersona")
+	@ApiOperation(value = "Devuelve el progreso del usuario logueado", notes = "el que corresponda el idPersona")
 	@Path("/visualizarProgreso/{idPersona}")
 	public Response visualizarProgreso(@PathParam("idPersona") String idPersona) {
 		Response.ResponseBuilder builder = null;
@@ -175,5 +175,4 @@ public class VisualizacionRest {
 		}
 		return builder.build();
 	}
-
 }

@@ -52,6 +52,7 @@ public class DTOUsuario implements Serializable
 		this.extensionImagen = usuario.getPerfil().getExtension();
 		this.imagenPerfil = usuario.getPerfil().getImagenPerfil();
 		this.nombreImagen = usuario.getPerfil().getNombreImagen();
+		this.celular = usuario.getCelular();
 	}
 
 	public String getIdPersona() {

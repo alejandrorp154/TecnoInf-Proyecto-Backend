@@ -74,6 +74,7 @@ public class PuntosUsuario
 		map.put("AltaContacto", 15);
 		map.put("AltaUbicacion", 50);
 		map.put("ReaccionarPublicacion", 1);
+		map.put("ReaccionarComentario", 1);
 		map.put("ComentarPublicacion", 1);
 		map.put("AltaEvento", 40);
 		map.put("InvitarUsuarioEvento", 15);

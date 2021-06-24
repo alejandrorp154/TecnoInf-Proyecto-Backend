@@ -10,6 +10,7 @@ import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioContacto;
 import com.javaee.pryectoBack.datatypes.DTOAdministrador;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
+import com.javaee.pryectoBack.datatypes.DTOUsuarioPerfil;
 
 @Stateless
 @Remote(ControladorUsuarioRemote.class)
@@ -19,7 +20,7 @@ public class ControladorUsuario implements ControladorUsuarioRemote, Controlador
 	private ControladorUsuarioDALocal controladorDA;
 
 	@Override
-	public DTOUsuario editarPerfil(DTOUsuario dtoUsuario) {
+	public DTOUsuario editarPerfil(DTOUsuarioPerfil dtoUsuario) {
 		return controladorDA.editarPerfil(dtoUsuario);
 	}
 
@@ -81,5 +82,10 @@ public class ControladorUsuario implements ControladorUsuarioRemote, Controlador
 	@Override
 	public DTOAdministrador altaUsuarioAdmin(DTOAdministrador dtoAdministrador){
 		return controladorDA.altaUsuarioAdmin(dtoAdministrador);
+	}
+
+	@Override
+	public DTOUsuarioPerfil getPerfil(String idPersona) {
+		return controladorDA.getPerfil(idPersona);
 	}
 }

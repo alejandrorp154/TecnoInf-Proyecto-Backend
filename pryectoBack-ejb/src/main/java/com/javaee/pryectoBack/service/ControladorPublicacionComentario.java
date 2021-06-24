@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import com.javaee.pryectoBack.data.ControladorPublicacionComentarioDALocal;
 import com.javaee.pryectoBack.datatypes.DTOComentario;
 import com.javaee.pryectoBack.datatypes.DTOPublicacion;
+import com.javaee.pryectoBack.datatypes.DTOPublicacionPerfilUsuario;
 import com.javaee.pryectoBack.datatypes.DTOReaccion;
 
 @Stateless
@@ -18,55 +19,59 @@ public class ControladorPublicacionComentario
 
 	@EJB
 	private ControladorPublicacionComentarioDALocal controladorPublicacionComentarioDA;
-		
-	
+
 	@Override
-	public boolean altaComentario(DTOComentario dtoComentario) {
+	public DTOComentario altaComentario(DTOComentario dtoComentario) {
 		return controladorPublicacionComentarioDA.altaComentario(dtoComentario);
 	}
 
 	@Override
-	public boolean bajaComentario(int idComentario) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean bajaComentario(String idComentario) {
+		return controladorPublicacionComentarioDA.bajaComentario(idComentario);
 	}
 
 	@Override
 	public boolean modificarComentario(DTOComentario dtoComentario) {
-		// TODO Auto-generated method stub
-		return false;
+		return controladorPublicacionComentarioDA.modificarComentario(dtoComentario);
 	}
 
 	@Override
-	public boolean reaccionarComentario(int idComentario, DTOReaccion dtoReaccion) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean reaccionarComentario(DTOReaccion dtoReaccion) {
+		return controladorPublicacionComentarioDA.reaccionarComentario(dtoReaccion);
 	}
 
 	@Override
-	public List<DTOPublicacion> obtenerPublicaciones(String idPersona) {
-		// TODO Auto-generated method stub
-		return null;
+	public boolean reaccionPublicacion(DTOReaccion dtoReaccion) {
+		return controladorPublicacionComentarioDA.reaccionPublicacion(dtoReaccion);
+	}
+
+	@Override
+	public List<DTOPublicacionPerfilUsuario> obtenerPublicaciones(String idPersona, int offset, int size) {
+		return controladorPublicacionComentarioDA.obtenerPublicaciones(idPersona, offset, size);
+	}
+
+	@Override
+	public DTOPublicacionPerfilUsuario obtenerPublicacion(int idPublicacion) {
+		return controladorPublicacionComentarioDA.obtenerPublicacion(idPublicacion);
 	}
 
 	@Override
 	public boolean modificarPublicacion(DTOPublicacion dtoPublicacion) {
 		return controladorPublicacionComentarioDA.modificarPublicacion(dtoPublicacion);
 	}
+
 	@Override
 	public boolean bajaPublicacion(int idPublicacion) {
 		return controladorPublicacionComentarioDA.bajaPublicacion(idPublicacion);
 	}
 
 	@Override
-	public boolean reaccionPublicacion(DTOReaccion dtoReaccion) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
 	public DTOPublicacion altaPublicacion(DTOPublicacion dtoPublicacion) {
 		return controladorPublicacionComentarioDA.altaPublicacion(dtoPublicacion);
 	}
-
+	
+	@Override
+	public List<DTOComentario> getComentarios(int idPublicacion) {
+		return controladorPublicacionComentarioDA.getComentarios(idPublicacion);
+	}
 }

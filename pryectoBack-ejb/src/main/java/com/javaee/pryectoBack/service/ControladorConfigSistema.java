@@ -20,7 +20,7 @@ public class ControladorConfigSistema implements ControladorConfigSistemaLocal, 
 	}
 
 	@Override
-	public DTOConfiguracion getByIdPersona(String idPersona) {
-		return controladorConfigSistemaDA.getByIdPersona(idPersona);
+	public DTOConfiguracion getByIdPersona(String idPersona, boolean isEmailNotification) {
+		return controladorConfigSistemaDA.getByIdPersona(idPersona, isEmailNotification);
 	}
 }

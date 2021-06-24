@@ -12,5 +12,4 @@ public interface ControladorUbicacionDALocal {
 	List<DTOUbicacion> obtenerUbicaciones(String idPersona);
 	boolean baja(int idUbicacion);
 	boolean modificar(DTOUbicacion dtoUbicacion);
-	DTOUbicacion seleccionarUbicacion(int idUbicacion);
 }

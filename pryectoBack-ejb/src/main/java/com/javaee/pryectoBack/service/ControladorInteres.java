@@ -50,5 +50,4 @@ public class ControladorInteres implements ControladorInteresLocal, ControladorI
 	public boolean desuscribe(String idPersona, int idInteres) {
 		return this.controladorInteresDA.desuscribe(idPersona, idInteres);
 	}
-
 }

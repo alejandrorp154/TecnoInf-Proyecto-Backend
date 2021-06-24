@@ -20,6 +20,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.javaee.pryectoBack.datatypes.DTODetalleEvento;
 import com.javaee.pryectoBack.datatypes.DTOEvento;
 import com.javaee.pryectoBack.datatypes.DTOEventoUsuario;
 import com.javaee.pryectoBack.service.ControladorEventoLocal;
@@ -177,6 +178,24 @@ public class EventoRest {
 			List<DTOEvento> dtoEventos = controladorEvento.obtenerEventos(idPersona, offset, size);
 			builder = Response.ok();
 			builder.entity(dtoEventos);
+		} catch (Exception exception) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", exception.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
+	}
+
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Devuelve los detalles del evento correspondientes al idEvento", notes = "el que corresponda al id de evento")
+	@Path("/obtenerEvento/{idEvento}")
+	public Response obtenerEventosById(@PathParam("idEvento") int idEvento) {
+		Response.ResponseBuilder builder = null;
+		try {
+			DTODetalleEvento dtoEvento = controladorEvento.obtenerEventoById(idEvento);
+			builder = Response.ok();
+			builder.entity(dtoEvento);
 		} catch (Exception exception) {
 			Map<String, String> responseObj = new HashMap<>();
 			responseObj.put("error", exception.getMessage());

@@ -19,6 +19,7 @@ import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioContacto;
 import com.javaee.pryectoBack.datatypes.DTOAdministrador;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
+import com.javaee.pryectoBack.datatypes.DTOUsuarioPerfil;
 import com.javaee.pryectoBack.service.ControladorUsuarioLocal;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -47,7 +48,7 @@ public class UsuarioRest
 			"    \"direccion\" : \"En la FING\"\r\n" + 
 			"} ")
 	@Path("/editarPerfil")
-	public Response editarPerfil(DTOUsuario dtoUsuario) {
+	public Response editarPerfil(DTOUsuarioPerfil dtoUsuario) {
 		Response.ResponseBuilder builder = null;
 		try {
 			DTOUsuario modified = controladorUsuario.editarPerfil(dtoUsuario);
@@ -73,9 +74,7 @@ public class UsuarioRest
 	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{idUsuario}")
 	public Response inicioSesionDatos(@PathParam("idUsuario") String idPersona){
-
 		Response.ResponseBuilder builder = null;
-
 		try{
 			DTOUsuarioInicioSesion dtUserInicioSesion = controladorUsuario.datosUsuarioInicioSesion(idPersona);
 
@@ -95,7 +94,6 @@ public class UsuarioRest
 
 		return builder.build();
 	}
-
 
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -128,7 +126,7 @@ public class UsuarioRest
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Agregar un nuevo contacto a la lista de contactos con estado pendiente", notes = "")
+	@ApiOperation(value = "Agregar una foto a la galeria del usuario logueado", notes = "")
 	@Path("/subirFoto")
 	public Response subirFoto(DTOMultimedia dtoMultimedia) {
 		Response.ResponseBuilder builder = null;
@@ -381,6 +379,34 @@ public class UsuarioRest
 			responseObj.put("error", e.getMessage());
 			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
 		}
+		return builder.build();
+	}
+
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/editarPerfil/{idUsuario}")
+	public Response getPerfil(@PathParam("idUsuario") String idPersona){
+
+		Response.ResponseBuilder builder = null;
+
+		try{
+			DTOUsuarioPerfil dtoUsuarioPerfil = controladorUsuario.getPerfil(idPersona);
+
+			if (dtoUsuarioPerfil != null) {
+				builder = Response.ok();
+				builder.entity(dtoUsuarioPerfil);
+			} else {
+				Map<String, String> responseObj = new HashMap<>();
+				responseObj.put("error", "El usuario con idUsuario = " + idPersona + " no existe");
+				builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+			}
+		}catch (Exception e) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+
 		return builder.build();
 	}
 }

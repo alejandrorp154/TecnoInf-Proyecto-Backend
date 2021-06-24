@@ -55,12 +55,61 @@ public class ConfigSistemaRest {
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@ApiOperation(value = "Devuelve un interes", notes = "el que corresponda al id de interes")
+	@ApiOperation(value = "Devuelve las configuraciones de un usuario", notes = "el que corresponda al id de persona")
 	@Path("/{idPersona}")
 	public Response get(@PathParam("idPersona") String idPersona) throws Exception
 	{
 		Response.ResponseBuilder builder = null;
-		DTOConfiguracion configuracion = controladorConfigSistema.getByIdPersona(idPersona);
+		DTOConfiguracion configuracion = controladorConfigSistema.getByIdPersona(idPersona, true);
+		if (configuracion.getIdConfiguracion() != 0)
+		{
+			builder = Response.ok();
+			builder.entity(configuracion);
+		}
+		else
+		{
+          Map<String, String> responseObj = new HashMap<>();
+          responseObj.put("error", "La configuracion para el usuario con id = " + idPersona + " no existe");
+          builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
+	}
+	
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/push")
+	@ApiOperation(value = "Modifica un las configuraciones notificaciones push para el usuario logueado", notes = "")
+	public Response configurarNotificacionesPush(DTOConfiguracion dtoConfiguracion) {
+
+		Response.ResponseBuilder builder = null;
+		try {
+			DTOConfiguracion modified = controladorConfigSistema.configurarNotificaciones(dtoConfiguracion);
+			if (modified.getIdConfiguracion() != 0) {
+	            builder = Response.ok();
+	            builder.entity(modified);
+			}
+			else {
+				Map<String, String> responseObj = new HashMap<>();
+				responseObj.put("error", "Las configuraciones para el usuario con id = " + dtoConfiguracion.getIdPersona() + " no pudo modificarse");
+				builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+			}
+        } catch (Exception e) {
+            Map<String, String> responseObj = new HashMap<>();
+            responseObj.put("error", e.getMessage());
+            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+        }
+        return builder.build();
+	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Devuelve las configuraciones de un usuario", notes = "el que corresponda al id de persona")
+	@Path("/push/{idPersona}")
+	public Response getNotificacionesPush(@PathParam("idPersona") String idPersona) throws Exception
+	{
+		Response.ResponseBuilder builder = null;
+		DTOConfiguracion configuracion = controladorConfigSistema.getByIdPersona(idPersona, false);
 		if (configuracion.getIdConfiguracion() != 0)
 		{
 			builder = Response.ok();

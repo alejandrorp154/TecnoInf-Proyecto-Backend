@@ -1,6 +1,9 @@
 package com.javaee.pryectoBack.datatypes;
 
-public class DTOEstadistica {
+import java.io.Serializable;
+
+public class DTOEstadistica implements Serializable {
+	private static final long serialVersionUID = 1L;
 
 	// Estadistica de Cantidad de usuarios registrados en la plataforma
 	private Long cantidadUsuariosRegistrados;
