@@ -6,18 +6,21 @@ import java.util.List;
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import org.bson.Document;
-import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import com.javaee.pryectoBack.datatypes.DTOComentario;
 import com.javaee.pryectoBack.datatypes.DTOPublicacion;
+import com.javaee.pryectoBack.datatypes.DTOPublicacionPerfilUsuario;
 import com.javaee.pryectoBack.datatypes.DTOReaccion;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.model.PerfilUsuario;
 import com.javaee.pryectoBack.model.Publicacion;
 import com.javaee.pryectoBack.model.Tipo;
 import com.javaee.pryectoBack.model.Usuario;
+import com.javaee.pryectoBack.model.UsuarioContacto;
+import com.javaee.pryectoBack.model.estadosContactos;
 import com.javaee.pryectoBack.model.reacciones;
 import com.javaee.pryectoBack.model.tipos;
 import com.javaee.pryectoBack.util.MongoDBConnector;
@@ -25,11 +28,9 @@ import com.javaee.pryectoBack.util.PuntosUsuario;
 
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.and;
-import static com.mongodb.client.model.Updates.*;
 
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 
 @Singleton
@@ -46,30 +47,48 @@ public class ControladorPublicacionComentarioDA
 	}
 
 	@Override
-	public List<DTOPublicacion> obtenerPublicaciones(String idPersona, int offset, int size) {
-		List<DTOPublicacion> res = new ArrayList<>();
-		try {
-			PerfilUsuario perfil = manager.find(PerfilUsuario.class, idPersona);
-			if (perfil != null) {
-				for (Publicacion publicacion : perfil.getPublicaciones()) {
+	public List<DTOPublicacionPerfilUsuario> obtenerPublicaciones(String idPersona, int offset, int size) {
+		List<DTOPublicacionPerfilUsuario> res = new ArrayList<>();
+		try {			
+			TypedQuery<UsuarioContacto> query = manager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.idPersona = '" + idPersona + "' and usuariocontacto.estadoContactos = '" + estadosContactos.aceptada + "' order by usuariocontacto.fechaContactos", UsuarioContacto.class);
+			List<UsuarioContacto> usuariosContactos = query.getResultList();
+			for(UsuarioContacto usuarioContacto : usuariosContactos) {
+				PerfilUsuario perfil = manager.find(PerfilUsuario.class, usuarioContacto.getContactoIdPersona());
+				if (perfil != null) {
+					Usuario usuario = manager.find(Usuario.class, perfil.getIdPersona());
+					for (Publicacion publicacion : perfil.getPublicaciones()) {
+						if (!publicacion.getTipo().getTipo().equals(tipos.mapa)) {
+							DTOPublicacionPerfilUsuario dtoPublicacion = new DTOPublicacionPerfilUsuario(publicacion, usuario);
+							dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
+							dtoPublicacion.setCantidadComentarios(getCantidadComentarios(dtoPublicacion.getIdPublicacion()));
+							res.add(dtoPublicacion);
+						}
+					}
+				}
+			}
+			PerfilUsuario perfilUsuarioLogueado = manager.find(PerfilUsuario.class, idPersona);
+			if (perfilUsuarioLogueado != null) {
+				Usuario usuarioLogueado = manager.find(Usuario.class, perfilUsuarioLogueado.getIdPersona());
+				for (Publicacion publicacion : perfilUsuarioLogueado.getPublicaciones()) {
 					if (!publicacion.getTipo().getTipo().equals(tipos.mapa)) {
-						DTOPublicacion dtoPublicacion = new DTOPublicacion(publicacion);
+						DTOPublicacionPerfilUsuario dtoPublicacion = new DTOPublicacionPerfilUsuario(publicacion, usuarioLogueado);
 						dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
+						dtoPublicacion.setCantidadComentarios(getCantidadComentarios(dtoPublicacion.getIdPublicacion()));
 						res.add(dtoPublicacion);
 					}
 				}
-				res = aplicarOffsetSeizePublicaciones(res, offset, size);
 			}
+			res = aplicarOffsetSeizePublicaciones(res, offset, size);
 		} catch (Exception exception) {
 			return res;
 		}
 		return res;
 	}
 
-	private List<DTOPublicacion> aplicarOffsetSeizePublicaciones(List<DTOPublicacion> dtoPublicaciones, int offset, int size) {
-		List<DTOPublicacion> res = new ArrayList<>();
+	private List<DTOPublicacionPerfilUsuario> aplicarOffsetSeizePublicaciones(List<DTOPublicacionPerfilUsuario> dtoPublicaciones, int offset, int size) {
+		List<DTOPublicacionPerfilUsuario> res = new ArrayList<>();
 		int offsetAux = 0;
-		for (DTOPublicacion dtoMul : dtoPublicaciones) {
+		for (DTOPublicacionPerfilUsuario dtoMul : dtoPublicaciones) {
 			if (res.size() == size) {
 				break;
 			}
@@ -82,15 +101,17 @@ public class ControladorPublicacionComentarioDA
 	}
 
 	@Override
-	public DTOPublicacion obtenerPublicacion(int idPublicacion) {
-		DTOPublicacion dtoPublicacion = new DTOPublicacion();
+	public DTOPublicacionPerfilUsuario obtenerPublicacion(int idPublicacion) {
+		DTOPublicacionPerfilUsuario dtoPublicacion = new DTOPublicacionPerfilUsuario();
 		try {
 			Publicacion publicacion = manager.find(Publicacion.class, idPublicacion);
 			if (publicacion != null) {
 				List<DTOComentario> dtoComentarios = getComentarios(publicacion.getIdPublicacion());
-				dtoPublicacion = new DTOPublicacion(publicacion);
+				Usuario usuario = manager.find(Usuario.class, publicacion.getPerfil().getIdPersona());
+				dtoPublicacion = new DTOPublicacionPerfilUsuario(publicacion, usuario);
 				dtoPublicacion.setComentarioReacciones(dtoComentarios);
 				dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
+				dtoPublicacion.setCantidadComentarios(getCantidadComentarios(dtoPublicacion.getIdPublicacion()));
 			}
 		} catch (Exception exception) {
 			return dtoPublicacion;
@@ -307,7 +328,7 @@ public class ControladorPublicacionComentarioDA
 		}
 	}
 	
-	private DTOPublicacion getCantidadReaccionPublicacion(DTOPublicacion dtoPublicacion)
+	private DTOPublicacionPerfilUsuario getCantidadReaccionPublicacion(DTOPublicacionPerfilUsuario dtoPublicacion)
 	{
 		try {
 			MongoDBConnector mongoConnector = new MongoDBConnector();
@@ -322,13 +343,49 @@ public class ControladorPublicacionComentarioDA
 	}
 	
 	@SuppressWarnings("unused")
-	private Integer getCantidadReaccionPublicacion(reacciones reaccion, DTOPublicacion publicacion,
+	private Integer getCantidadReaccionPublicacion(reacciones reaccion, DTOPublicacionPerfilUsuario publicacion,
 			MongoCollection<Document> collection) {
 		Integer cantidad = 0;
 		FindIterable<Document> reacciones = collection.find(and(
 				eq("idPublicacion", publicacion.getIdPublicacion()), eq("reaccion", String.valueOf(reaccion))));
 		for (Document document : reacciones) {
 			cantidad++;
+		}
+		return cantidad;
+	}
+
+	public Integer getCantidadComentarios(int idPublicacion) {
+		Integer cantidad = 0;
+		try {
+			MongoDBConnector mongoConnector = new MongoDBConnector();
+			MongoCollection<Document> collectionComentariosPublicacion = mongoConnector
+					.getCollection("ComentariosPublicacion");
+			MongoCollection<Document> reaccionesComentarios = mongoConnector.getCollection("ReaccionesComentario");
+			FindIterable<Document> comentariosPadre = collectionComentariosPublicacion
+					.find(and(eq("idPublicacion", idPublicacion), eq("idComentarioPadre", null)));
+			for (Document comentario : comentariosPadre) {
+				cantidad = cantidad + getCantidadArbolComentario(comentario, collectionComentariosPublicacion, reaccionesComentarios);
+			}
+			return cantidad;
+		} catch (Exception exception) {
+			System.out.println(exception.getMessage());
+			return null;
+
+		}
+	}
+
+	@SuppressWarnings("unused")
+	private Integer getCantidadArbolComentario(Document comentarioPadre,
+			MongoCollection<Document> collectionComentariosPublicacion,
+			MongoCollection<Document> reaccionesComentarios) {
+		Integer cantidad = 1;
+		DTOComentario comentarioPadreDTO = new DTOComentario(comentarioPadre);
+		FindIterable<Document> comentariosHijo = collectionComentariosPublicacion
+				.find(eq("idComentarioPadre", comentarioPadreDTO.getIdComentario()));
+		if (comentariosHijo != null) {
+			for (Document comentario : comentariosHijo) {
+				cantidad++;
+			}
 		}
 		return cantidad;
 	}

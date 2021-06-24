@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import com.javaee.pryectoBack.data.ControladorPublicacionComentarioDALocal;
 import com.javaee.pryectoBack.datatypes.DTOComentario;
 import com.javaee.pryectoBack.datatypes.DTOPublicacion;
+import com.javaee.pryectoBack.datatypes.DTOPublicacionPerfilUsuario;
 import com.javaee.pryectoBack.datatypes.DTOReaccion;
 
 @Stateless
@@ -45,12 +46,12 @@ public class ControladorPublicacionComentario
 	}
 
 	@Override
-	public List<DTOPublicacion> obtenerPublicaciones(String idPersona, int offset, int size) {
+	public List<DTOPublicacionPerfilUsuario> obtenerPublicaciones(String idPersona, int offset, int size) {
 		return controladorPublicacionComentarioDA.obtenerPublicaciones(idPersona, offset, size);
 	}
 
 	@Override
-	public DTOPublicacion obtenerPublicacion(int idPublicacion) {
+	public DTOPublicacionPerfilUsuario obtenerPublicacion(int idPublicacion) {
 		return controladorPublicacionComentarioDA.obtenerPublicacion(idPublicacion);
 	}
 

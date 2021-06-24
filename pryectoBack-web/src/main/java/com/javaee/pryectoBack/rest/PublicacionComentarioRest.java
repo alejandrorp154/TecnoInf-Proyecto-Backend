@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response;
 
 import com.javaee.pryectoBack.datatypes.DTOComentario;
 import com.javaee.pryectoBack.datatypes.DTOPublicacion;
+import com.javaee.pryectoBack.datatypes.DTOPublicacionPerfilUsuario;
 import com.javaee.pryectoBack.datatypes.DTOReaccion;
 import com.javaee.pryectoBack.service.ControladorPublicacionComentarioLocal;
 import com.wordnik.swagger.annotations.Api;
@@ -138,7 +139,7 @@ public class PublicacionComentarioRest {
 	public Response obtenerPublicaciones(@PathParam("idPersona") String idPersona, @PathParam("offset") int offset, @PathParam("size") int size) {
 		Response.ResponseBuilder builder = null;
 		try {
-			List<DTOPublicacion> res = controladorPublicacionComentario.obtenerPublicaciones(idPersona, offset, size);
+			List<DTOPublicacionPerfilUsuario> res = controladorPublicacionComentario.obtenerPublicaciones(idPersona, offset, size);
             builder = Response.ok();
             builder.entity(res);
         } catch (Exception e) {
@@ -156,7 +157,7 @@ public class PublicacionComentarioRest {
 	public Response obtenerPublicacion(@PathParam("idPublicacion") int idPublicacion) {
 		Response.ResponseBuilder builder = null;
 		try {
-			DTOPublicacion publicacion = controladorPublicacionComentario.obtenerPublicacion(idPublicacion);
+			DTOPublicacionPerfilUsuario publicacion = controladorPublicacionComentario.obtenerPublicacion(idPublicacion);
             builder = Response.ok();
             builder.entity(publicacion);
         } catch (Exception e) {

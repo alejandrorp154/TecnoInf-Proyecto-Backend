@@ -24,6 +24,7 @@ import com.javaee.pryectoBack.model.Publicacion;
 import com.javaee.pryectoBack.model.Multimedia;
 import com.javaee.pryectoBack.model.Interes;
 import com.javaee.pryectoBack.model.Administrador;
+import com.javaee.pryectoBack.model.Configuracion;
 import com.javaee.pryectoBack.util.MongoDBConnector;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
@@ -66,6 +67,9 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 				usuario.setApellido(dtoUsuario.getApellido());
 				usuario.setEmail(dtoUsuario.getEmail());
 				usuario.setPais(dtoUsuario.getPais());
+				usuario.getPerfil().setImagenPerfil(dtoUsuario.getImagenPerfil());
+				usuario.getPerfil().setExtension(dtoUsuario.getExtensionImagen());
+				usuario.getPerfil().setNombreImagen(dtoUsuario.getNombreImagen());
 				manager.merge(usuario);
 				dtoUsuarioRes = new DTOUsuario(usuario);
 			}
@@ -83,10 +87,15 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 			if (usuario == null) {
 				Usuario user = new Usuario(dtoUsuario);
 				user.getMedalla().setUsuario(user);
-				user.getConfiguracion().setUsuario(user);
 				PerfilUsuario perfil = new PerfilUsuario(user, dtoUsuario);
 				user.setPerfil(perfil);
 				manager.merge(user);
+				Configuracion configuracionEmail = new Configuracion(true);
+				configuracionEmail.setIdPersona(user.getIdPersona());
+				manager.persist(configuracionEmail);
+				Configuracion configuracionPush = new Configuracion(false);
+				configuracionPush.setIdPersona(user.getIdPersona());
+				manager.persist(configuracionPush);
 				res = new DTOUsuario(user);
 			} else {
 				res = dtoUsuario;
@@ -165,9 +174,14 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 				Medalla medalla = user.getMedalla();
 				manager.remove(medalla);
 				
-
-				//Configuracion
-				manager.remove(user.getConfiguracion());
+				// Remover configuraciones
+				TypedQuery<Configuracion> queryConfiguraciones = manager.createQuery("SELECT configuracion FROM Configuracion configuracion where configuracion.idPersona = '" + idPersona + "'", Configuracion.class);
+				List<Configuracion> configuraciones =  queryConfiguraciones.getResultList();
+				if (configuraciones.size() > 0) {
+					for (Configuracion configuracion : configuraciones) {
+						manager.remove(configuracion);
+					}	
+				}
 
 				//Notificaciones
 				List<Notificacion> notificaciones = user.getNotificaciones();

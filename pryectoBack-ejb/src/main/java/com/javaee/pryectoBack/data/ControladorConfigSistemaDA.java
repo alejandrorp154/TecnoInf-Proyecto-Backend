@@ -1,12 +1,14 @@
 package com.javaee.pryectoBack.data;
 
+import java.util.List;
+
 import javax.ejb.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import com.javaee.pryectoBack.datatypes.DTOConfiguracion;
 import com.javaee.pryectoBack.model.Configuracion;
-import com.javaee.pryectoBack.model.Usuario;
 
 @Singleton
 public class ControladorConfigSistemaDA implements ControladorConfigSistemaDALocal, ControladorConfigSistemaDARemote {
@@ -47,13 +49,17 @@ public class ControladorConfigSistemaDA implements ControladorConfigSistemaDALoc
 	}
 
 	@Override
-	public DTOConfiguracion getByIdPersona(String idPersona) {
+	public DTOConfiguracion getByIdPersona(String idPersona, boolean isEmailNotification) {
 		DTOConfiguracion res = new DTOConfiguracion();
 		try {
-			Usuario usuario = manager.find(Usuario.class, idPersona);
-			if (usuario != null) {
-				Configuracion configuracion = usuario.getConfiguracion();
-				res = new DTOConfiguracion(configuracion);
+			TypedQuery<Configuracion> query = manager.createQuery("SELECT configuracion FROM Configuracion configuracion where configuracion.idPersona = '" + idPersona + "'", Configuracion.class);
+			List<Configuracion> configuraciones =  query.getResultList();
+			if (configuraciones.size() > 0) {
+				for (Configuracion configuracion : configuraciones) {
+					if (isEmailNotification == configuracion.isEmailNotification()) {
+						res = new DTOConfiguracion(configuracion);
+					}
+				}	
 			}
 		} catch (Exception exception) {
 			return res;

@@ -6,15 +6,15 @@ import java.util.Date;
 import java.util.List;
 
 import com.javaee.pryectoBack.model.Publicacion;
+import com.javaee.pryectoBack.model.Usuario;
 
-public class DTOPublicacion implements Serializable
+public class DTOPublicacionPerfilUsuario implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	private int idPublicacion;
 	private String contenido;
 	private Date fecha;
 	private DTOTipo tipo;
-	protected String idPersona;
 	private String extension;
 	private String nombre;
 	private List<DTOComentario> comentarioReacciones = new ArrayList<>();
@@ -23,35 +23,29 @@ public class DTOPublicacion implements Serializable
 	private Integer cantidadLikes;
 	private Integer cantidadDislikes;
 	private Integer cantidadComentarios;
-
-
-	public DTOPublicacion(int idPublicacion, String contenido, Date fecha, DTOTipo dtoTipo, String idPersona,
-			String extension, String nombre, List<DTOComentario> dtoComentarioReacciones, DTOEvento dtoEvento,
-			DTOPerfilUsuario dtoPerfil) {
-		super();
-		this.idPublicacion = idPublicacion;
-		this.contenido = contenido;
-		this.fecha = fecha;
-		this.tipo = dtoTipo;
-		this.idPersona = idPersona;
-		this.extension = extension;
-		this.nombre = nombre;
-		this.comentarioReacciones = dtoComentarioReacciones;
-		this.evento = dtoEvento;
-		this.perfil = dtoPerfil;
+    private String idPersona;
+    private String email;
+    private String nickname;
+    private String imagenPerfil;
+    private String extensionImagenPerfil;
+    private String nombreImagenPerfil;
+	
+    public DTOPublicacionPerfilUsuario() {
 	}
 
-	public DTOPublicacion() {
-	}
-
-	public DTOPublicacion(Publicacion publicacion) {
+	public DTOPublicacionPerfilUsuario(Publicacion publicacion, Usuario usuario) {
 		this.idPublicacion = publicacion.getIdPublicacion();
 		this.contenido = publicacion.getContenido();
 		this.fecha = publicacion.getFecha();
 		this.tipo = new DTOTipo(publicacion.getTipo());
-		this.idPersona = publicacion.getPerfil().getUsuario().getIdPersona();
+		this.idPersona = usuario.getIdPersona();
 		this.extension = publicacion.getExtension();
 		this.nombre = publicacion.getNombre();
+		this.email = usuario.getEmail();
+		this.nickname = usuario.getNickname();
+		this.imagenPerfil = usuario.getPerfil().getImagenPerfil();
+		this.extensionImagenPerfil = usuario.getPerfil().getExtension();
+		this.nombreImagenPerfil = usuario.getPerfil().getNombreImagen();
 	}
 
 	public int getIdPublicacion() {
@@ -82,16 +76,8 @@ public class DTOPublicacion implements Serializable
 		return tipo;
 	}
 
-	public void setTipo(DTOTipo dtoTipo) {
-		this.tipo = dtoTipo;
-	}
-
-	public String getIdPersona() {
-		return idPersona;
-	}
-
-	public void setIdPersona(String idPersona) {
-		this.idPersona = idPersona;
+	public void setTipo(DTOTipo tipo) {
+		this.tipo = tipo;
 	}
 
 	public String getExtension() {
@@ -114,24 +100,24 @@ public class DTOPublicacion implements Serializable
 		return comentarioReacciones;
 	}
 
-	public void setComentarioReacciones(List<DTOComentario> dtoComentarioReacciones) {
-		this.comentarioReacciones = dtoComentarioReacciones;
+	public void setComentarioReacciones(List<DTOComentario> comentarioReacciones) {
+		this.comentarioReacciones = comentarioReacciones;
 	}
 
 	public DTOEvento getEvento() {
 		return evento;
 	}
 
-	public void setEvento(DTOEvento dtoEvento) {
-		this.evento = dtoEvento;
+	public void setEvento(DTOEvento evento) {
+		this.evento = evento;
 	}
 
 	public DTOPerfilUsuario getPerfil() {
 		return perfil;
 	}
 
-	public void setPerfil(DTOPerfilUsuario dtoPerfil) {
-		this.perfil = dtoPerfil;
+	public void setPerfil(DTOPerfilUsuario perfil) {
+		this.perfil = perfil;
 	}
 
 	public Integer getCantidadLikes() {
@@ -156,5 +142,53 @@ public class DTOPublicacion implements Serializable
 
 	public void setCantidadComentarios(Integer cantidadComentarios) {
 		this.cantidadComentarios = cantidadComentarios;
+	}
+
+	public String getIdPersona() {
+		return idPersona;
+	}
+
+	public void setIdPersona(String idPersona) {
+		this.idPersona = idPersona;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	public String getImagenPerfil() {
+		return imagenPerfil;
+	}
+
+	public void setImagenPerfil(String imagenPerfil) {
+		this.imagenPerfil = imagenPerfil;
+	}
+
+	public String getExtensionImagenPerfil() {
+		return extensionImagenPerfil;
+	}
+
+	public void setExtensionImagenPerfil(String extensionImagenPerfil) {
+		this.extensionImagenPerfil = extensionImagenPerfil;
+	}
+
+	public String getNombreImagenPerfil() {
+		return nombreImagenPerfil;
+	}
+
+	public void setNombreImagenPerfil(String nombreImagenPerfil) {
+		this.nombreImagenPerfil = nombreImagenPerfil;
 	}
 }

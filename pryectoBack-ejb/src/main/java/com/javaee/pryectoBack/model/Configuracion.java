@@ -6,8 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 
 @Entity
 public class Configuracion implements Serializable
@@ -29,12 +27,15 @@ public class Configuracion implements Serializable
 	private boolean chatUsuario;
 	private boolean bajaEvento;
 	private boolean modificacionEvento;
-	
-	@OneToOne
-    @JoinColumn(name = "idPersona")
-	private Usuario usuario;
+	private boolean isEmailNotification;
 
+	private String idPersona;
+	
 	public Configuracion() {
+		
+	}
+
+	public Configuracion(boolean isEmailNotification) {
 		this.altaPublicacion = true;
 		this.altaContacto = true;
 		this.reaccionPublicacion = true;
@@ -48,6 +49,7 @@ public class Configuracion implements Serializable
 		this.chatUsuario = true;
 		this.bajaEvento = true;
 		this.modificacionEvento = true;
+		this.isEmailNotification = isEmailNotification;
 	}
 
 	public int getIdConfiguracion() {
@@ -161,12 +163,20 @@ public class Configuracion implements Serializable
 	public void setModificacionEvento(boolean modificacionEvento) {
 		this.modificacionEvento = modificacionEvento;
 	}
-	
-	public Usuario getUsuario() {
-		return usuario;
+
+	public String getIdPersona() {
+		return idPersona;
 	}
 
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
+	public void setIdPersona(String idPersona) {
+		this.idPersona = idPersona;
+	}
+
+	public boolean isEmailNotification() {
+		return isEmailNotification;
+	}
+
+	public void setEmailNotification(boolean isEmailNotification) {
+		this.isEmailNotification = isEmailNotification;
 	}
 }
