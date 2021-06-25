@@ -3,9 +3,6 @@ package com.javaee.pryectoBack.data;
 import java.util.Date;
 
 import javax.ejb.Singleton;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
@@ -25,6 +22,7 @@ import com.javaee.pryectoBack.model.Multimedia;
 import com.javaee.pryectoBack.model.Interes;
 import com.javaee.pryectoBack.model.Administrador;
 import com.javaee.pryectoBack.model.Configuracion;
+import com.javaee.pryectoBack.util.DbManager;
 import com.javaee.pryectoBack.util.MongoDBConnector;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
@@ -36,16 +34,12 @@ import static com.mongodb.client.model.Filters.eq;
 
 import com.javaee.pryectoBack.model.Usuario;
 import com.javaee.pryectoBack.model.UsuarioContacto;
-import com.javaee.pryectoBack.model.UsuarioContactoId;
 import com.javaee.pryectoBack.model.estadosContactos;
 import com.javaee.pryectoBack.util.PuntosUsuario;
 
 
 @Singleton
 public class ControladorUsuarioDA implements ControladorUsuarioDALocal, ControladorUsuarioDARemote {
-
-	@PersistenceContext(unitName = "primary")
-	private EntityManager manager;
 
 	private PuntosUsuario puntoUsuario;
 	
@@ -58,7 +52,8 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	public DTOUsuario editarPerfil(DTOUsuarioPerfil dtoUsuario) {
 		DTOUsuario dtoUsuarioRes = new DTOUsuario();
 		try{
-			Usuario usuario = manager.find(Usuario.class, dtoUsuario.getIdPersona());
+			DbManager.open();
+			Usuario usuario = DbManager.find(Usuario.class, dtoUsuario.getIdPersona());
 			if (usuario != null) {
 				usuario.setNickname(dtoUsuario.getNickname());
 				usuario.setDireccion(dtoUsuario.getDireccion());
@@ -70,7 +65,7 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 				usuario.getPerfil().setImagenPerfil(dtoUsuario.getImagenPerfil());
 				usuario.getPerfil().setExtension(dtoUsuario.getExtensionImagen());
 				usuario.getPerfil().setNombreImagen(dtoUsuario.getNombreImagen());
-				manager.merge(usuario);
+				DbManager.merge(usuario);
 				dtoUsuarioRes = new DTOUsuario(usuario);
 			}
 		}catch (Exception exception) {
@@ -83,19 +78,20 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	public DTOUsuario registrarUsuario(DTOUsuario dtoUsuario) {
 		DTOUsuario res = new DTOUsuario();
 		try{
-			Usuario usuario = manager.find(Usuario.class, dtoUsuario.getIdPersona());
+			DbManager.open();
+			Usuario usuario = DbManager.find(Usuario.class, dtoUsuario.getIdPersona());
 			if (usuario == null) {
 				Usuario user = new Usuario(dtoUsuario);
 				user.getMedalla().setUsuario(user);
 				PerfilUsuario perfil = new PerfilUsuario(user, dtoUsuario);
 				user.setPerfil(perfil);
-				manager.merge(user);
+				DbManager.merge(user);
 				Configuracion configuracionEmail = new Configuracion(true);
 				configuracionEmail.setIdPersona(user.getIdPersona());
-				manager.persist(configuracionEmail);
+				DbManager.persist(configuracionEmail);
 				Configuracion configuracionPush = new Configuracion(false);
 				configuracionPush.setIdPersona(user.getIdPersona());
-				manager.persist(configuracionPush);
+				DbManager.persist(configuracionPush);
 				res = new DTOUsuario(user);
 			} else {
 				res = dtoUsuario;
@@ -110,13 +106,14 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	public boolean subirFoto(DTOMultimedia dtoMultimedia) {
 		boolean res = false;
 		try {
-			PerfilUsuario perfil = manager.find(PerfilUsuario.class, dtoMultimedia.getIdPersona());
+			DbManager.open();
+			PerfilUsuario perfil = DbManager.find(PerfilUsuario.class, dtoMultimedia.getIdPersona());
 			if (perfil != null) {
 				Multimedia multimedia = new Multimedia(dtoMultimedia, perfil);
-				manager.merge(multimedia);
-				Usuario usuario1 = manager.find(Usuario.class, perfil.getIdPersona());
+				DbManager.merge(multimedia);
+				Usuario usuario1 = DbManager.find(Usuario.class, perfil.getIdPersona());
 				DTOUsuario dtoUsuario1 = new DTOUsuario(usuario1);
-				puntoUsuario.getPuntosUsuario("SubirFotoGaleria", dtoUsuario1, manager);
+				puntoUsuario.getPuntosUsuario("SubirFotoGaleria", dtoUsuario1);
 				res = true;
 			}
 		} catch (Exception exception) {
@@ -128,15 +125,16 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	@Override
 	public boolean agregarContacto(String idPersona, String idPersona2) {
 		try{
-			Persona user1 = manager.find(Usuario.class, idPersona);
-			Persona user2 = manager.find(Usuario.class, idPersona2);
+			DbManager.open();
+			Persona user1 = DbManager.find(Usuario.class, idPersona);
+			Persona user2 = DbManager.find(Usuario.class, idPersona2);
 			if (user1 != null && user2 != null) {
 				UsuarioContacto usuarioContacto = new UsuarioContacto();
 				usuarioContacto.setIdPersona(idPersona);
 				usuarioContacto.setContactoIdPersona(idPersona2);
 				usuarioContacto.setFechaContactos(new Date());
 				usuarioContacto.setEstadoContactos(estadosContactos.pendiente);
-				manager.persist(usuarioContacto);
+				DbManager.persist(usuarioContacto);
 				return true;
 			}
 			return false;
@@ -149,11 +147,12 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	public boolean bajaContacto(String idPersona, String idPersona2) {
 		boolean res = false;
 		try {
-			UsuarioContacto usuarioContacto1 = manager.find(UsuarioContacto.class, new UsuarioContactoId(idPersona, idPersona2));
-			UsuarioContacto usuarioContacto2 = manager.find(UsuarioContacto.class, new UsuarioContactoId(idPersona2, idPersona));
+			DbManager.open();
+			UsuarioContacto usuarioContacto1 = DbManager.find(UsuarioContacto.class, idPersona, idPersona2);
+			UsuarioContacto usuarioContacto2 = DbManager.find(UsuarioContacto.class, idPersona2, idPersona);
 			if (usuarioContacto1 != null && usuarioContacto2 != null) {
-				manager.remove(usuarioContacto1);
-				manager.remove(usuarioContacto2);
+				DbManager.remove(usuarioContacto1);
+				DbManager.remove(usuarioContacto2);
 				res = true;
 			}
 		} catch (Exception exception) {
@@ -162,37 +161,38 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 		return res;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean eliminarCuenta(String idPersona) {
 
 		try	{
-			Usuario user = manager.find(Usuario.class,idPersona);
+			DbManager.open();
+			Usuario user = DbManager.find(Usuario.class,idPersona);
 
 			if (user != null) {
 
 				//Medallas
 				Medalla medalla = user.getMedalla();
-				manager.remove(medalla);
+				DbManager.remove(medalla);
 				
 				// Remover configuraciones
-				TypedQuery<Configuracion> queryConfiguraciones = manager.createQuery("SELECT configuracion FROM Configuracion configuracion where configuracion.idPersona = '" + idPersona + "'", Configuracion.class);
-				List<Configuracion> configuraciones =  queryConfiguraciones.getResultList();
+				List<Configuracion> configuraciones = DbManager.createQuery("SELECT configuracion FROM Configuracion configuracion where configuracion.idPersona = '" + idPersona + "'");
 				if (configuraciones.size() > 0) {
 					for (Configuracion configuracion : configuraciones) {
-						manager.remove(configuracion);
+						DbManager.remove(configuracion);
 					}	
 				}
 
 				//Notificaciones
 				List<Notificacion> notificaciones = user.getNotificaciones();
 				for (Notificacion noti : notificaciones) {
-					manager.remove(noti);
+					DbManager.remove(noti);
 				}
 
 				//Ubicaciones
 				List<Ubicacion> ubicaciones = user.getUbicaciones();
 				for (Ubicacion ubic : ubicaciones) {
-					manager.remove(ubic);
+					DbManager.remove(ubic);
 				}
 
 				//Eventos
@@ -201,11 +201,10 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 				if (!eventosCreadosPorUsuario.isEmpty()){
 					for (Evento event : eventosCreadosPorUsuario) {
 
-						TypedQuery<EventoUsuario> query = manager.createQuery("SELECT eventoUsuario FROM EventoUsuario eventoUsuario where eventoUsuario.idEvento = '" + event.getIdEvento() + "'", EventoUsuario.class);
-						List<EventoUsuario> eventosUsuarios = query.getResultList();
+						List<EventoUsuario> eventosUsuarios = DbManager.createQuery("SELECT eventoUsuario FROM EventoUsuario eventoUsuario where eventoUsuario.idEvento = '" + event.getIdEvento() + "'");
 						//Dessasigna a Usuarios que asistiran
 						for (EventoUsuario eventoUsuario : eventosUsuarios) {
-							manager.remove(eventoUsuario);
+							DbManager.remove(eventoUsuario);
 						}
 
 						//Desasigno las publicaciones del evento borrando sus comentarios
@@ -220,18 +219,17 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 
 								pub.getPerfil().getPublicaciones().remove(pub);
 
-								manager.remove(pub);
+								DbManager.remove(pub);
 							}
 						}
-						manager.remove(event);
+						DbManager.remove(event);
 					}
 				}
 
-				TypedQuery<EventoUsuario> query = manager.createQuery("SELECT eventoUsuario FROM EventoUsuario eventoUsuario where eventoUsuario.idPersona = '" + user.getIdPersona() + "'", EventoUsuario.class);
-				List<EventoUsuario> eventosUsuarios = query.getResultList();
+				List<EventoUsuario> eventosUsuarios = DbManager.createQuery("SELECT eventoUsuario FROM EventoUsuario eventoUsuario where eventoUsuario.idPersona = '" + user.getIdPersona() + "'");
 				//Eventos a los que asistira el usuario
 				for (EventoUsuario eventoUsuario : eventosUsuarios) {
-					manager.remove(eventoUsuario);
+					DbManager.remove(eventoUsuario);
 				}
 
 				//Remove Multimedia
@@ -239,7 +237,7 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 				List<Multimedia> galerias = userProfile.getGalerias();
 				if (!galerias.isEmpty()){
 					for (Multimedia multi : galerias){
-						manager.remove(multi);
+						DbManager.remove(multi);
 					}
 				}
 
@@ -254,7 +252,7 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 						String idPublicacion = String.valueOf(publicacion.getIdPublicacion());
 						collection.deleteOne(eq("idPublicacion", new ObjectId(idPublicacion)));
 
-						manager.remove(publicacion);
+						DbManager.remove(publicacion);
 					}
 				}
 
@@ -267,10 +265,10 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 				}
 
 				//Perfil
-				manager.remove(userProfile);
+				DbManager.remove(userProfile);
 
 				//Remueve Usuario
-				manager.remove(user);
+				DbManager.remove(user);
 
 				return true;
 			}
@@ -280,16 +278,17 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 		return false;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean bajaUsuarioAdmin(String idPersona) {
 		boolean res = false;
 		try {
-			Administrador admin = manager.find(Administrador.class, idPersona);
+			DbManager.open();
+			Administrador admin = DbManager.find(Administrador.class, idPersona);
 			if (admin != null) {
-				TypedQuery<Administrador> query = manager.createQuery("SELECT administrador FROM Administrador administrador ", Administrador.class);
-				List<Administrador> administradores =  query.getResultList();
+				List<Administrador> administradores = DbManager.createQuery("SELECT administrador FROM Administrador administrador ");
 				if (administradores.size() > 1) {
-					manager.remove(admin);
+					DbManager.remove(admin);
 					res = true;
 				}
 			}
@@ -302,12 +301,13 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	@Override
 	public DTOAdministrador modificarUsuarioAdmin(DTOAdministrador dtoAdministrador) {
 		try{
-			Administrador admin = manager.find(Administrador.class,dtoAdministrador.getIdPersona());
+			DbManager.open();
+			Administrador admin = DbManager.find(Administrador.class,dtoAdministrador.getIdPersona());
 			admin.setIdPersona(dtoAdministrador.getIdPersona());
 			admin.setEmail(dtoAdministrador.getEmail());
 			admin.setNombre(dtoAdministrador.getNombre());
 			admin.setApellido(dtoAdministrador.getApellido());
-			manager.merge(admin);
+			DbManager.merge(admin);
 			return new DTOAdministrador(admin.getIdPersona(),admin.getEmail(), admin.getNombre(),admin.getApellido());
 		}catch (Exception exception){
 			return null;
@@ -318,12 +318,13 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	public boolean bloquearUsuario(String idPersona) {
 		boolean quedoBloqueado = false;
 		try {
-			Usuario user = manager.find(Usuario.class, idPersona);
+			DbManager.open();
+			Usuario user = DbManager.find(Usuario.class, idPersona);
 			if (user != null) {
 				boolean estaBloqueado = user.getEstaBloqueado();
 				if (!estaBloqueado) {
 					user.setEstaBloqueado(true);
-					manager.persist(user);
+					DbManager.persist(user);
 				}
 				quedoBloqueado = true;
 			}
@@ -337,10 +338,11 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	public boolean desbloquearUsuario(String idPersona) {
 		boolean fueDesbloqueado = false;
 		try{
-			Usuario user = manager.find(Usuario.class, idPersona);
+			DbManager.open();
+			Usuario user = DbManager.find(Usuario.class, idPersona);
 			if (user != null){
 				user.setEstaBloqueado(false);
-				manager.persist(user);
+				DbManager.merge(user);
 				fueDesbloqueado = true;
 			}
 			return fueDesbloqueado;
@@ -350,9 +352,10 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	}
 
 	@Override
-	public DTOUsuarioInicioSesion datosUsuarioInicioSesion(String idPersona){
+	public DTOUsuarioInicioSesion datosUsuarioInicioSesion(String idPersona) {
 
-		Persona persona = manager.find(Persona.class, idPersona);
+		DbManager.open();
+		Persona persona = DbManager.find(Persona.class, idPersona);
 
 		if (persona != null){
 			if (persona instanceof Usuario) {
@@ -373,7 +376,8 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	public DTOUsuarioContacto respuestaContacto(DTOUsuarioContacto dtoUsuarioContacto) {
 		DTOUsuarioContacto dtoUsuarioContactoRes = new DTOUsuarioContacto();
 		try {
-			UsuarioContacto usuarioContacto1 = manager.find(UsuarioContacto.class, new UsuarioContactoId(dtoUsuarioContacto.getIdPersona(), dtoUsuarioContacto.getContactoIdPersona()));
+			DbManager.open();
+			UsuarioContacto usuarioContacto1 = DbManager.find(UsuarioContacto.class, dtoUsuarioContacto.getIdPersona(), dtoUsuarioContacto.getContactoIdPersona());
 			if (usuarioContacto1 != null) {
 				Date dateUpdated = new Date();
 				usuarioContacto1.setEstadoContactos(dtoUsuarioContacto.getEstadoContactos());
@@ -383,12 +387,12 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 				usuarioContacto2.setFechaContactos(dateUpdated);
 				usuarioContacto2.setEstadoContactos(dtoUsuarioContacto.getEstadoContactos());
 				usuarioContacto1.setFechaContactos(dateUpdated);
-				manager.merge(usuarioContacto1);
-				manager.persist(usuarioContacto2);
+				DbManager.merge(usuarioContacto1);
+				DbManager.persist(usuarioContacto2);
 				dtoUsuarioContactoRes = new DTOUsuarioContacto(usuarioContacto1);
-				Usuario usuario1 = manager.find(Usuario.class, usuarioContacto1.getIdPersona());
+				Usuario usuario1 = DbManager.find(Usuario.class, usuarioContacto1.getIdPersona());
 				DTOUsuario dtoUsuario1 = new DTOUsuario(usuario1);
-				puntoUsuario.getPuntosUsuario("AltaContacto", dtoUsuario1, manager);
+				puntoUsuario.getPuntosUsuario("AltaContacto", dtoUsuario1);
 			}
 		} catch (Exception exception) {
 			return dtoUsuarioContactoRes;
@@ -399,8 +403,9 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	@Override
 	public DTOAdministrador altaUsuarioAdmin(DTOAdministrador dtoAdministrador){
 		try{
+			DbManager.open();
 			Administrador admin = new Administrador(dtoAdministrador);
-			manager.persist(admin);
+			DbManager.persist(admin);
 			return new DTOAdministrador(admin.getIdPersona(),admin.getEmail(), admin.getNombre(), admin.getApellido());
 
 		}catch ( Exception exception){
@@ -412,7 +417,8 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	public DTOUsuarioPerfil getPerfil(String idPersona) {
 		DTOUsuarioPerfil dtoUsuarioPerfil = new DTOUsuarioPerfil();
 		try {
-			Usuario usuario = manager.find(Usuario.class, idPersona);
+			DbManager.open();
+			Usuario usuario = DbManager.find(Usuario.class, idPersona);
 			if (usuario != null) {
 				dtoUsuarioPerfil = new DTOUsuarioPerfil(usuario);
 			}
