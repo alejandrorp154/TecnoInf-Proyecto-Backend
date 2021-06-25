@@ -88,10 +88,10 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 			if (perfil != null)
 			{
 				dtoPerfil = new DTOPerfilUsuario(perfil);
-				for (DTOPublicacion dtoPublicacion : dtoPerfil.getPublicaciones()) {
-					dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
-					dtoPublicacion.setCantidadComentarios(getCantidadComentarios(dtoPublicacion.getIdPublicacion()));
-				}
+				//for (DTOPublicacion dtoPublicacion : dtoPerfil.getPublicaciones()) {
+					//dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
+					//dtoPublicacion.setCantidadComentarios(getCantidadComentarios(dtoPublicacion.getIdPublicacion()));
+				//}
 			}
 		}
 		return dtoPerfil;

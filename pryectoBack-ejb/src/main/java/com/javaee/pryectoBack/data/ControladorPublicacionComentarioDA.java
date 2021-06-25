@@ -59,8 +59,8 @@ public class ControladorPublicacionComentarioDA
 					for (Publicacion publicacion : perfil.getPublicaciones()) {
 						if (!publicacion.getTipo().getTipo().equals(tipos.mapa)) {
 							DTOPublicacionPerfilUsuario dtoPublicacion = new DTOPublicacionPerfilUsuario(publicacion, usuario);
-							dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
-							dtoPublicacion.setCantidadComentarios(getCantidadComentarios(dtoPublicacion.getIdPublicacion()));
+							//dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
+							//dtoPublicacion.setCantidadComentarios(getCantidadComentarios(dtoPublicacion.getIdPublicacion()));
 							res.add(dtoPublicacion);
 						}
 					}
@@ -72,8 +72,8 @@ public class ControladorPublicacionComentarioDA
 				for (Publicacion publicacion : perfilUsuarioLogueado.getPublicaciones()) {
 					if (!publicacion.getTipo().getTipo().equals(tipos.mapa)) {
 						DTOPublicacionPerfilUsuario dtoPublicacion = new DTOPublicacionPerfilUsuario(publicacion, usuarioLogueado);
-						dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
-						dtoPublicacion.setCantidadComentarios(getCantidadComentarios(dtoPublicacion.getIdPublicacion()));
+						//dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
+						//dtoPublicacion.setCantidadComentarios(getCantidadComentarios(dtoPublicacion.getIdPublicacion()));
 						res.add(dtoPublicacion);
 					}
 				}

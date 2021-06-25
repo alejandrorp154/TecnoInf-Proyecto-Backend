@@ -52,6 +52,9 @@ public class DTOPublicacion implements Serializable
 		this.idPersona = publicacion.getPerfil().getUsuario().getIdPersona();
 		this.extension = publicacion.getExtension();
 		this.nombre = publicacion.getNombre();
+		this.cantidadLikes = 0;
+		this.cantidadDislikes = 0;
+		this.cantidadComentarios = 0;
 	}
 
 	public int getIdPublicacion() {

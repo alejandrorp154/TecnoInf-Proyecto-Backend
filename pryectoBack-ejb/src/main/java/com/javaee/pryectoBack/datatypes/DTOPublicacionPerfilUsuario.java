@@ -46,6 +46,9 @@ public class DTOPublicacionPerfilUsuario implements Serializable
 		this.imagenPerfil = usuario.getPerfil().getImagenPerfil();
 		this.extensionImagenPerfil = usuario.getPerfil().getExtension();
 		this.nombreImagenPerfil = usuario.getPerfil().getNombreImagen();
+		this.cantidadComentarios = 0;
+		this.cantidadDislikes = 0;
+		this.cantidadLikes = 0;
 	}
 
 	public int getIdPublicacion() {
