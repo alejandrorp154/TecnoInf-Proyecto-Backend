@@ -3,18 +3,13 @@ package com.javaee.pryectoBack.data;
 import java.util.List;
 
 import javax.ejb.Singleton;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 
 import com.javaee.pryectoBack.datatypes.DTOConfiguracion;
 import com.javaee.pryectoBack.model.Configuracion;
+import com.javaee.pryectoBack.util.DbManager;
 
 @Singleton
 public class ControladorConfigSistemaDA implements ControladorConfigSistemaDALocal, ControladorConfigSistemaDARemote {
-
-	@PersistenceContext(unitName = "primary")
-	private EntityManager manager;
 
 	public ControladorConfigSistemaDA()
 	{
@@ -24,7 +19,8 @@ public class ControladorConfigSistemaDA implements ControladorConfigSistemaDALoc
 	public DTOConfiguracion configurarNotificaciones(DTOConfiguracion dtoConfiguracion) {
 		DTOConfiguracion res = new DTOConfiguracion();
 		try {
-			Configuracion configuracion = manager.find(Configuracion.class, dtoConfiguracion.getIdConfiguracion());
+			DbManager.open();
+			Configuracion configuracion = DbManager.find(Configuracion.class, dtoConfiguracion.getIdConfiguracion());
 			if (configuracion != null) {
 				configuracion.setAltaContacto(dtoConfiguracion.isAltaContacto());
 				configuracion.setAltaEvento(dtoConfiguracion.isAltaEvento());
@@ -39,7 +35,7 @@ public class ControladorConfigSistemaDA implements ControladorConfigSistemaDALoc
 				configuracion.setChatUsuario(dtoConfiguracion.isChatUsuario());
 				configuracion.setBajaEvento(dtoConfiguracion.isBajaEvento());
 				configuracion.setModificacionEvento(dtoConfiguracion.isModificacionEvento());
-				manager.merge(configuracion);
+				DbManager.merge(configuracion);
 				res = dtoConfiguracion;
 			}
 		} catch (Exception exception) {
@@ -48,12 +44,13 @@ public class ControladorConfigSistemaDA implements ControladorConfigSistemaDALoc
 		return res;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public DTOConfiguracion getByIdPersona(String idPersona, boolean isEmailNotification) {
 		DTOConfiguracion res = new DTOConfiguracion();
 		try {
-			TypedQuery<Configuracion> query = manager.createQuery("SELECT configuracion FROM Configuracion configuracion where configuracion.idPersona = '" + idPersona + "'", Configuracion.class);
-			List<Configuracion> configuraciones =  query.getResultList();
+			DbManager.open();
+			List<Configuracion> configuraciones = DbManager.createQuery("SELECT configuracion FROM Configuracion configuracion where configuracion.idPersona = '" + idPersona + "'");
 			if (configuraciones.size() > 0) {
 				for (Configuracion configuracion : configuraciones) {
 					if (isEmailNotification == configuracion.isEmailNotification()) {
