@@ -1,5 +1,7 @@
 package com.javaee.pryectoBack.model;
 
+import com.javaee.pryectoBack.datatypes.DTOInteres;
+import com.javaee.pryectoBack.datatypes.DTOPerfilUsuario;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,7 +31,19 @@ public class InteresTest {
 
     @Test
     public void interesDefault(){
+        Interes inter = new Interes();
+        Assert.assertNotNull(inter);
+    }
 
+    @Test
+    public void interesParams(){
+        DTOInteres dtoInteres = new DTOInteres();
+        dtoInteres.setIdInteres(1);
+        dtoInteres.setInteres("Milanesa");
+        List<DTOPerfilUsuario> perfilUsuarios = new ArrayList<>();
+        dtoInteres.setPerfiles(perfilUsuarios);
+        Interes inter = new Interes(dtoInteres);
+        Assert.assertNotNull(inter);
     }
 
     @Test
