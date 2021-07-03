@@ -3,7 +3,10 @@ package com.javaee.pryectoBack.data;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ejb.Singleton;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -20,7 +23,6 @@ import com.javaee.pryectoBack.model.UsuarioContacto;
 import com.javaee.pryectoBack.model.estadosContactos;
 import com.javaee.pryectoBack.model.reacciones;
 import com.javaee.pryectoBack.model.tipos;
-import com.javaee.pryectoBack.util.DbManager;
 import com.javaee.pryectoBack.util.MongoDBConnector;
 import com.javaee.pryectoBack.util.PuntosUsuario;
 
@@ -31,27 +33,29 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Updates;
 
-@Singleton
+@Stateless
 public class ControladorPublicacionComentarioDA
 		implements ControladorPublicacionComentarioDALocal, ControladorPublicacionComentarioDARemote {
 
+	@PersistenceContext(unitName = "primary")
+	private EntityManager manager;
+	
 	private PuntosUsuario puntoUsuario;
 
 	public ControladorPublicacionComentarioDA() {
 		puntoUsuario = new PuntosUsuario();
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<DTOPublicacionPerfilUsuario> obtenerPublicaciones(String idPersona, int offset, int size) {
 		List<DTOPublicacionPerfilUsuario> res = new ArrayList<>();
 		try {
-			DbManager.open();
-			List<UsuarioContacto> usuariosContactos = DbManager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.idPersona = '" + idPersona + "' and usuariocontacto.estadoContactos = '" + estadosContactos.aceptada + "' order by usuariocontacto.fechaContactos");
+			TypedQuery<UsuarioContacto> query = manager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.idPersona = '" + idPersona + "' and usuariocontacto.estadoContactos = '" + estadosContactos.aceptada + "' order by usuariocontacto.fechaContactos", UsuarioContacto.class);
+			List<UsuarioContacto> usuariosContactos = query.getResultList();
 			for(UsuarioContacto usuarioContacto : usuariosContactos) {
-				PerfilUsuario perfil = DbManager.find(PerfilUsuario.class, usuarioContacto.getContactoIdPersona());
+				PerfilUsuario perfil = manager.find(PerfilUsuario.class, usuarioContacto.getContactoIdPersona());
 				if (perfil != null) {
-					Usuario usuario = DbManager.find(Usuario.class, perfil.getIdPersona());
+					Usuario usuario = manager.find(Usuario.class, perfil.getIdPersona());
 					for (Publicacion publicacion : perfil.getPublicaciones()) {
 						if (!publicacion.getTipo().getTipo().equals(tipos.mapa)) {
 							DTOPublicacionPerfilUsuario dtoPublicacion = new DTOPublicacionPerfilUsuario(publicacion, usuario);
@@ -60,9 +64,9 @@ public class ControladorPublicacionComentarioDA
 					}
 				}
 			}
-			PerfilUsuario perfilUsuarioLogueado = DbManager.find(PerfilUsuario.class, idPersona);
+			PerfilUsuario perfilUsuarioLogueado = manager.find(PerfilUsuario.class, idPersona);
 			if (perfilUsuarioLogueado != null) {
-				Usuario usuarioLogueado = DbManager.find(Usuario.class, perfilUsuarioLogueado.getIdPersona());
+				Usuario usuarioLogueado = manager.find(Usuario.class, perfilUsuarioLogueado.getIdPersona());
 				for (Publicacion publicacion : perfilUsuarioLogueado.getPublicaciones()) {
 					if (!publicacion.getTipo().getTipo().equals(tipos.mapa)) {
 						DTOPublicacionPerfilUsuario dtoPublicacion = new DTOPublicacionPerfilUsuario(publicacion, usuarioLogueado);
@@ -96,11 +100,10 @@ public class ControladorPublicacionComentarioDA
 	public DTOPublicacionPerfilUsuario obtenerPublicacion(int idPublicacion) {
 		DTOPublicacionPerfilUsuario dtoPublicacion = new DTOPublicacionPerfilUsuario();
 		try {
-			DbManager.open();
-			Publicacion publicacion = DbManager.find(Publicacion.class, idPublicacion);
+			Publicacion publicacion = manager.find(Publicacion.class, idPublicacion);
 			if (publicacion != null) {
 				List<DTOComentario> dtoComentarios = getComentarios(publicacion.getIdPublicacion());
-				Usuario usuario = DbManager.find(Usuario.class, publicacion.getPerfil().getIdPersona());
+				Usuario usuario = manager.find(Usuario.class, publicacion.getPerfil().getIdPersona());
 				dtoPublicacion = new DTOPublicacionPerfilUsuario(publicacion, usuario);
 				dtoPublicacion.setComentarioReacciones(dtoComentarios);
 				dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
@@ -114,31 +117,29 @@ public class ControladorPublicacionComentarioDA
 
 	@Override
 	public boolean modificarPublicacion(DTOPublicacion dtoPublicacion) {
-		DbManager.open();
-		Publicacion publicacion = DbManager.find(Publicacion.class, dtoPublicacion.getIdPublicacion());
+		Publicacion publicacion = manager.find(Publicacion.class, dtoPublicacion.getIdPublicacion());
 		if (publicacion != null) {
 			publicacion.setContenido(dtoPublicacion.getContenido());
 			publicacion.setExtension(dtoPublicacion.getExtension());
 			publicacion.setFecha(dtoPublicacion.getFecha());
 			publicacion.setNombre(dtoPublicacion.getNombre());
-			DbManager.merge(publicacion);
+			manager.merge(publicacion);
 		}
 		return true;
 	}
 
 	@Override
 	public boolean bajaPublicacion(int idPublicacion) {
-		DbManager.open();
-		Publicacion publicacion = DbManager.find(Publicacion.class, idPublicacion);
+		Publicacion publicacion = manager.find(Publicacion.class, idPublicacion);
 		if (publicacion != null) {
 			MongoDBConnector mongoConnector = new MongoDBConnector();
 			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosPublicacion");
 			collection.deleteMany(eq("idPublicacion", idPublicacion));
 			collection = mongoConnector.getCollection("ReaccionesPublicacion");
 			collection.deleteMany(eq("idPublicacion", idPublicacion));
-			Tipo tipo = DbManager.find(Tipo.class, publicacion.getIdPublicacion());
-			DbManager.remove(publicacion);
-			DbManager.remove(tipo);
+			Tipo tipo = manager.find(Tipo.class, publicacion.getIdPublicacion());
+			manager.remove(publicacion);
+			manager.remove(tipo);
 		}
 		return true;
 	}
@@ -157,7 +158,7 @@ public class ControladorPublicacionComentarioDA
 				collection.insertOne(reaccionPublicacion);
 				DTOUsuario dtoUsuario = new DTOUsuario();
 				dtoUsuario.setIdPersona(dtoReaccion.getIdPersona());
-				puntoUsuario.getPuntosUsuario("ReaccionarPublicacion", dtoUsuario);
+				puntoUsuario.getPuntosUsuario("ReaccionarPublicacion", dtoUsuario, manager);
 			}
 			return true;
 		} catch (Exception exception) {
@@ -179,7 +180,7 @@ public class ControladorPublicacionComentarioDA
 				collection.insertOne(reaccionComentario);
 				DTOUsuario dtoUsuario = new DTOUsuario();
 				dtoUsuario.setIdPersona(dtoReaccion.getIdPersona());
-				puntoUsuario.getPuntosUsuario("ReaccionarComentario", dtoUsuario);
+				puntoUsuario.getPuntosUsuario("ReaccionarComentario", dtoUsuario, manager);
 			}
 			return true;
 		} catch (Exception exception) {
@@ -190,20 +191,19 @@ public class ControladorPublicacionComentarioDA
 	@Override
 	public DTOPublicacion altaPublicacion(DTOPublicacion dtoPublicacion) {
 		try {
-			DbManager.open();
 			DTOPublicacion dtoPubli = new DTOPublicacion();
 			Publicacion publicacion = new Publicacion(dtoPublicacion);
-			Usuario usuario = DbManager.find(Usuario.class, dtoPublicacion.getPerfil().getUsuario().getIdPersona());
+			Usuario usuario = manager.find(Usuario.class, dtoPublicacion.getPerfil().getUsuario().getIdPersona());
 			if (usuario != null) {
 				publicacion.getPerfil().setUsuario(usuario);
-				DbManager.persist(publicacion);
+				manager.persist(publicacion);
 				Tipo tipo = new Tipo();
 				tipo.setTipo(publicacion.getTipo().getTipo());
 				tipo.setIdPublicacion(publicacion.getIdPublicacion());
 				publicacion.setTipo(tipo);
-				DbManager.merge(tipo);
+				manager.merge(tipo);
 				DTOUsuario dtoUsuario = new DTOUsuario(usuario);
-				puntoUsuario.getPuntosUsuario("AltaPublicacion", dtoUsuario);
+				puntoUsuario.getPuntosUsuario("AltaPublicacion", dtoUsuario, manager);
 				dtoPubli = new DTOPublicacion(publicacion);
 			}
 			return dtoPubli;
@@ -235,7 +235,7 @@ public class ControladorPublicacionComentarioDA
 			dtoComentario.setIdComentario(String.valueOf(comentario.getObjectId("_id")));
 			DTOUsuario dtoUsuario = new DTOUsuario();
 			dtoUsuario.setIdPersona(dtoComentario.getIdPersona());
-			puntoUsuario.getPuntosUsuario("ComentarPublicacion", dtoUsuario);
+			puntoUsuario.getPuntosUsuario("ComentarPublicacion", dtoUsuario, manager);
 			return dtoComentario;
 		} catch (Exception exception) {
 			System.out.println(exception.getMessage());

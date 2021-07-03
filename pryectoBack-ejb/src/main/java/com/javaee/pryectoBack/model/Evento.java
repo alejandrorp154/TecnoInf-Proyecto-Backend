@@ -28,7 +28,7 @@ public class Evento implements Serializable {
 
 	private String nombre;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne
     @JoinColumn(name = "idUbicacion")
 	private Ubicacion ubicacion;
 	private String nombreImagen;
