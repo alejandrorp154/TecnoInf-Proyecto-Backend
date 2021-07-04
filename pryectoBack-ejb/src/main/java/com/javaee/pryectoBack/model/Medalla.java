@@ -2,6 +2,7 @@ package com.javaee.pryectoBack.model;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,7 +23,7 @@ public class Medalla implements Serializable
 	private String logros;
 	private rangos rango;
 
-	@OneToOne
+	@OneToOne(cascade =CascadeType.ALL)
     @JoinColumn(name = "idPersona")
 	private Usuario usuario;
 	
