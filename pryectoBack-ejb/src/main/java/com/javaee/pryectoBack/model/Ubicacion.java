@@ -29,7 +29,7 @@ public class Ubicacion implements Serializable
 	@ManyToOne
 	private Usuario usuario;
 	
-	@OneToOne(mappedBy = "ubicacion", fetch = FetchType.LAZY, optional = false)
+	@OneToOne(mappedBy = "ubicacion", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
 	private Evento evento;
 
 	public Ubicacion() {
