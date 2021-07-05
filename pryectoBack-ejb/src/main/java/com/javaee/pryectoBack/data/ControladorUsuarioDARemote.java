@@ -25,4 +25,5 @@ public interface ControladorUsuarioDARemote {
 	DTOUsuarioContacto respuestaContacto(DTOUsuarioContacto dtoUsuarioContacto);
 	DTOAdministrador altaUsuarioAdmin(DTOAdministrador dtoAdministrador);
 	DTOUsuarioPerfil getPerfil(String idPersona);
+	boolean sonAmigos(String idPersona, String idPersona2);
 }
