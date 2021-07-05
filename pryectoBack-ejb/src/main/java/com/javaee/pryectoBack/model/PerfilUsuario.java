@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -22,7 +23,7 @@ public class PerfilUsuario implements Serializable
 	
 	@Id
 	private String idPersona;
-	@OneToOne
+	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "idPersona")
 	private Usuario usuario;
 

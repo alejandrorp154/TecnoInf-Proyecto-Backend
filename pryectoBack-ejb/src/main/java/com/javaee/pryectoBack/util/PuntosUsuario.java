@@ -3,6 +3,8 @@ package com.javaee.pryectoBack.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.model.Medalla;
 import com.javaee.pryectoBack.model.Persona;
@@ -18,22 +20,21 @@ public class PuntosUsuario
 		this.initMap();
 	}
 
-	public int getPuntosUsuario(String accion, DTOUsuario dtoUsuario)
+	public int getPuntosUsuario(String accion, DTOUsuario dtoUsuario, EntityManager manager)
 	{
 		if (map == null)
 		{
 			this.initMap();
 		}
 		int puntos = map.get(accion) != null ? map.get(accion) : 0;
-		this.updatePuntosUsuario(dtoUsuario, puntos);
+		this.updatePuntosUsuario(dtoUsuario, puntos, manager);
 		return puntos;
 	}
 	
-	private void updatePuntosUsuario(DTOUsuario dtoUsuario, int puntos) {
+	private void updatePuntosUsuario(DTOUsuario dtoUsuario, int puntos, EntityManager manager) {
 		try {
-			DbManager.open();
 			String idPersona = dtoUsuario.getIdPersona();
-			Persona persona = DbManager.find(Usuario.class, idPersona);
+			Persona persona = manager.find(Usuario.class, idPersona);
 			if (persona != null) {
 				Usuario usuario = (Usuario)persona;
 				if (usuario.getMedalla() == null) {
@@ -52,7 +53,7 @@ public class PuntosUsuario
 											rangos.alfaWolf;
 				usuario.getMedalla().setCantidadPuntos(cantidadPuntos);
 				usuario.getMedalla().setRango(rango);
-				DbManager.merge(usuario);
+				manager.merge(usuario);
 			}
 		} catch(Exception exception) {
 			System.out.println(exception.getMessage());

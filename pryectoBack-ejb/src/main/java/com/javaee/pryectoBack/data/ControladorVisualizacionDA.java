@@ -5,7 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.ejb.Singleton;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import com.javaee.pryectoBack.datatypes.DTOEstadistica;
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
@@ -20,11 +24,13 @@ import com.javaee.pryectoBack.model.Ubicacion;
 import com.javaee.pryectoBack.model.Usuario;
 import com.javaee.pryectoBack.model.UsuarioContacto;
 import com.javaee.pryectoBack.model.estadosContactos;
-import com.javaee.pryectoBack.util.DbManager;
 
-@Singleton
+@Stateless
 public class ControladorVisualizacionDA implements ControladorVisualizacionDALocal, ControladorVisualizacionDARemote {
 
+	@PersistenceContext(unitName = "primary")
+	private EntityManager manager;
+	
 	public ControladorVisualizacionDA()
 	{
 	}
@@ -33,8 +39,7 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 	public List<DTOMultimedia> obtenerGaleriaFoto(String idPersona, int offset, int size) {
 		List<DTOMultimedia> dtosMultimedia = new ArrayList<>();
 		try {
-			DbManager.open();
-			PerfilUsuario perfil = DbManager.find(PerfilUsuario.class, idPersona);
+			PerfilUsuario perfil = manager.find(PerfilUsuario.class, idPersona);
 			List<Multimedia> multimedias = perfil.getGalerias();
 			for(Multimedia multimedia : multimedias) {
 				DTOMultimedia dtoMultimedia = new DTOMultimedia(multimedia);
@@ -65,10 +70,9 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 	@Override
 	public DTOPerfilUsuario visualizarPerfil(String idPersona) {
 		DTOPerfilUsuario dtoPerfil = new DTOPerfilUsuario();
-		DbManager.open();
-		Persona usuario = DbManager.find(Usuario.class, idPersona);
+		Persona usuario = manager.find(Usuario.class, idPersona);
 		if (usuario != null) {
-			PerfilUsuario perfil = DbManager.find(PerfilUsuario.class, idPersona);
+			PerfilUsuario perfil = manager.find(PerfilUsuario.class, idPersona);
 			if (perfil != null)
 			{
 				dtoPerfil = new DTOPerfilUsuario(perfil);
@@ -122,16 +126,15 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 		}
 		return res;
 	}
-	
-	@SuppressWarnings("unchecked")
+
 	@Override
 	public List<DTOUsuario> obtenerAmigos(String idPersona, int offset, int size) {
 		List<DTOUsuario> dtoUsuarios = new ArrayList<DTOUsuario>();
 		try {
-			DbManager.open();
-			List<UsuarioContacto> usuariosContactos = DbManager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.idPersona = '" + idPersona + "' and usuariocontacto.estadoContactos = '" + estadosContactos.aceptada + "' order by usuariocontacto.fechaContactos", offset, size);
+			TypedQuery<UsuarioContacto> query = manager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.idPersona = '" + idPersona + "' and usuariocontacto.estadoContactos = '" + estadosContactos.aceptada + "' order by usuariocontacto.fechaContactos", UsuarioContacto.class);
+			List<UsuarioContacto> usuariosContactos = query.setFirstResult(offset).setMaxResults(size).getResultList();
 			for(UsuarioContacto usuarioContacto : usuariosContactos) {
-				Usuario usuario = DbManager.find(Usuario.class, usuarioContacto.getContactoIdPersona());
+				Usuario usuario = manager.find(Usuario.class, usuarioContacto.getContactoIdPersona());
 				DTOUsuario dtoUsuario = new DTOUsuario(usuario);
 				dtoUsuarios.add(dtoUsuario);
 			}
@@ -141,13 +144,12 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 		return dtoUsuarios;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<DTOUsuario> obtenerUsuarios(int offset, int size) {
 		List<DTOUsuario> dtoUsuarios = new ArrayList<DTOUsuario>();
 		try {
-			DbManager.open();
-			List<Usuario> usuarios = DbManager.createQuery("SELECT usuario FROM Usuario usuario order by usuario.idPersona", offset, size);
+			TypedQuery<Usuario> query = manager.createQuery("SELECT usuario FROM Usuario usuario order by usuario.idPersona", Usuario.class);
+			List<Usuario> usuarios = query.setFirstResult(offset).setMaxResults(size).getResultList();
 			for(Usuario usuario : usuarios) {
 				DTOUsuario dtoUsuario = new DTOUsuario(usuario);
 				dtoUsuarios.add(dtoUsuario);
@@ -162,8 +164,7 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 	public DTOUsuarioMedalla visualizarProgreso(String idPersona) {
 		DTOUsuarioMedalla res = new DTOUsuarioMedalla();
 		try {
-			DbManager.open();
-			Usuario usuario = DbManager.find(Usuario.class, idPersona);
+			Usuario usuario = manager.find(Usuario.class, idPersona);
 			if (usuario != null) {
 				res = new DTOUsuarioMedalla(usuario);
 			}
@@ -173,25 +174,26 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 		return res;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<DTOUsuario> buscarAmigosSegunUbicacion(List<DTOUsuario> dtoUsuarios, String idPersona) {
 		List<DTOUsuario> res = new ArrayList<DTOUsuario>();
 		try {
-			DbManager.open();
+			TypedQuery<Ubicacion> query = manager.createQuery("SELECT ubicacion FROM Ubicacion ubicacion where usuario_idpersona = :idPersona", Ubicacion.class);
 			// Obtengo todas las ubicaciones del usuario logeuado
-			List<Ubicacion> ubicacionesUsuarioLogueado = DbManager.createQuery("SELECT ubicacion FROM Ubicacion ubicacion where usuario_idpersona = :idPersona", "idPersona", idPersona);
+			List<Ubicacion> ubicacionesUsuarioLogueado = query.setParameter("idPersona", idPersona).getResultList();
+			TypedQuery<Ubicacion> query2 = manager.createQuery("SELECT ubicacion FROM Ubicacion ubicacion where usuario_idpersona != :idPersona", Ubicacion.class);
 			// Obtengo todas las ubicaciones de todos los usuarios menos el usuario logeuado
-			List<Ubicacion> ubicacionesUsuarioMenosLogueado = DbManager.createQuery("SELECT ubicacion FROM Ubicacion ubicacion where usuario_idpersona != :idPersona", "idPersona", idPersona);
+			List<Ubicacion> ubicacionesUsuarioMenosLogueado = query2.setParameter("idPersona", idPersona).getResultList();
+			TypedQuery<UsuarioContacto> query3 = manager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.idPersona = :idPersona", UsuarioContacto.class);
 			// Obtengo todos los amigos del usuario logueado para luego verificar que las posibleas sugerencias no sea un amigo
-			List<UsuarioContacto> usuariosContactosTotal = DbManager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.idPersona = :idPersona", "idPersona", idPersona);
+			List<UsuarioContacto> usuariosContactosTotal = query3.setParameter("idPersona", idPersona).getResultList();
 			for (Ubicacion ubicacionUsuLoegueado : ubicacionesUsuarioLogueado) {
 				for (Ubicacion ubicacionUsuarioMenosLogueado : ubicacionesUsuarioMenosLogueado) {
 					if (ubicacionUsuLoegueado.getDistancia(ubicacionUsuLoegueado, ubicacionUsuarioMenosLogueado) < 100) {
 						if (!usuariosContactosTotal.stream().anyMatch(o -> o.getContactoIdPersona().equals(ubicacionUsuarioMenosLogueado.getUsuario().getIdPersona()))) {
 							// verifico que la sugerencia de amigo de se encuentra ya en la lista de sugerencia de amigos
 							if (!dtoUsuarios.stream().anyMatch(o -> o.getIdPersona().equals(ubicacionUsuarioMenosLogueado.getUsuario().getIdPersona()))) {
-								Usuario usuarioSugerencia = DbManager.find(Usuario.class, ubicacionUsuarioMenosLogueado.getUsuario().getIdPersona());
+								Usuario usuarioSugerencia = manager.find(Usuario.class, ubicacionUsuarioMenosLogueado.getUsuario().getIdPersona());
 								DTOUsuario dtoSugerencia = new DTOUsuario(usuarioSugerencia);
 								res.add(dtoSugerencia);
 							}
@@ -206,18 +208,19 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 		return res;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<DTOUsuario> buscarAmigosDeAmigos(String idPersona) {
 		List<DTOUsuario> res = new ArrayList<DTOUsuario>();
 		try {
-			DbManager.open();
+			TypedQuery<UsuarioContacto> query = manager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.idPersona = :idPersona order by usuariocontacto.fechaContactos desc", UsuarioContacto.class);
 			// Obtengo los ultimos 5 amigos del usuario logueado
-			List<UsuarioContacto> usuariosContactos = DbManager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.idPersona = :idPersona order by usuariocontacto.fechaContactos desc", "idPersona", idPersona, 5);
-			// Obtengo todos los amigos del usuario logueado para luego verificar que las posibleas sugerencias no sea un amigo 
-			List<UsuarioContacto> usuariosContactosTotal = DbManager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.idPersona = :idPersona", "idPersona", idPersona);
+			List<UsuarioContacto> usuariosContactos = query.setParameter("idPersona", idPersona).setMaxResults(5).getResultList();
+			TypedQuery<UsuarioContacto> query2 = manager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.idPersona = :idPersona", UsuarioContacto.class);
+			// Obtengo todos los amigos del usuario logueado para luego verificar que las posibleas sugerencias no sea un amigo
+			List<UsuarioContacto> usuariosContactosTotal = query2.setParameter("idPersona", idPersona).getResultList();
 			for (UsuarioContacto usuContacto : usuariosContactos) {
-				List<UsuarioContacto> usuariosContactosDeAmigo = DbManager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.idPersona = :idPersona order by usuariocontacto.fechaContactos desc", "idPersona", usuContacto.getContactoIdPersona());
+				TypedQuery<UsuarioContacto> queryAmigoDeAmigo = manager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.idPersona = :idPersona order by usuariocontacto.fechaContactos desc", UsuarioContacto.class);
+				List<UsuarioContacto> usuariosContactosDeAmigo = queryAmigoDeAmigo.setParameter("idPersona", usuContacto.getContactoIdPersona()).getResultList();
 				int count = 0;
 				// recorro la lista de amigos de un amigo de un usuario logueado
 				for (UsuarioContacto usuContactoDeAmigo : usuariosContactosDeAmigo) {
@@ -234,7 +237,7 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 						}
 					}
 					if (!encontro) {
-						Usuario usuarioSugerencia = DbManager.find(Usuario.class, usuContactoDeAmigo.getContactoIdPersona());
+						Usuario usuarioSugerencia = manager.find(Usuario.class, usuContactoDeAmigo.getContactoIdPersona());
 						DTOUsuario dtoUsuario = new DTOUsuario(usuarioSugerencia);
 						if (!res.stream().anyMatch(o -> o.getIdPersona().equals(dtoUsuario.getIdPersona()))) {
 							res.add(dtoUsuario);
@@ -252,24 +255,24 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 		return res;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<DTOUsuario> buscarAmigosSegunIntereses(List<DTOUsuario> dtoUsuarios, String idPersona) {
 		List<DTOUsuario> res = new ArrayList<DTOUsuario>();
 		try {
-			DbManager.open();
-			List<Interes> intereses = DbManager.createQuery("SELECT interes FROM Interes interes");
+			TypedQuery<Interes> query = manager.createQuery("SELECT interes FROM Interes interes", Interes.class);
+			List<Interes> intereses = query.getResultList();
 			for (Interes interes : intereses) {
 				List<PerfilUsuario> perfiles = interes.getPerfiles();
 				// si entra en el if, tengo una lista de todos los perfiles de usuarios que tienen el mismo interes que el usuario logueado
 				if (perfiles.stream().anyMatch(o -> o.getIdPersona().equals(idPersona))) {
+					TypedQuery<UsuarioContacto> query2 = manager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.idPersona = :idPersona", UsuarioContacto.class);
 					// Obtengo todos los amigos del usuario logueado para luego verificar que las posibleas sugerencias no sea un amigo
-					List<UsuarioContacto> usuariosContactosTotal = DbManager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.idPersona = :idPersona", "idPersona", idPersona);
+					List<UsuarioContacto> usuariosContactosTotal = query2.setParameter("idPersona", idPersona).getResultList();
 					for (PerfilUsuario perfil : perfiles) {
 						if (!usuariosContactosTotal.stream().anyMatch(o -> o.getContactoIdPersona().equals(perfil.getIdPersona())) && !perfil.getIdPersona().equals(idPersona)) {
 							// verifico que la sugerencia de amigo de se encuentra ya en la lista de sugerencia de amigos
 							if (!dtoUsuarios.stream().anyMatch(o -> o.getIdPersona().equals(perfil.getIdPersona()))) {
-								Usuario usuarioSugerencia = DbManager.find(Usuario.class, perfil.getIdPersona());
+								Usuario usuarioSugerencia = manager.find(Usuario.class, perfil.getIdPersona());
 								DTOUsuario dtoSugerencia = new DTOUsuario(usuarioSugerencia);
 								res.add(dtoSugerencia);
 							}
@@ -283,18 +286,18 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 		return res;
 	}
 
-	@SuppressWarnings("unchecked")
 	private List<DTOUsuario> buscarAmigosSegunPais(List<DTOUsuario> dtoUsuarios, String idPersona) {
 		List<DTOUsuario> res = new ArrayList<DTOUsuario>();
 		try {
-			DbManager.open();
-			Usuario usuarioLogueado = DbManager.find(Usuario.class, idPersona);
+			Usuario usuarioLogueado = manager.find(Usuario.class, idPersona);
 			if (usuarioLogueado != null && usuarioLogueado.getPais() != null) {
 				// Obtengo todos los usuarios del mismo pais que el usuario logueado
-				List<Usuario> usuarios = DbManager.createQuery("SELECT usuario FROM Usuario usuario where usuario.pais = '" + usuarioLogueado.getPais() + "'");
+				TypedQuery<Usuario> query = manager.createQuery("SELECT usuario FROM Usuario usuario where usuario.pais = '" + usuarioLogueado.getPais() + "'", Usuario.class);
+				List<Usuario> usuarios = query.getResultList();
 				for (Usuario usuario : usuarios) {
+					TypedQuery<UsuarioContacto> query2 = manager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.idPersona = :idPersona", UsuarioContacto.class);
 					// Obtengo todos los amigos del usuario logueado para luego verificar que las posibleas sugerencias no sea un amigo
-					List<UsuarioContacto> usuariosContactosTotal = DbManager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.idPersona = :idPersona", "idPersona", idPersona);
+					List<UsuarioContacto> usuariosContactosTotal = query2.setParameter("idPersona", idPersona).getResultList();
 					if (!usuariosContactosTotal.stream().anyMatch(o -> o.getContactoIdPersona().equals(usuario.getIdPersona())) && !usuario.getIdPersona().equals(idPersona)) {
 						// verifico que la sugerencia de amigo de se encuentra ya en la lista de sugerencia de amigos
 						if (!dtoUsuarios.stream().anyMatch(o -> o.getIdPersona().equals(usuario.getIdPersona()))) {
@@ -309,22 +312,23 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 		}
 		return res;
 	}
-	
-	@SuppressWarnings("unchecked")
+
 	public List<DTOEstadistica> seleccionarTipoEstadistica(String tipoEstadistica) {
-		DbManager.open();
 		List<Usuario> usuarios = null;
+		TypedQuery<Usuario> userQuery = null;
 		List<DTOEstadistica> estadisticas = new ArrayList<DTOEstadistica>();
 		DTOEstadistica estadistica = null;
 		switch (tipoEstadistica) {
 		case "CantidadUsuariosTotal":
-			Long count = DbManager.createQueryCount("SELECT Count(*) FROM Persona WHERE establoqueado = false");
+			Query query = manager.createQuery("SELECT Count(*) FROM Persona WHERE establoqueado = false");
+			Long count = (Long) query.getSingleResult();
 			estadistica = new DTOEstadistica();
 			estadistica.setCantidadUsuariosRegistrados(count);
 			estadisticas.add(estadistica);
 			return estadisticas;
 		case "UsuariosPorMedalla":
-			usuarios = DbManager.createQuery("SELECT u FROM Usuario u");
+			userQuery = manager.createQuery("SELECT u FROM Usuario u", Usuario.class);
+			usuarios = userQuery.getResultList();
 			for (Usuario usuario : usuarios) {
 				DTOEstadistica dtoEstadistica = new DTOEstadistica();
 				dtoEstadistica.setNombreUsuario(usuario.getNickname());
@@ -334,7 +338,8 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 			}
 			return estadisticas;
 		case "CantidadVisitasPorUsuario":
-			usuarios = DbManager.createQuery("SELECT u FROM Usuario u");
+			userQuery = manager.createQuery("SELECT u FROM Usuario u", Usuario.class);
+			usuarios = userQuery.getResultList();
 			for (Usuario usuario : usuarios) {
 				List<Ubicacion> ubicaciones = usuario.getUbicaciones();
 				Map<String, List<Ubicacion>> ubicacionPorPais = new HashMap<String, List<Ubicacion>>();
@@ -354,7 +359,8 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 			}
 			return estadisticas;
 		case "CantidadUsuariosPorPais":
-			usuarios = DbManager.createQuery("SELECT u FROM Usuario u" );
+			userQuery = manager.createQuery("SELECT u FROM Usuario u" , Usuario.class);
+			usuarios = userQuery.getResultList();
 			Map<String, List<Usuario>> usuariosPorPais = new HashMap<String, List<Usuario>>();
 			for (Usuario usuario : usuarios) {
 				if (usuariosPorPais.get(usuario.getPais()) == null) {
@@ -375,15 +381,14 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 		}		
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public List<DTOUsuario> obtenerSolicitudesPendientes(String idPersona, int offset, int size) {
 		List<DTOUsuario> res = new ArrayList<>();
 		try {
-			DbManager.open();
-			List<UsuarioContacto> usuariosContactos = DbManager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.contactoIdPersona = '" + idPersona + "' and usuariocontacto.estadoContactos = '" + estadosContactos.pendiente + "' order by usuariocontacto.fechaContactos desc", offset, size);
+			TypedQuery<UsuarioContacto> query = manager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.contactoIdPersona = '" + idPersona + "' and usuariocontacto.estadoContactos = '" + estadosContactos.pendiente + "' order by usuariocontacto.fechaContactos desc", UsuarioContacto.class);
+			List<UsuarioContacto> usuariosContactos = query.setFirstResult(offset).setMaxResults(size).getResultList();
 			for(UsuarioContacto usuarioContacto : usuariosContactos) {
-				Usuario usuario = DbManager.find(Usuario.class, usuarioContacto.getIdPersona());
+				Usuario usuario = manager.find(Usuario.class, usuarioContacto.getIdPersona());
 				DTOUsuario dtoUsuario = new DTOUsuario(usuario);
 				res.add(dtoUsuario);
 			}
