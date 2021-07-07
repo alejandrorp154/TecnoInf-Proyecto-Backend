@@ -1,5 +1,7 @@
 package com.javaee.pryectoBack.service;
 
+import java.util.List;
+
 import javax.ejb.EJB;
 import javax.ejb.Remote;
 import javax.ejb.Stateless;
@@ -9,6 +11,7 @@ import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioContacto;
 import com.javaee.pryectoBack.datatypes.DTOAdministrador;
+import com.javaee.pryectoBack.datatypes.DTOInteresUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioPerfil;
 
@@ -87,5 +90,15 @@ public class ControladorUsuario implements ControladorUsuarioRemote, Controlador
 	@Override
 	public DTOUsuarioPerfil getPerfil(String idPersona) {
 		return controladorDA.getPerfil(idPersona);
+	}
+
+	@Override
+	public boolean sonAmigos(String idPersona, String idContacto) {
+		return controladorDA.sonAmigos(idPersona, idContacto);
+	}
+
+	@Override
+	public List<DTOInteresUsuario> getInteresesUsuario(String idPersona) {
+		return controladorDA.getInteresesUsuario(idPersona);
 	}
 }

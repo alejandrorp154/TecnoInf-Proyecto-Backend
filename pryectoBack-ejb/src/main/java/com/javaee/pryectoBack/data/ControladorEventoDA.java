@@ -8,11 +8,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import com.javaee.pryectoBack.datatypes.DTOConfiguracion;
 import com.javaee.pryectoBack.datatypes.DTODetalleEvento;
 import com.javaee.pryectoBack.datatypes.DTOEvento;
 import com.javaee.pryectoBack.datatypes.DTOEventoUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioEvento;
+import com.javaee.pryectoBack.model.Configuracion;
 import com.javaee.pryectoBack.model.Evento;
 import com.javaee.pryectoBack.model.EventoUsuario;
 import com.javaee.pryectoBack.model.EventoUsuarioId;
@@ -20,6 +22,7 @@ import com.javaee.pryectoBack.model.Publicacion;
 import com.javaee.pryectoBack.model.Ubicacion;
 import com.javaee.pryectoBack.model.Usuario;
 import com.javaee.pryectoBack.model.estadosContactos;
+import com.javaee.pryectoBack.util.EnviarNotificacion;
 import com.javaee.pryectoBack.util.MongoDBConnector;
 import com.javaee.pryectoBack.util.PuntosUsuario;
 import com.mongodb.client.MongoCollection;
@@ -35,10 +38,12 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 	private EntityManager manager;
 	
 	private PuntosUsuario puntoUsuario;
+	private EnviarNotificacion enviarNotificacion;
 	
 	public ControladorEventoDA()
 	{
 		puntoUsuario = new PuntosUsuario();
+		enviarNotificacion = new EnviarNotificacion();
 	}
 
 	@Override
@@ -127,11 +132,20 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 				evento.setExtension(dtoEvento.getExtension());
 				manager.merge(evento);
 				dtoEventoRes = new DTOEvento(evento);
+				notificarModificacionEvento(evento.getIdEvento());
 			}
 		} catch (Exception exception) {
 			return dtoEventoRes;
 		}
 		return dtoEventoRes;
+	}
+
+	private void notificarModificacionEvento(int idEvento) {
+		TypedQuery<EventoUsuario> query = manager.createQuery("SELECT eventoUsuario FROM EventoUsuario eventoUsuario where eventoUsuario.idEvento = '" + idEvento + "'", EventoUsuario.class);
+		List<EventoUsuario> eventosUsuarios = query.getResultList();
+		for (EventoUsuario eventoUsuario : eventosUsuarios) {
+			enviarNotificacionEvento(idEvento, eventoUsuario.getIdPersona(), eventoUsuario.getIdPersonaInvitador(), "Se ha modificado el evento ", "Ha habido modificaciones en un evento", "modificacionEvento");
+		}
 	}
 
 	@Override
@@ -141,20 +155,114 @@ public class ControladorEventoDA implements ControladorEventoDALocal, Controlado
 			EventoUsuario eventoUsuario = new EventoUsuario(idPersona, idEvento, estadosContactos.pendiente, idPersonaInvitador);
 			manager.persist(eventoUsuario);
 			res = true;
+			enviarNotificacionEvento(idEvento, idPersona, idPersonaInvitador, "Ha sido invitado al evento ", "Ha recibido una invitacion evento", "agregarUsuario");
 		} catch (Exception exception) {
 			return res;
 		}
 		return res;
 	}
 
+	private void enviarNotificacionEvento(int idEvento, String idPersona, String idPersonaInvitador, String mensajeInicio, String titulo, String tipoNotificacion) {
+		List<DTOConfiguracion> dtoConfiguraciones = getByIdPersona(idPersona);
+		String nicknamePersonaInvitador = getNicknameById(idPersonaInvitador);
+		String emailPersonaInvitada = getEmailById(idPersona);
+		String nombreEvento = getNombreEvento(idEvento);
+		String mensaje = mensajeInicio + nombreEvento + " por el usuario " + nicknamePersonaInvitador + ".";
+		for (DTOConfiguracion dtoConfig : dtoConfiguraciones) {
+			switch (tipoNotificacion) {
+			case "agregarUsuario":
+				if (dtoConfig.isInvitacionUsuario()) {
+					enviar(dtoConfig, mensaje, titulo, emailPersonaInvitada, idPersona);
+				}
+			case "modificacionEvento":
+				if (dtoConfig.isModificacionEvento()) {
+					enviar(dtoConfig, mensaje, titulo, emailPersonaInvitada, idPersona);
+				}
+			case "removerUsuario":
+				if (dtoConfig.isAltaContacto()) {
+					enviar(dtoConfig, mensaje, titulo, emailPersonaInvitada, idPersona);
+				}
+			default:
+				continue;
+		}
+		}
+	}
+	
+	private void enviar(DTOConfiguracion dtoConfig, String mensaje, String titulo, String emailPersonaInvitada, String idPersona) {
+		if (dtoConfig.isEmailNotification()) {
+			enviarNotificacion.enviarEmailNotificacion(mensaje, emailPersonaInvitada, titulo);
+		} else {
+			enviarNotificacion.enviarPushNotificacion(mensaje, idPersona, titulo);
+		}
+	}
+
+	private String getNombreEvento(int idEvento) {
+		String nombre = null;
+		try {
+			Evento evento = manager.find(Evento.class, idEvento);
+			if (evento != null) {
+				nombre = evento.getNombre();
+			}
+		} catch (Exception exception) {
+			return nombre;
+		}
+		return nombre;
+	}
+
+	private String getNicknameById(String idPersona) {
+		String nickname = null;
+		try {
+			Usuario usuario = manager.find(Usuario.class, idPersona);
+			if (usuario != null) {
+				nickname = usuario.getNickname();
+			}
+		} catch (Exception exception) {
+			return nickname;
+		}
+		return nickname;
+	}
+
+	private String getEmailById(String idPersona) {
+		String email = null;
+		try {
+			Usuario usuario = manager.find(Usuario.class, idPersona);
+			if (usuario != null) {
+				email = usuario.getEmail();
+			}
+		} catch (Exception exception) {
+			return email;
+		}
+		return email;
+	}
+
+	public List<DTOConfiguracion> getByIdPersona(String idPersona) {
+		List<DTOConfiguracion> res = new ArrayList<DTOConfiguracion>();
+		try {
+			TypedQuery<Configuracion> query = manager.createQuery("SELECT configuracion FROM Configuracion configuracion where configuracion.idPersona = '" + idPersona + "'", Configuracion.class);
+			List<Configuracion> configuraciones =  query.getResultList();
+			if (configuraciones.size() > 0) {
+				for (Configuracion configuracion : configuraciones) {
+					DTOConfiguracion dtoConfiguracion = new DTOConfiguracion(configuracion);
+					res.add(dtoConfiguracion);
+				}	
+			}
+		} catch (Exception exception) {
+			return res;
+		}
+		return res;
+	}
+
+	
 	@Override
 	public boolean removerUsuario(int idEvento, String idPersona) {
 		boolean res = false;
 		try {
 			EventoUsuario eventoUsuario = manager.find(EventoUsuario.class, new EventoUsuarioId(idPersona, idEvento));
 			if (eventoUsuario != null) {
+				String idPersonaInvitador = eventoUsuario.getIdPersonaInvitador();
 				manager.remove(eventoUsuario);
 				res = true;
+				enviarNotificacionEvento(idEvento, idPersona, idPersonaInvitador, "Ha sido removido del evento ", "Ha sido removido de un evento", "removerUsuario");
 			}
 		} catch (Exception exception) {
 			return res;

@@ -19,6 +19,7 @@ public class DTOUsuario implements Serializable
 	private String imagenPerfil;
 	private String nombreImagen;
 	private String extensionImagen;
+	private boolean estaBloqueado;
 	
 	public DTOUsuario(String idPersona, String email, String nombre, String apellido, String nickname,
 			String direccion, String celular, String pais, String imagenPerfil, String nombreImagen, String extensionImagen) {
@@ -53,6 +54,7 @@ public class DTOUsuario implements Serializable
 		this.imagenPerfil = usuario.getPerfil().getImagenPerfil();
 		this.nombreImagen = usuario.getPerfil().getNombreImagen();
 		this.celular = usuario.getCelular();
+		this.estaBloqueado = usuario.getEstaBloqueado();
 	}
 
 	public String getIdPersona() {
@@ -149,5 +151,21 @@ public class DTOUsuario implements Serializable
 
 	public void setExtension(String extension) {
 		this.extensionImagen = extension;
+	}
+
+	public String getExtensionImagen() {
+		return extensionImagen;
+	}
+
+	public void setExtensionImagen(String extensionImagen) {
+		this.extensionImagen = extensionImagen;
+	}
+
+	public boolean isEstaBloqueado() {
+		return estaBloqueado;
+	}
+
+	public void setEstaBloqueado(boolean estaBloqueado) {
+		this.estaBloqueado = estaBloqueado;
 	}
 }
