@@ -18,6 +18,7 @@ import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioContacto;
 import com.javaee.pryectoBack.datatypes.DTOAdministrador;
+import com.javaee.pryectoBack.datatypes.DTOInteresUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioPerfil;
 import com.javaee.pryectoBack.service.ControladorUsuarioLocal;
@@ -25,6 +26,7 @@ import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Path("/usuario")
@@ -409,4 +411,43 @@ public class UsuarioRest
 
 		return builder.build();
 	}
+
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@ApiOperation(value = "Devuelve true si idPersona ", notes = "")
+	@Path("/sonAmigos/{idPersona}/{idContacto}")
+	public Response sonAmigos(@PathParam("idPersona") String idPersona, @PathParam("idContacto") String idContacto) {
+		Response.ResponseBuilder builder = null;
+		try {
+			boolean sonAmigos = controladorUsuario.sonAmigos(idPersona, idContacto);
+			builder = Response.ok();
+			builder.entity(sonAmigos);
+		} catch (Exception e) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+		return builder.build();
+	}
+
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/getInteresByUsuario/{idUsuario}")
+	public Response getInteresesUsuario(@PathParam("idUsuario") String idPersona){
+		Response.ResponseBuilder builder = null;
+		try{
+			List<DTOInteresUsuario> res = controladorUsuario.getInteresesUsuario(idPersona);
+			builder = Response.ok();
+			builder.entity(res);
+		}catch (Exception e) {
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+
+		return builder.build();
+	}
+
 }
