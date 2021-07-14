@@ -17,6 +17,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.javaee.pryectoBack.datatypes.DTOCantidadReaccionComentario;
 import com.javaee.pryectoBack.datatypes.DTOComentario;
 import com.javaee.pryectoBack.datatypes.DTOPublicacion;
 import com.javaee.pryectoBack.datatypes.DTOPublicacionPerfilUsuario;
@@ -210,7 +211,7 @@ public class PublicacionComentarioRest {
 	public Response altaPublicacion(DTOPublicacion dtoPublicacion) {
 		Response.ResponseBuilder builder = null;
 		try {
-			DTOPublicacion newPublicacion = controladorPublicacionComentario.altaPublicacion(dtoPublicacion);
+			DTOPublicacionPerfilUsuario newPublicacion = controladorPublicacionComentario.altaPublicacion(dtoPublicacion);
             builder = Response.ok();
             builder.entity(newPublicacion);
         } catch (Exception e) {
@@ -232,6 +233,25 @@ public class PublicacionComentarioRest {
 			List<DTOComentario> comentarios = controladorPublicacionComentario.getComentarios(idPublicacion);
             builder = Response.ok();
             builder.entity(comentarios);
+        } catch (Exception e) {
+            Map<String, String> responseObj = new HashMap<>();
+            responseObj.put("error", e.getMessage());
+            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+        }
+        return builder.build();	
+	}
+	
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("getCantidadReaccionComentario/{idPublicacion}")
+	@ApiOperation(value = "Obtiene la cantidad de reacciones y comentarios correspondiente al idPublicacion", notes = "")
+	public Response getCantidadReaccionComentario(@PathParam("idPublicacion") int idPublicacion){
+		Response.ResponseBuilder builder = null;
+		try {
+			DTOCantidadReaccionComentario dtoCantidadReaccionComentario = controladorPublicacionComentario.getCantidadReaccionComentario(idPublicacion);
+            builder = Response.ok();
+            builder.entity(dtoCantidadReaccionComentario);
         } catch (Exception e) {
             Map<String, String> responseObj = new HashMap<>();
             responseObj.put("error", e.getMessage());

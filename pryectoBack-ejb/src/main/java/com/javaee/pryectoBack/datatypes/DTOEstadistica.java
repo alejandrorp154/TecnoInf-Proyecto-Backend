@@ -7,6 +7,12 @@ public class DTOEstadistica implements Serializable {
 
 	// Estadistica de Cantidad de usuarios registrados en la plataforma
 	private Long cantidadUsuariosRegistrados;
+	// Estadistica de Cantidad de publicaciones en la plataforma
+	private Long cantidadPublicaciones;
+	// Estadistica de Cantidad de ubicaciones en la plataforma
+	private Long cantidadUbicaciones;
+	// Estadistica de Cantidad de eventos en la plataforma
+	private Long cantidadEventos;
 	// Estadistica de Usuarios por Pais
 	private String nombrePais;
 	// Estadistica de Usuarios por Medalla con puntos
@@ -78,6 +84,30 @@ public class DTOEstadistica implements Serializable {
 
 	public void setCantidadVisitas(Integer cantidadVisitas) {
 		this.cantidadVisitas = cantidadVisitas;
+	}
+
+	public Long getCantidadPublicaciones() {
+		return cantidadPublicaciones;
+	}
+
+	public void setCantidadPublicaciones(Long cantidadPublicaciones) {
+		this.cantidadPublicaciones = cantidadPublicaciones;
+	}
+
+	public Long getCantidadUbicaciones() {
+		return cantidadUbicaciones;
+	}
+
+	public void setCantidadUbicaciones(Long cantidadUbicaciones) {
+		this.cantidadUbicaciones = cantidadUbicaciones;
+	}
+
+	public Long getCantidadEventos() {
+		return cantidadEventos;
+	}
+
+	public void setCantidadEventos(Long cantidadEventos) {
+		this.cantidadEventos = cantidadEventos;
 	}
 
 }

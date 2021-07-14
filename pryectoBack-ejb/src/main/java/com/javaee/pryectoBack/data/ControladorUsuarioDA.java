@@ -137,17 +137,20 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 			Persona user1 = manager.find(Usuario.class, idPersona);
 			Persona user2 = manager.find(Usuario.class, idPersona2);
 			if (user1 != null && user2 != null) {
-				UsuarioContacto usuarioContacto = new UsuarioContacto();
-				usuarioContacto.setIdPersona(idPersona);
-				usuarioContacto.setContactoIdPersona(idPersona2);
-				usuarioContacto.setFechaContactos(new Date());
-				usuarioContacto.setEstadoContactos(estadosContactos.pendiente);
-				manager.persist(usuarioContacto);
-				String nickname = getNicknameById(idPersona);
-				String mensaje = "Ha recibido una nueva solicitud del usuario " + nickname + ".";
-				String titulo = "Nueva solicitud";
-				enviarNotificacion(idPersona2, mensaje, titulo, "agregarContacto");
-				return true;
+				UsuarioContacto usuarioContacto1 = manager.find(UsuarioContacto.class, new UsuarioContactoId(idPersona, idPersona2));
+				if (usuarioContacto1 == null) {
+					UsuarioContacto usuarioContacto = new UsuarioContacto();
+					usuarioContacto.setIdPersona(idPersona);
+					usuarioContacto.setContactoIdPersona(idPersona2);
+					usuarioContacto.setFechaContactos(new Date());
+					usuarioContacto.setEstadoContactos(estadosContactos.pendiente);
+					manager.persist(usuarioContacto);
+					String nickname = getNicknameById(idPersona);
+					String mensaje = "Ha recibido una nueva solicitud del usuario " + nickname + ".";
+					String titulo = "Nueva solicitud";
+					enviarNotificacion(idPersona2, mensaje, titulo, "agregarContacto");
+					return true;
+				}
 			}
 			return false;
 		}catch (Exception exception) {

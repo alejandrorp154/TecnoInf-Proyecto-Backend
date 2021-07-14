@@ -24,6 +24,7 @@ import com.javaee.pryectoBack.model.Ubicacion;
 import com.javaee.pryectoBack.model.Usuario;
 import com.javaee.pryectoBack.model.UsuarioContacto;
 import com.javaee.pryectoBack.model.estadosContactos;
+import com.javaee.pryectoBack.model.tipos;
 
 @Stateless
 public class ControladorVisualizacionDA implements ControladorVisualizacionDALocal, ControladorVisualizacionDARemote {
@@ -83,32 +84,45 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 
 	@Override
 	public List<DTOUsuario> obtenerSugerenciaAmigos(String idPersona, int offset, int size) {
-		List<DTOUsuario> dtoUsuario = new ArrayList<>();
+		List<DTOUsuario> dtoUsuarios = new ArrayList<>();
 		try {
 			List<DTOUsuario> dtoUsuario1 = this.buscarAmigosDeAmigos(idPersona);
 			for (DTOUsuario dtoUsu : dtoUsuario1) {
-				dtoUsuario.add(dtoUsu);
+				dtoUsuarios.add(dtoUsu);
 			}
 
-			List<DTOUsuario> dtoUsuario2 = this.buscarAmigosSegunIntereses(dtoUsuario, idPersona);
+			List<DTOUsuario> dtoUsuarioAux = new ArrayList<DTOUsuario>();
+			dtoUsuarioAux.addAll(dtoUsuarios);
+			List<DTOUsuario> dtoUsuario2 = this.buscarAmigosSegunIntereses(dtoUsuarioAux, idPersona);
 			for (DTOUsuario dtoUsu : dtoUsuario2) {
-				dtoUsuario.add(dtoUsu);
+				if (!dtoUsuarios.stream().anyMatch(o -> o.getIdPersona().equals(dtoUsu.getIdPersona()))) {
+					dtoUsuarios.add(dtoUsu);
+				}
 			}
 
-			
-			List<DTOUsuario> dtoUsuario3 = this.buscarAmigosSegunUbicacion(dtoUsuario, idPersona);
+			List<DTOUsuario> dtoUsuarioAux2 = new ArrayList<DTOUsuario>();
+			dtoUsuarioAux2.addAll(dtoUsuarios);
+			List<DTOUsuario> dtoUsuario3 = this.buscarAmigosSegunUbicacion(dtoUsuarioAux2, idPersona);
 			for (DTOUsuario dtoUsu : dtoUsuario3) {
-				dtoUsuario.add(dtoUsu);
+				if (!dtoUsuarios.stream().anyMatch(o -> o.getIdPersona().equals(dtoUsu.getIdPersona()))) {
+					dtoUsuarios.add(dtoUsu);
+				}
 			}
 			
-			List<DTOUsuario> dtoUsuario4 = this.buscarAmigosSegunPais(dtoUsuario, idPersona);
+			List<DTOUsuario> dtoUsuarioAux3 = new ArrayList<DTOUsuario>();
+			dtoUsuarioAux3.addAll(dtoUsuarios);
+			List<DTOUsuario> dtoUsuario4 = this.buscarAmigosSegunPais(dtoUsuarioAux3, idPersona);
 			for (DTOUsuario dtoUsu : dtoUsuario4) {
-				dtoUsuario.add(dtoUsu);
-			}
-			List<DTOUsuario> resDtoUsuarios = aplicarOffsetSeize(dtoUsuario, offset, size);
+				if (!dtoUsuarios.stream().anyMatch(o -> o.getIdPersona().equals(dtoUsu.getIdPersona()))) {
+					dtoUsuarios.add(dtoUsu);
+				}
+			}			
+			List<DTOUsuario> dtoUsuarioAux4 = new ArrayList<DTOUsuario>();
+			dtoUsuarioAux4.addAll(dtoUsuarios);
+			List<DTOUsuario> resDtoUsuarios = aplicarOffsetSeize(dtoUsuarioAux4, offset, size);
 			return resDtoUsuarios;
 		} catch (Exception exception) {
-			return dtoUsuario;
+			return dtoUsuarios;
 		}
 	}
 
@@ -176,7 +190,8 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 
 	@Override
 	public List<DTOUsuario> buscarAmigosSegunUbicacion(List<DTOUsuario> dtoUsuarios, String idPersona) {
-		List<DTOUsuario> res = new ArrayList<DTOUsuario>();
+//		List<DTOUsuario> res = new ArrayList<DTOUsuario>();
+//		res.addAll(dtoUsuarios);
 		try {
 			TypedQuery<Ubicacion> query = manager.createQuery("SELECT ubicacion FROM Ubicacion ubicacion where usuario_idpersona = :idPersona", Ubicacion.class);
 			// Obtengo todas las ubicaciones del usuario logeuado
@@ -195,7 +210,7 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 							if (!dtoUsuarios.stream().anyMatch(o -> o.getIdPersona().equals(ubicacionUsuarioMenosLogueado.getUsuario().getIdPersona()))) {
 								Usuario usuarioSugerencia = manager.find(Usuario.class, ubicacionUsuarioMenosLogueado.getUsuario().getIdPersona());
 								DTOUsuario dtoSugerencia = new DTOUsuario(usuarioSugerencia);
-								res.add(dtoSugerencia);
+								dtoUsuarios.add(dtoSugerencia);
 							}
 						}
 					}
@@ -203,9 +218,9 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 			}
 			
 		} catch (Exception exception) {
-			return res;
+			return dtoUsuarios;
 		}
-		return res;
+		return dtoUsuarios;
 	}
 
 	@Override
@@ -257,7 +272,8 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 
 	@Override
 	public List<DTOUsuario> buscarAmigosSegunIntereses(List<DTOUsuario> dtoUsuarios, String idPersona) {
-		List<DTOUsuario> res = new ArrayList<DTOUsuario>();
+//		List<DTOUsuario> res = new ArrayList<DTOUsuario>();
+//		res.addAll(dtoUsuarios);
 		try {
 			TypedQuery<Interes> query = manager.createQuery("SELECT interes FROM Interes interes", Interes.class);
 			List<Interes> intereses = query.getResultList();
@@ -274,20 +290,21 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 							if (!dtoUsuarios.stream().anyMatch(o -> o.getIdPersona().equals(perfil.getIdPersona()))) {
 								Usuario usuarioSugerencia = manager.find(Usuario.class, perfil.getIdPersona());
 								DTOUsuario dtoSugerencia = new DTOUsuario(usuarioSugerencia);
-								res.add(dtoSugerencia);
+								dtoUsuarios.add(dtoSugerencia);
 							}
 						}
 					}
 				}
 			}
 		} catch (Exception exception) {
-			return res;
+			return dtoUsuarios;
 		}
-		return res;
+		return dtoUsuarios;
 	}
 
 	private List<DTOUsuario> buscarAmigosSegunPais(List<DTOUsuario> dtoUsuarios, String idPersona) {
-		List<DTOUsuario> res = new ArrayList<DTOUsuario>();
+//		List<DTOUsuario> res = new ArrayList<DTOUsuario>();
+//		res.addAll(dtoUsuarios);
 		try {
 			Usuario usuarioLogueado = manager.find(Usuario.class, idPersona);
 			if (usuarioLogueado != null && usuarioLogueado.getPais() != null) {
@@ -302,15 +319,15 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 						// verifico que la sugerencia de amigo de se encuentra ya en la lista de sugerencia de amigos
 						if (!dtoUsuarios.stream().anyMatch(o -> o.getIdPersona().equals(usuario.getIdPersona()))) {
 							DTOUsuario dtoSugerencia = new DTOUsuario(usuario);
-							res.add(dtoSugerencia);
+							dtoUsuarios.add(dtoSugerencia);
 						}
 					}
 				}
 			}
 		} catch (Exception exception) {
-			return res;
+			return dtoUsuarios;
 		}
-		return res;
+		return dtoUsuarios;
 	}
 
 	public List<DTOEstadistica> seleccionarTipoEstadistica(String tipoEstadistica) {
@@ -320,10 +337,19 @@ public class ControladorVisualizacionDA implements ControladorVisualizacionDALoc
 		DTOEstadistica estadistica = null;
 		switch (tipoEstadistica) {
 		case "CantidadUsuariosTotal":
-			Query query = manager.createQuery("SELECT Count(*) FROM Persona WHERE establoqueado = false");
-			Long count = (Long) query.getSingleResult();
+			Query queryCantidadUsuarios = manager.createQuery("SELECT Count(*) FROM Persona WHERE establoqueado = false");
+			Long countCantidadUsuarios = (Long) queryCantidadUsuarios.getSingleResult();
+			Query queryCantidadPublicaciones = manager.createQuery("SELECT Count(*) FROM Publicacion");
+			Long countCantidadPublicaciones = (Long) queryCantidadPublicaciones.getSingleResult();
+			Query queryCantidadUbicaciones = manager.createQuery("SELECT Count(*) FROM Ubicacion");
+			Long countCantidadUbicaciones = (Long) queryCantidadUbicaciones.getSingleResult();
+			Query queryCantidadEventos = manager.createQuery("SELECT Count(*) FROM Evento");
+			Long countCantidadEventos = (Long) queryCantidadEventos.getSingleResult();
 			estadistica = new DTOEstadistica();
-			estadistica.setCantidadUsuariosRegistrados(count);
+			estadistica.setCantidadUsuariosRegistrados(countCantidadUsuarios);
+			estadistica.setCantidadPublicaciones(countCantidadPublicaciones);
+			estadistica.setCantidadEventos(countCantidadEventos);
+			estadistica.setCantidadUbicaciones(countCantidadUbicaciones);
 			estadisticas.add(estadistica);
 			return estadisticas;
 		case "UsuariosPorMedalla":

@@ -1,6 +1,8 @@
 package com.javaee.pryectoBack.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -10,6 +12,8 @@ import javax.persistence.TypedQuery;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
+
+import com.javaee.pryectoBack.datatypes.DTOCantidadReaccionComentario;
 import com.javaee.pryectoBack.datatypes.DTOComentario;
 import com.javaee.pryectoBack.datatypes.DTOConfiguracion;
 import com.javaee.pryectoBack.datatypes.DTOPublicacion;
@@ -52,6 +56,24 @@ public class ControladorPublicacionComentarioDA
 	}
 
 	@Override
+	public DTOCantidadReaccionComentario getCantidadReaccionComentario(int idPublicacion) {
+		DTOCantidadReaccionComentario res = new DTOCantidadReaccionComentario();
+		try {
+			DTOPublicacionPerfilUsuario dtoPublicacion = new DTOPublicacionPerfilUsuario();
+			dtoPublicacion.setIdPublicacion(idPublicacion);
+			dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
+			int cantidadComentarios = getCantidadComentarios(dtoPublicacion.getIdPublicacion());
+			res.setCantidadComentarios(cantidadComentarios);
+			res.setCantidadDislikes(dtoPublicacion.getCantidadDislikes());
+			res.setCantidadLikes(dtoPublicacion.getCantidadLikes());
+			res.setIdPublicacion(idPublicacion);
+		} catch(Exception exception) {
+			return res;
+		}
+		return res;
+	}
+
+	@Override
 	public List<DTOPublicacionPerfilUsuario> obtenerPublicaciones(String idPersona, int offset, int size) {
 		List<DTOPublicacionPerfilUsuario> res = new ArrayList<>();
 		try {
@@ -79,6 +101,7 @@ public class ControladorPublicacionComentarioDA
 					}
 				}
 			}
+			Collections.sort(res, Comparator.comparingLong(DTOPublicacionPerfilUsuario::getIdPublicacion).reversed());
 			res = aplicarOffsetSeizePublicaciones(res, offset, size);
 		} catch (Exception exception) {
 			return res;
@@ -107,12 +130,12 @@ public class ControladorPublicacionComentarioDA
 		try {
 			Publicacion publicacion = manager.find(Publicacion.class, idPublicacion);
 			if (publicacion != null) {
-				List<DTOComentario> dtoComentarios = getComentarios(publicacion.getIdPublicacion());
+//				List<DTOComentario> dtoComentarios = getComentarios(publicacion.getIdPublicacion());
 				Usuario usuario = manager.find(Usuario.class, publicacion.getPerfil().getIdPersona());
 				dtoPublicacion = new DTOPublicacionPerfilUsuario(publicacion, usuario);
-				dtoPublicacion.setComentarioReacciones(dtoComentarios);
-				dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
-				dtoPublicacion.setCantidadComentarios(getCantidadComentarios(dtoPublicacion.getIdPublicacion()));
+//				dtoPublicacion.setComentarioReacciones(dtoComentarios);
+//				dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
+//				dtoPublicacion.setCantidadComentarios(getCantidadComentarios(dtoPublicacion.getIdPublicacion()));
 			}
 		} catch (Exception exception) {
 			return dtoPublicacion;
@@ -194,9 +217,9 @@ public class ControladorPublicacionComentarioDA
 	}
 
 	@Override
-	public DTOPublicacion altaPublicacion(DTOPublicacion dtoPublicacion) {
+	public DTOPublicacionPerfilUsuario altaPublicacion(DTOPublicacion dtoPublicacion) {
 		try {
-			DTOPublicacion dtoPubli = new DTOPublicacion();
+			DTOPublicacionPerfilUsuario dtoPubli = new DTOPublicacionPerfilUsuario();
 			Publicacion publicacion = new Publicacion(dtoPublicacion);
 			Usuario usuario = manager.find(Usuario.class, dtoPublicacion.getPerfil().getUsuario().getIdPersona());
 			if (usuario != null) {
@@ -209,12 +232,12 @@ public class ControladorPublicacionComentarioDA
 				manager.merge(tipo);
 				DTOUsuario dtoUsuario = new DTOUsuario(usuario);
 				puntoUsuario.getPuntosUsuario("AltaPublicacion", dtoUsuario, manager);
-				dtoPubli = new DTOPublicacion(publicacion);
+				dtoPubli = new DTOPublicacionPerfilUsuario(publicacion, usuario);
 				enviarNotificacionesAltaPublicaciones(usuario.getIdPersona(), usuario.getNickname());
 			}
 			return dtoPubli;
 		} catch (Exception exception) {
-			return new DTOPublicacion();
+			return new DTOPublicacionPerfilUsuario();
 		}
 	}
 	
