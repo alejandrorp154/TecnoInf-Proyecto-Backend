@@ -80,4 +80,9 @@ public class ControladorPublicacionComentario
 	public DTOCantidadReaccionComentario getCantidadReaccionComentario(int idPublicacion) {
 		return controladorPublicacionComentarioDA.getCantidadReaccionComentario(idPublicacion);
 	}
+
+	@Override
+	public List<DTOPublicacionPerfilUsuario> obtenerPublicacionesEvento(int idEvento, int offset, int size) {
+		return controladorPublicacionComentarioDA.obtenerPublicaciones(idEvento, offset, size);
+	}
 }

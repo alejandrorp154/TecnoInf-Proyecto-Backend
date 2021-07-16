@@ -154,6 +154,24 @@ public class PublicacionComentarioRest {
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@Path("publicacionEvento/{idEvento}/{offset}/{size}")
+	public Response obtenerPublicacionesEvento(@PathParam("idEvento") int idEvento, @PathParam("offset") int offset, @PathParam("size") int size) {
+		Response.ResponseBuilder builder = null;
+		try {
+			List<DTOPublicacionPerfilUsuario> res = controladorPublicacionComentario.obtenerPublicacionesEvento(idEvento, offset, size);
+            builder = Response.ok();
+            builder.entity(res);
+        } catch (Exception e) {
+            Map<String, String> responseObj = new HashMap<>();
+            responseObj.put("error", e.getMessage());
+            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+        }
+        return builder.build();
+	}
+
+	@GET
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	@Path("/{idPublicacion}")
 	public Response obtenerPublicacion(@PathParam("idPublicacion") int idPublicacion) {
 		Response.ResponseBuilder builder = null;

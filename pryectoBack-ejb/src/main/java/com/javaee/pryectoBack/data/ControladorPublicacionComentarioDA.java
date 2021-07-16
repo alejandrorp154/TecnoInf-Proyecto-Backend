@@ -3,6 +3,7 @@ package com.javaee.pryectoBack.data;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -84,7 +85,7 @@ public class ControladorPublicacionComentarioDA
 				if (perfil != null) {
 					Usuario usuario = manager.find(Usuario.class, perfil.getIdPersona());
 					for (Publicacion publicacion : perfil.getPublicaciones()) {
-						if (!publicacion.getTipo().getTipo().equals(tipos.mapa)) {
+						if (!publicacion.getTipo().getTipo().equals(tipos.mapa) && (publicacion.getEvento() == null || (publicacion.getEvento() != null && publicacion.getEvento().getIdEvento() == 0))) {
 							DTOPublicacionPerfilUsuario dtoPublicacion = new DTOPublicacionPerfilUsuario(publicacion, usuario);
 							res.add(dtoPublicacion);
 						}
@@ -95,7 +96,7 @@ public class ControladorPublicacionComentarioDA
 			if (perfilUsuarioLogueado != null) {
 				Usuario usuarioLogueado = manager.find(Usuario.class, perfilUsuarioLogueado.getIdPersona());
 				for (Publicacion publicacion : perfilUsuarioLogueado.getPublicaciones()) {
-					if (!publicacion.getTipo().getTipo().equals(tipos.mapa)) {
+					if (!publicacion.getTipo().getTipo().equals(tipos.mapa) && (publicacion.getEvento() == null || (publicacion.getEvento() != null && publicacion.getEvento().getIdEvento() == 0))) {
 						DTOPublicacionPerfilUsuario dtoPublicacion = new DTOPublicacionPerfilUsuario(publicacion, usuarioLogueado);
 						res.add(dtoPublicacion);
 					}
@@ -224,6 +225,7 @@ public class ControladorPublicacionComentarioDA
 			Usuario usuario = manager.find(Usuario.class, dtoPublicacion.getPerfil().getUsuario().getIdPersona());
 			if (usuario != null) {
 				publicacion.getPerfil().setUsuario(usuario);
+				publicacion.setFecha(new Date());
 				manager.persist(publicacion);
 				Tipo tipo = new Tipo();
 				tipo.setTipo(publicacion.getTipo().getTipo());
@@ -548,5 +550,26 @@ public class ControladorPublicacionComentarioDA
 			}
 		}
 		return cantidad;
+	}
+
+	@Override
+	public List<DTOPublicacionPerfilUsuario> obtenerPublicaciones(int idEvento, int offset, int size) {
+		List<DTOPublicacionPerfilUsuario> res = new ArrayList<>();
+		try {
+			TypedQuery<Publicacion> query = manager.createQuery("SELECT publicacion FROM Publicacion publicacion", Publicacion.class);
+			List<Publicacion> publicaciones = query.getResultList();
+			for(Publicacion publicacion : publicaciones) {
+				if (publicacion.getEvento() != null && publicacion.getEvento().getIdEvento() == idEvento) {
+					Usuario usuario = manager.find(Usuario.class, publicacion.getPerfil().getIdPersona());
+					DTOPublicacionPerfilUsuario dtoPublicacion = new DTOPublicacionPerfilUsuario(publicacion, usuario);
+					res.add(dtoPublicacion);
+				}
+			}
+			Collections.sort(res, Comparator.comparingLong(DTOPublicacionPerfilUsuario::getIdPublicacion).reversed());
+			res = aplicarOffsetSeizePublicaciones(res, offset, size);
+		} catch (Exception exception) {
+			return res;
+		}
+		return res;
 	}
 }

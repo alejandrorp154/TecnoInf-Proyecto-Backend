@@ -24,4 +24,5 @@ public interface ControladorPublicacionComentarioDALocal {
 	List<DTOComentario> getComentarios(int idPublicacion);
 	DTOPublicacionPerfilUsuario obtenerPublicacion(int idPublicacion);
 	DTOCantidadReaccionComentario getCantidadReaccionComentario(int idPublicacion);
+	List<DTOPublicacionPerfilUsuario> obtenerPublicaciones(int idEvento, int offset, int size);
 }

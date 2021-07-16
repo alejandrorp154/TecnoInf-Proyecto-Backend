@@ -24,4 +24,5 @@ public interface ControladorPublicacionComentarioRemote {
 	List<DTOComentario> getComentarios(int idPublicacion);
 	DTOPublicacionPerfilUsuario obtenerPublicacion(int idPublicacion);
 	DTOCantidadReaccionComentario getCantidadReaccionComentario(int idPublicacion);
+	List<DTOPublicacionPerfilUsuario> obtenerPublicacionesEvento(int idEvento, int offset, int size);
 }
