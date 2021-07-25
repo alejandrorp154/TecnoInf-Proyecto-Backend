@@ -29,7 +29,6 @@ import com.javaee.pryectoBack.model.Usuario;
 import com.javaee.pryectoBack.model.UsuarioContacto;
 import com.javaee.pryectoBack.model.estadosContactos;
 import com.javaee.pryectoBack.model.reacciones;
-import com.javaee.pryectoBack.model.tipos;
 import com.javaee.pryectoBack.util.EnviarNotificacion;
 import com.javaee.pryectoBack.util.MongoDBConnector;
 import com.javaee.pryectoBack.util.PuntosUsuario;
@@ -50,10 +49,12 @@ public class ControladorPublicacionComentarioDA
 	
 	private PuntosUsuario puntoUsuario;
 	private EnviarNotificacion enviarNotificacion;
+	private MongoDBConnector mongoConnector;
 
 	public ControladorPublicacionComentarioDA() {
 		puntoUsuario = new PuntosUsuario();
 		enviarNotificacion = new EnviarNotificacion();
+		mongoConnector = new MongoDBConnector();
 	}
 
 	@Override
@@ -85,7 +86,7 @@ public class ControladorPublicacionComentarioDA
 				if (perfil != null) {
 					Usuario usuario = manager.find(Usuario.class, perfil.getIdPersona());
 					for (Publicacion publicacion : perfil.getPublicaciones()) {
-						if (!publicacion.getTipo().getTipo().equals(tipos.mapa) && (publicacion.getEvento() == null || (publicacion.getEvento() != null && publicacion.getEvento().getIdEvento() == 0))) {
+						if ((publicacion.getEvento() == null || (publicacion.getEvento() != null && publicacion.getEvento().getIdEvento() == 0))) {
 							DTOPublicacionPerfilUsuario dtoPublicacion = new DTOPublicacionPerfilUsuario(publicacion, usuario);
 							res.add(dtoPublicacion);
 						}
@@ -96,7 +97,7 @@ public class ControladorPublicacionComentarioDA
 			if (perfilUsuarioLogueado != null) {
 				Usuario usuarioLogueado = manager.find(Usuario.class, perfilUsuarioLogueado.getIdPersona());
 				for (Publicacion publicacion : perfilUsuarioLogueado.getPublicaciones()) {
-					if (!publicacion.getTipo().getTipo().equals(tipos.mapa) && (publicacion.getEvento() == null || (publicacion.getEvento() != null && publicacion.getEvento().getIdEvento() == 0))) {
+					if ((publicacion.getEvento() == null || (publicacion.getEvento() != null && publicacion.getEvento().getIdEvento() == 0))) {
 						DTOPublicacionPerfilUsuario dtoPublicacion = new DTOPublicacionPerfilUsuario(publicacion, usuarioLogueado);
 						res.add(dtoPublicacion);
 					}
@@ -131,12 +132,8 @@ public class ControladorPublicacionComentarioDA
 		try {
 			Publicacion publicacion = manager.find(Publicacion.class, idPublicacion);
 			if (publicacion != null) {
-//				List<DTOComentario> dtoComentarios = getComentarios(publicacion.getIdPublicacion());
 				Usuario usuario = manager.find(Usuario.class, publicacion.getPerfil().getIdPersona());
 				dtoPublicacion = new DTOPublicacionPerfilUsuario(publicacion, usuario);
-//				dtoPublicacion.setComentarioReacciones(dtoComentarios);
-//				dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
-//				dtoPublicacion.setCantidadComentarios(getCantidadComentarios(dtoPublicacion.getIdPublicacion()));
 			}
 		} catch (Exception exception) {
 			return dtoPublicacion;
@@ -161,7 +158,9 @@ public class ControladorPublicacionComentarioDA
 	public boolean bajaPublicacion(int idPublicacion) {
 		Publicacion publicacion = manager.find(Publicacion.class, idPublicacion);
 		if (publicacion != null) {
-			MongoDBConnector mongoConnector = new MongoDBConnector();
+			if (mongoConnector == null || mongoConnector.getClient() == null || mongoConnector.getDataBase() == null) {
+				mongoConnector = new MongoDBConnector();
+			}
 			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosPublicacion");
 			collection.deleteMany(eq("idPublicacion", idPublicacion));
 			collection = mongoConnector.getCollection("ReaccionesPublicacion");
@@ -176,7 +175,9 @@ public class ControladorPublicacionComentarioDA
 	@Override
 	public boolean reaccionPublicacion(DTOReaccion dtoReaccion) {
 		try {
-			MongoDBConnector mongoConnector = new MongoDBConnector();
+			if (mongoConnector == null || mongoConnector.getClient() == null || mongoConnector.getDataBase() == null) {
+				mongoConnector = new MongoDBConnector();
+			}
 			MongoCollection<Document> collection = mongoConnector.getCollection("ReaccionesPublicacion");
 			Document reaccionPublicacion = dtoReaccion.getDocumentPublicacion();
 			Document reaccion = collection.find(and(eq("idPublicacion", dtoReaccion.getIdPublicacion()), eq("idPersona", dtoReaccion.getIdPersona()))).first();
@@ -198,7 +199,9 @@ public class ControladorPublicacionComentarioDA
 	@Override
 	public boolean reaccionarComentario(DTOReaccion dtoReaccion) {
 		try {
-			MongoDBConnector mongoConnector = new MongoDBConnector();
+			if (mongoConnector == null || mongoConnector.getClient() == null || mongoConnector.getDataBase() == null) {
+				mongoConnector = new MongoDBConnector();
+			}
 			MongoCollection<Document> collection = mongoConnector.getCollection("ReaccionesComentario");
 			Document reaccionComentario = dtoReaccion.getDocumentComentario();
 			Document reaccion = collection.find(and(eq("idComentario", dtoReaccion.getIdComentario()), eq("idPersona", dtoReaccion.getIdPersona()))).first();
@@ -329,7 +332,9 @@ public class ControladorPublicacionComentarioDA
 	@Override
 	public DTOComentario altaComentario(DTOComentario dtoComentario) {
 		try {
-			MongoDBConnector mongoConnector = new MongoDBConnector();
+			if (mongoConnector == null || mongoConnector.getClient() == null || mongoConnector.getDataBase() == null) {
+				mongoConnector = new MongoDBConnector();
+			}
 			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosPublicacion");
 			Document comentario = dtoComentario.getDocument();
 			collection.insertOne(comentario);
@@ -410,7 +415,9 @@ public class ControladorPublicacionComentarioDA
 	@Override
 	public boolean bajaComentario(String idComentario) {
 		try {
-			MongoDBConnector mongoConnector = new MongoDBConnector();
+			if (mongoConnector == null || mongoConnector.getClient() == null || mongoConnector.getDataBase() == null) {
+				mongoConnector = new MongoDBConnector();
+			}
 			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosPublicacion");
 			collection.deleteMany(eq("_id", new ObjectId(idComentario)));
 			collection = mongoConnector.getCollection("ReaccionesComentario");
@@ -425,7 +432,9 @@ public class ControladorPublicacionComentarioDA
 	@Override
 	public boolean modificarComentario(DTOComentario dtoComentario) {
 		try {
-			MongoDBConnector mongoConnector = new MongoDBConnector();
+			if (mongoConnector == null || mongoConnector.getClient() == null || mongoConnector.getDataBase() == null) {
+				mongoConnector = new MongoDBConnector();
+			}
 			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosPublicacion");
 			collection.updateOne(eq("_id", new ObjectId(dtoComentario.getIdComentario())),
 					Updates.set("contenido", dtoComentario.getContenido()));
@@ -473,7 +482,9 @@ public class ControladorPublicacionComentarioDA
 	public List<DTOComentario> getComentarios(int idPublicacion) {
 		try {
 			List<DTOComentario> result = new ArrayList<DTOComentario>();
-			MongoDBConnector mongoConnector = new MongoDBConnector();
+			if (mongoConnector == null || mongoConnector.getClient() == null || mongoConnector.getDataBase() == null) {
+				mongoConnector = new MongoDBConnector();
+			}
 			MongoCollection<Document> collectionComentariosPublicacion = mongoConnector
 					.getCollection("ComentariosPublicacion");
 			MongoCollection<Document> reaccionesComentarios = mongoConnector.getCollection("ReaccionesComentario");
@@ -493,7 +504,9 @@ public class ControladorPublicacionComentarioDA
 	private DTOPublicacionPerfilUsuario getCantidadReaccionPublicacion(DTOPublicacionPerfilUsuario dtoPublicacion)
 	{
 		try {
-			MongoDBConnector mongoConnector = new MongoDBConnector();
+			if (mongoConnector == null || mongoConnector.getClient() == null || mongoConnector.getDataBase() == null) {
+				mongoConnector = new MongoDBConnector();
+			}
 			MongoCollection<Document> collection = mongoConnector.getCollection("ReaccionesPublicacion");
 			dtoPublicacion.setCantidadDislikes(getCantidadReaccionPublicacion(reacciones.NoMeGusta, dtoPublicacion, collection));
 			dtoPublicacion.setCantidadLikes(getCantidadReaccionPublicacion(reacciones.MeGusta, dtoPublicacion, collection));
@@ -519,7 +532,9 @@ public class ControladorPublicacionComentarioDA
 	public Integer getCantidadComentarios(int idPublicacion) {
 		Integer cantidad = 0;
 		try {
-			MongoDBConnector mongoConnector = new MongoDBConnector();
+			if (mongoConnector == null || mongoConnector.getClient() == null || mongoConnector.getDataBase() == null) {
+				mongoConnector = new MongoDBConnector();
+			}
 			MongoCollection<Document> collectionComentariosPublicacion = mongoConnector
 					.getCollection("ComentariosPublicacion");
 			MongoCollection<Document> reaccionesComentarios = mongoConnector.getCollection("ReaccionesComentario");

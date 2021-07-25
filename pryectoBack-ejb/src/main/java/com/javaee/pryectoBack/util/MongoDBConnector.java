@@ -16,13 +16,31 @@ public class MongoDBConnector {
 	private MongoDatabase dataBase = null;
 	
 	public MongoDBConnector() {
-		this.client = MongoClients.create(MONGO_DB_URI);
-		this.dataBase = this.client.getDatabase(TRAVELPACK_DATABASE_MONGO);
+		if (this.client == null)
+			this.client = MongoClients.create(MONGO_DB_URI);
+		if (this.dataBase == null)
+			this.dataBase = this.client.getDatabase(TRAVELPACK_DATABASE_MONGO);
 	}	
 	
-	public MongoCollection<Document> getCollection(String collectionName){
+	public MongoCollection<Document> getCollection(String collectionName) {
 		if (this.client != null && this.dataBase != null) {
 			return this.dataBase.getCollection(collectionName);
 		} else return null;
+	}
+
+	public MongoClient getClient() {
+		return client;
+	}
+
+	public void setClient(MongoClient client) {
+		this.client = client;
+	}
+
+	public MongoDatabase getDataBase() {
+		return dataBase;
+	}
+
+	public void setDataBase(MongoDatabase dataBase) {
+		this.dataBase = dataBase;
 	}
 }
