@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import com.javaee.pryectoBack.datatypes.DTOCantidadReaccionComentario;
 import com.javaee.pryectoBack.datatypes.DTOComentario;
 import com.javaee.pryectoBack.datatypes.DTOPublicacion;
 import com.javaee.pryectoBack.datatypes.DTOPublicacionPerfilUsuario;
@@ -18,8 +19,9 @@ public interface ControladorPublicacionComentarioLocal {
 	List<DTOPublicacionPerfilUsuario> obtenerPublicaciones(String idPersona, int offset, int size);
 	boolean modificarPublicacion(DTOPublicacion dtoPublicacion);
 	boolean reaccionPublicacion(DTOReaccion dtoReaccion);
-	DTOPublicacion altaPublicacion(DTOPublicacion dtoPublicacion);
+	DTOPublicacionPerfilUsuario altaPublicacion(DTOPublicacion dtoPublicacion);
 	boolean bajaPublicacion(int idPublicacion);
 	List<DTOComentario> getComentarios(int idPublicacion);
 	DTOPublicacionPerfilUsuario obtenerPublicacion(int idPublicacion);
+	DTOCantidadReaccionComentario getCantidadReaccionComentario(int idPublicacion);
 }

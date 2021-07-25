@@ -7,6 +7,7 @@ import javax.ejb.Remote;
 import javax.ejb.Stateless;
 
 import com.javaee.pryectoBack.data.ControladorPublicacionComentarioDALocal;
+import com.javaee.pryectoBack.datatypes.DTOCantidadReaccionComentario;
 import com.javaee.pryectoBack.datatypes.DTOComentario;
 import com.javaee.pryectoBack.datatypes.DTOPublicacion;
 import com.javaee.pryectoBack.datatypes.DTOPublicacionPerfilUsuario;
@@ -66,12 +67,17 @@ public class ControladorPublicacionComentario
 	}
 
 	@Override
-	public DTOPublicacion altaPublicacion(DTOPublicacion dtoPublicacion) {
+	public DTOPublicacionPerfilUsuario altaPublicacion(DTOPublicacion dtoPublicacion) {
 		return controladorPublicacionComentarioDA.altaPublicacion(dtoPublicacion);
 	}
 	
 	@Override
 	public List<DTOComentario> getComentarios(int idPublicacion) {
 		return controladorPublicacionComentarioDA.getComentarios(idPublicacion);
+	}
+
+	@Override
+	public DTOCantidadReaccionComentario getCantidadReaccionComentario(int idPublicacion) {
+		return controladorPublicacionComentarioDA.getCantidadReaccionComentario(idPublicacion);
 	}
 }

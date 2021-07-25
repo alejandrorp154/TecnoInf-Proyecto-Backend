@@ -1,11 +1,14 @@
 package com.javaee.pryectoBack.data;
 
+import java.util.List;
+
 import javax.ejb.Local;
 
 import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioContacto;
 import com.javaee.pryectoBack.datatypes.DTOAdministrador;
+import com.javaee.pryectoBack.datatypes.DTOInteresUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioPerfil;
 
@@ -25,5 +28,6 @@ public interface ControladorUsuarioDALocal {
 	DTOUsuarioContacto respuestaContacto(DTOUsuarioContacto dtoUsuarioContacto);
 	DTOAdministrador altaUsuarioAdmin(DTOAdministrador dtoAdministrador);
 	DTOUsuarioPerfil getPerfil(String idPersona);
-	boolean sonAmigos(String idPersona, String idPersona2);
+	boolean sonAmigos(String idPersona, String idContacto);
+	List<DTOInteresUsuario> getInteresesUsuario(String idPersona);
 }

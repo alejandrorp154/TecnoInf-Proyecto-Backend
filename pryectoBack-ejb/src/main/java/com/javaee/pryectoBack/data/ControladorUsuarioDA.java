@@ -1,5 +1,6 @@
 package com.javaee.pryectoBack.data;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.ejb.Stateless;
@@ -11,6 +12,8 @@ import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioContacto;
 import com.javaee.pryectoBack.datatypes.DTOAdministrador;
+import com.javaee.pryectoBack.datatypes.DTOConfiguracion;
+import com.javaee.pryectoBack.datatypes.DTOInteresUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioPerfil;
 import com.javaee.pryectoBack.model.PerfilUsuario;
@@ -25,6 +28,7 @@ import com.javaee.pryectoBack.model.Multimedia;
 import com.javaee.pryectoBack.model.Interes;
 import com.javaee.pryectoBack.model.Administrador;
 import com.javaee.pryectoBack.model.Configuracion;
+import com.javaee.pryectoBack.util.EnviarNotificacion;
 import com.javaee.pryectoBack.util.MongoDBConnector;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
@@ -48,10 +52,12 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	private EntityManager manager;
 	
 	private PuntosUsuario puntoUsuario;
+	private EnviarNotificacion enviarNotificacion;
 	
 	public ControladorUsuarioDA()
 	{
 		puntoUsuario = new PuntosUsuario();
+		enviarNotificacion = new EnviarNotificacion();
 	}
 
 	@Override
@@ -61,7 +67,7 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 		try {
 			UsuarioContacto usuarioContacto = manager.find(UsuarioContacto.class, new UsuarioContactoId(idPersona, idContacto));
 			if (usuarioContacto != null) {
-				res = true;
+				res = usuarioContacto.getEstadoContactos().equals(estadosContactos.pendiente) ? true : false;
 			}
 		} catch (Exception exception) {
 			return res;
@@ -146,13 +152,20 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 			Persona user1 = manager.find(Usuario.class, idPersona);
 			Persona user2 = manager.find(Usuario.class, idPersona2);
 			if (user1 != null && user2 != null) {
-				UsuarioContacto usuarioContacto = new UsuarioContacto();
-				usuarioContacto.setIdPersona(idPersona);
-				usuarioContacto.setContactoIdPersona(idPersona2);
-				usuarioContacto.setFechaContactos(new Date());
-				usuarioContacto.setEstadoContactos(estadosContactos.pendiente);
-				manager.persist(usuarioContacto);
-				return true;
+				UsuarioContacto usuarioContacto1 = manager.find(UsuarioContacto.class, new UsuarioContactoId(idPersona, idPersona2));
+				if (usuarioContacto1 == null) {
+					UsuarioContacto usuarioContacto = new UsuarioContacto();
+					usuarioContacto.setIdPersona(idPersona);
+					usuarioContacto.setContactoIdPersona(idPersona2);
+					usuarioContacto.setFechaContactos(new Date());
+					usuarioContacto.setEstadoContactos(estadosContactos.pendiente);
+					manager.persist(usuarioContacto);
+					String nickname = getNicknameById(idPersona);
+					String mensaje = "Ha recibido una nueva solicitud del usuario " + nickname + ".";
+					String titulo = "Nueva solicitud";
+					enviarNotificacion(idPersona2, mensaje, titulo, "agregarContacto");
+					return true;
+				}
 			}
 			return false;
 		}catch (Exception exception) {
@@ -306,6 +319,9 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 				if (administradores.size() > 1) {
 					manager.remove(admin);
 					res = true;
+					String mensaje = "Su usario administrador ha sido removido del sistema.";
+					String titulo = "Usuario removido";
+					enviarNotificacionBajaUsuarioAdmin(admin.getEmail(), mensaje, titulo);
 				}
 			}
 		} catch (Exception exception) {
@@ -339,6 +355,9 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 				if (!estaBloqueado) {
 					user.setEstaBloqueado(true);
 					manager.persist(user);
+					String mensaje = "Su usario ha sido bloqueado en el sistema por un administrador.";
+					String titulo = "Usuario bloqueado";
+					enviarNotificacion(idPersona, mensaje, titulo, "bloquearUsuario");
 				}
 				quedoBloqueado = true;
 			}
@@ -357,6 +376,9 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 				user.setEstaBloqueado(false);
 				manager.merge(user);
 				fueDesbloqueado = true;
+				String mensaje = "Su usario ha sido desbloqueado en el sistema por un administrador.";
+				String titulo = "Usuario desbloqueado";
+				enviarNotificacion(idPersona, mensaje, titulo, "desbloquearUsuario");
 			}
 			return fueDesbloqueado;
 		}catch (Exception exception){
@@ -435,5 +457,109 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 			return dtoUsuarioPerfil;
 		}
 		return dtoUsuarioPerfil;
+	}
+
+	@Override
+	public List<DTOInteresUsuario> getInteresesUsuario(String idPersona) {
+		List<DTOInteresUsuario> res = new ArrayList<DTOInteresUsuario>();
+		try {
+			PerfilUsuario perfil = manager.find(PerfilUsuario.class, idPersona);
+			if (perfil != null) {
+				List<Interes> interesesUsuario = perfil.getIntereses();
+				TypedQuery<Interes> query = manager.createQuery("SELECT interes FROM Interes interes order by interes.idInteres", Interes.class);
+				List<Interes> intereses = query.getResultList();
+				for (Interes interes : intereses) {
+					DTOInteresUsuario dtoInteresUsuario = new DTOInteresUsuario(interes);
+					for (Interes interesUsuario : interesesUsuario) {
+						if (interesUsuario.getIdInteres() == interes.getIdInteres()) {
+							dtoInteresUsuario.setEstaSuscripto(true);
+							break;
+						}
+					}
+					res.add(dtoInteresUsuario);
+				}
+			}
+		} catch(Exception exception) {
+			return res;
+		}
+		return res;
+	}
+
+	private void enviarNotificacion(String idPersona, String mensaje, String titulo, String tipoNotificacion) {
+		List<DTOConfiguracion> dtoConfiguraciones = getByIdPersona(idPersona);
+		String email = getEmailById(idPersona);
+		for (DTOConfiguracion dtoConfig : dtoConfiguraciones) {
+			switch (tipoNotificacion) {
+				case "desbloquearUsuario":
+					if (dtoConfig.isDesbloquearUsuario()) {
+						enviar(dtoConfig, mensaje, titulo, email, idPersona);
+					}
+				case "bloquearUsuario":
+					if (dtoConfig.isBloquearUsuario()) {
+						enviar(dtoConfig, mensaje, titulo, email, idPersona);
+					}
+				case "agregarContacto":
+					if (dtoConfig.isAltaContacto()) {
+						enviar(dtoConfig, mensaje, titulo, email, idPersona);
+					}
+				default:
+					continue;
+			}
+		}
+	}
+	
+	private void enviarNotificacionBajaUsuarioAdmin(String email, String mensaje, String titulo) {
+		enviarNotificacion.enviarEmailNotificacion(mensaje, email, titulo);
+	}
+	
+	private void enviar(DTOConfiguracion dtoConfig, String mensaje, String titulo, String email, String idPersona) {
+		if (dtoConfig.isEmailNotification()) {
+			enviarNotificacion.enviarEmailNotificacion(mensaje, email, titulo);
+		} else {
+			enviarNotificacion.enviarPushNotificacion(mensaje, idPersona, titulo);
+		}
+	}
+	
+	private String getEmailById(String idPersona) {
+		String email = null;
+		try {
+			Usuario usuario = manager.find(Usuario.class, idPersona);
+			if (usuario != null) {
+				email = usuario.getEmail();
+			}
+		} catch (Exception exception) {
+			return email;
+		}
+		return email;
+	}
+
+	public List<DTOConfiguracion> getByIdPersona(String idPersona) {
+		List<DTOConfiguracion> res = new ArrayList<DTOConfiguracion>();
+		try {
+			TypedQuery<Configuracion> query = manager.createQuery("SELECT configuracion FROM Configuracion configuracion where configuracion.idPersona = '" + idPersona + "'", Configuracion.class);
+			List<Configuracion> configuraciones =  query.getResultList();
+			if (configuraciones.size() > 0) {
+				for (Configuracion configuracion : configuraciones) {
+					DTOConfiguracion dtoConfiguracion = new DTOConfiguracion(configuracion);
+					res.add(dtoConfiguracion);
+				}	
+			}
+		} catch (Exception exception) {
+			return res;
+		}
+		return res;
+	}
+
+	private String getNicknameById(String idPersona) {
+		String nickname = null;
+		try {
+			Usuario usuario = manager.find(Usuario.class, idPersona);
+			if (usuario != null) {
+				nickname = usuario.getNickname();
+			}
+		} catch (Exception exception) {
+			return nickname;
+		}
+		return nickname;
 	}
 }

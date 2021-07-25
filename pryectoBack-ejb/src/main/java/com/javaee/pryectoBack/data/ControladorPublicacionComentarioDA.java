@@ -1,6 +1,8 @@
 package com.javaee.pryectoBack.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -10,11 +12,15 @@ import javax.persistence.TypedQuery;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
+
+import com.javaee.pryectoBack.datatypes.DTOCantidadReaccionComentario;
 import com.javaee.pryectoBack.datatypes.DTOComentario;
+import com.javaee.pryectoBack.datatypes.DTOConfiguracion;
 import com.javaee.pryectoBack.datatypes.DTOPublicacion;
 import com.javaee.pryectoBack.datatypes.DTOPublicacionPerfilUsuario;
 import com.javaee.pryectoBack.datatypes.DTOReaccion;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
+import com.javaee.pryectoBack.model.Configuracion;
 import com.javaee.pryectoBack.model.PerfilUsuario;
 import com.javaee.pryectoBack.model.Publicacion;
 import com.javaee.pryectoBack.model.Tipo;
@@ -23,6 +29,7 @@ import com.javaee.pryectoBack.model.UsuarioContacto;
 import com.javaee.pryectoBack.model.estadosContactos;
 import com.javaee.pryectoBack.model.reacciones;
 import com.javaee.pryectoBack.model.tipos;
+import com.javaee.pryectoBack.util.EnviarNotificacion;
 import com.javaee.pryectoBack.util.MongoDBConnector;
 import com.javaee.pryectoBack.util.PuntosUsuario;
 
@@ -41,9 +48,29 @@ public class ControladorPublicacionComentarioDA
 	private EntityManager manager;
 	
 	private PuntosUsuario puntoUsuario;
+	private EnviarNotificacion enviarNotificacion;
 
 	public ControladorPublicacionComentarioDA() {
 		puntoUsuario = new PuntosUsuario();
+		enviarNotificacion = new EnviarNotificacion();
+	}
+
+	@Override
+	public DTOCantidadReaccionComentario getCantidadReaccionComentario(int idPublicacion) {
+		DTOCantidadReaccionComentario res = new DTOCantidadReaccionComentario();
+		try {
+			DTOPublicacionPerfilUsuario dtoPublicacion = new DTOPublicacionPerfilUsuario();
+			dtoPublicacion.setIdPublicacion(idPublicacion);
+			dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
+			int cantidadComentarios = getCantidadComentarios(dtoPublicacion.getIdPublicacion());
+			res.setCantidadComentarios(cantidadComentarios);
+			res.setCantidadDislikes(dtoPublicacion.getCantidadDislikes());
+			res.setCantidadLikes(dtoPublicacion.getCantidadLikes());
+			res.setIdPublicacion(idPublicacion);
+		} catch(Exception exception) {
+			return res;
+		}
+		return res;
 	}
 
 	@Override
@@ -74,6 +101,7 @@ public class ControladorPublicacionComentarioDA
 					}
 				}
 			}
+			Collections.sort(res, Comparator.comparingLong(DTOPublicacionPerfilUsuario::getIdPublicacion).reversed());
 			res = aplicarOffsetSeizePublicaciones(res, offset, size);
 		} catch (Exception exception) {
 			return res;
@@ -102,12 +130,12 @@ public class ControladorPublicacionComentarioDA
 		try {
 			Publicacion publicacion = manager.find(Publicacion.class, idPublicacion);
 			if (publicacion != null) {
-				List<DTOComentario> dtoComentarios = getComentarios(publicacion.getIdPublicacion());
+//				List<DTOComentario> dtoComentarios = getComentarios(publicacion.getIdPublicacion());
 				Usuario usuario = manager.find(Usuario.class, publicacion.getPerfil().getIdPersona());
 				dtoPublicacion = new DTOPublicacionPerfilUsuario(publicacion, usuario);
-				dtoPublicacion.setComentarioReacciones(dtoComentarios);
-				dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
-				dtoPublicacion.setCantidadComentarios(getCantidadComentarios(dtoPublicacion.getIdPublicacion()));
+//				dtoPublicacion.setComentarioReacciones(dtoComentarios);
+//				dtoPublicacion = getCantidadReaccionPublicacion(dtoPublicacion);
+//				dtoPublicacion.setCantidadComentarios(getCantidadComentarios(dtoPublicacion.getIdPublicacion()));
 			}
 		} catch (Exception exception) {
 			return dtoPublicacion;
@@ -189,9 +217,9 @@ public class ControladorPublicacionComentarioDA
 	}
 
 	@Override
-	public DTOPublicacion altaPublicacion(DTOPublicacion dtoPublicacion) {
+	public DTOPublicacionPerfilUsuario altaPublicacion(DTOPublicacion dtoPublicacion) {
 		try {
-			DTOPublicacion dtoPubli = new DTOPublicacion();
+			DTOPublicacionPerfilUsuario dtoPubli = new DTOPublicacionPerfilUsuario();
 			Publicacion publicacion = new Publicacion(dtoPublicacion);
 			Usuario usuario = manager.find(Usuario.class, dtoPublicacion.getPerfil().getUsuario().getIdPersona());
 			if (usuario != null) {
@@ -204,12 +232,83 @@ public class ControladorPublicacionComentarioDA
 				manager.merge(tipo);
 				DTOUsuario dtoUsuario = new DTOUsuario(usuario);
 				puntoUsuario.getPuntosUsuario("AltaPublicacion", dtoUsuario, manager);
-				dtoPubli = new DTOPublicacion(publicacion);
+				dtoPubli = new DTOPublicacionPerfilUsuario(publicacion, usuario);
+				enviarNotificacionesAltaPublicaciones(usuario.getIdPersona(), usuario.getNickname());
 			}
 			return dtoPubli;
 		} catch (Exception exception) {
-			return new DTOPublicacion();
+			return new DTOPublicacionPerfilUsuario();
 		}
+	}
+	
+	private void enviarNotificacionesAltaPublicaciones(String idPersona, String nickname) {
+		List<DTOConfiguracion> configuraciones = getByIdPersona(idPersona);
+		String mensaje = "Su amigo " + nickname + " ha realizado una nueva publicacion";
+		String titulo = "Nueva publicacion";
+		for (DTOConfiguracion dtoConfig : configuraciones) {
+			if (dtoConfig.isAltaPublicacion()) {
+				List<String> amigos = getAmigos(idPersona);
+				if (dtoConfig.isEmailNotification()) {
+					enviarEmail(amigos, mensaje, titulo);
+				} else {
+					// revisar seguramente hay que cambiar la lista amigos que solo tiene el email
+					enviarPush(amigos, mensaje, titulo);
+				}
+			}
+		}
+	}
+
+	private void enviarPush(List<String> amigos, String mensaje, String titulo) {
+		try {
+			for (String amigo : amigos) {
+				enviarNotificacion.enviarPushNotificacion(mensaje, amigo, titulo);
+			}
+		} catch (Exception exception) {
+			System.out.println(exception.getMessage());
+		}
+	}
+
+	private void enviarEmail(List<String> amigos, String mensaje, String titulo) {
+		try {
+			for (String amigo : amigos) {
+				enviarNotificacion.enviarEmailNotificacion(mensaje, amigo, titulo);
+			}
+		} catch (Exception exception) {
+			System.out.println(exception.getMessage());
+		}
+	}
+
+	private List<String> getAmigos(String idPersona) {
+		List<String> dtoUsuarios = new ArrayList<String>();
+		try {
+			TypedQuery<UsuarioContacto> query = manager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.idPersona = '" + idPersona + "' and usuariocontacto.estadoContactos = '" + estadosContactos.aceptada + "' order by usuariocontacto.fechaContactos", UsuarioContacto.class);
+			List<UsuarioContacto> usuariosContactos = query.getResultList();
+			for(UsuarioContacto usuarioContacto : usuariosContactos) {
+				Usuario usuario = manager.find(Usuario.class, usuarioContacto.getContactoIdPersona());
+				DTOUsuario dtoUsuario = new DTOUsuario(usuario);
+				dtoUsuarios.add(dtoUsuario.getEmail());
+			}
+		} catch (Exception exception) {
+			return dtoUsuarios;
+		}
+		return dtoUsuarios;
+	}
+
+	public List<DTOConfiguracion> getByIdPersona(String idPersona) {
+		List<DTOConfiguracion> res = new ArrayList<DTOConfiguracion>();
+		try {
+			TypedQuery<Configuracion> query = manager.createQuery("SELECT configuracion FROM Configuracion configuracion where configuracion.idPersona = '" + idPersona + "'", Configuracion.class);
+			List<Configuracion> configuraciones =  query.getResultList();
+			if (configuraciones.size() > 0) {
+				for (Configuracion configuracion : configuraciones) {
+					DTOConfiguracion dtoConfiguracion = new DTOConfiguracion(configuracion);
+					res.add(dtoConfiguracion);
+				}	
+			}
+		} catch (Exception exception) {
+			return res;
+		}
+		return res;
 	}
 
 	@SuppressWarnings({ "unused", "unchecked", "rawtypes" })
@@ -236,11 +335,74 @@ public class ControladorPublicacionComentarioDA
 			DTOUsuario dtoUsuario = new DTOUsuario();
 			dtoUsuario.setIdPersona(dtoComentario.getIdPersona());
 			puntoUsuario.getPuntosUsuario("ComentarPublicacion", dtoUsuario, manager);
+			String nickname = getNicknameById(dtoComentario.getIdPersona());
+			enviarNotificacionComentario(nickname, dtoComentario.getIdPublicacion());
 			return dtoComentario;
 		} catch (Exception exception) {
 			System.out.println(exception.getMessage());
 			return null;
 		}
+	}
+
+	private String getNicknameById(String idPersona) {
+		String nickname = null;
+		try {
+			Usuario usuario = manager.find(Usuario.class, idPersona);
+			if (usuario != null) {
+				nickname = usuario.getNickname();
+			}
+		} catch (Exception exception) {
+			return nickname;
+		}
+		return nickname;
+	}
+
+	private void enviarNotificacionComentario(String nickname, int idPublicacion) {
+		String idOwner = getByIdPublicacion(idPublicacion);
+		if (idOwner != null) {
+			List<DTOConfiguracion> configuraciones = getByIdPersona(idOwner);
+			List<String> amigos = new ArrayList<String>();
+			String email = getUsuarioEmail(idOwner);
+			amigos.add(email);
+			String mensaje = "Su amigo " + nickname + " ha comentado una publicacion suya";
+			String titulo = "Nuevo comentario";
+			for (DTOConfiguracion dtoConfig : configuraciones) {
+				if (dtoConfig.isComentarPublicacion()) {
+					if (dtoConfig.isEmailNotification()) {
+						enviarEmail(amigos, mensaje, titulo);
+					} else {
+						// revisar seguramente hay que cambiar la lista amigos que solo tiene el email
+						enviarPush(amigos, mensaje, titulo);
+					}
+				}
+			}
+		}
+	}
+
+	private String getUsuarioEmail(String idOwner) {
+		String email = null;
+		try {
+			Usuario usuario = manager.find(Usuario.class, idOwner);
+			if (usuario != null) {
+				email = usuario.getEmail();
+			}
+		} catch (Exception exception) {
+			return email;
+		}
+		return email;
+	}
+
+	private String getByIdPublicacion(int idPublicacion) {
+		String idOwner = null;
+		try {
+			Publicacion publicacion = manager.find(Publicacion.class, idPublicacion);
+			if (publicacion != null) {
+				idOwner = publicacion.getPerfil().getIdPersona();
+			}
+		} catch (Exception exception) {
+			return idOwner;
+		}
+		return idOwner;
 	}
 
 	@Override
