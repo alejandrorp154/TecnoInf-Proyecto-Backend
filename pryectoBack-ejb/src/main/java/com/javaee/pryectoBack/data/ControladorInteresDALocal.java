@@ -15,4 +15,5 @@ public interface ControladorInteresDALocal {
 	boolean desuscribe(String idPersona, int idInteres);
 	DTOInteres getById(int idInteres);
 	List<DTOInteres> getAll(int offset, int size);
+	DTOInteres exist(String stringInteres);
 }
