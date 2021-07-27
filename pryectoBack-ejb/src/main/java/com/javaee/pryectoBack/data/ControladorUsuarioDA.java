@@ -61,6 +61,21 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	}
 
 	@Override
+	public boolean sonAmigos(String idPersona, String idContacto)
+	{
+		boolean res = false;
+		try {
+			UsuarioContacto usuarioContacto = manager.find(UsuarioContacto.class, new UsuarioContactoId(idPersona, idContacto));
+			if (usuarioContacto != null) {
+				res = usuarioContacto.getEstadoContactos().equals(estadosContactos.pendiente) ? true : false;
+			}
+		} catch (Exception exception) {
+			return res;
+		}
+		return res;
+	}
+	
+	@Override
 	public DTOUsuario editarPerfil(DTOUsuarioPerfil dtoUsuario) {
 		DTOUsuario dtoUsuarioRes = new DTOUsuario();
 		try{
@@ -442,21 +457,6 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 			return dtoUsuarioPerfil;
 		}
 		return dtoUsuarioPerfil;
-	}
-	
-	@Override
-	public boolean sonAmigos(String idPersona, String idContacto)
-	{
-		boolean res = false;
-		try {
-			UsuarioContacto usuarioContacto = manager.find(UsuarioContacto.class, new UsuarioContactoId(idPersona, idContacto));
-			if (usuarioContacto != null) {
-				res = usuarioContacto.getEstadoContactos().equals(estadosContactos.pendiente) ? true : false;
-			}
-		} catch (Exception exception) {
-			return res;
-		}
-		return res;
 	}
 
 	@Override

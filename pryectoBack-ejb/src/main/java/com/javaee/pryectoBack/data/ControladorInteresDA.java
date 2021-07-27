@@ -28,7 +28,6 @@ public class ControladorInteresDA implements ControladorInteresDALocal, Controla
 		puntoUsuario = new PuntosUsuario();
 	}
 	
-	
 	@Override
 	public DTOInteres alta(DTOInteres dtoInteres) {
 		try {
@@ -77,6 +76,24 @@ public class ControladorInteresDA implements ControladorInteresDALocal, Controla
 			dtoIntereses.add(dtoInteres);
 		}
 		return dtoIntereses;
+	}
+
+	@Override
+	public DTOInteres exist(String stringInteres) {
+		DTOInteres res = null;
+		try {
+			TypedQuery<Interes> query = manager.createQuery("SELECT interes FROM Interes interes order by interes.idInteres", Interes.class);
+			List<Interes> intereses = query.getResultList();
+			for(Interes interes : intereses) {
+				if (interes.getInteres().equals(stringInteres)) {
+					res = new DTOInteres(interes);
+					break;
+				}
+			}
+		} catch (Exception exception) {
+			return res;
+		}
+		return res;
 	}
 
 	@Override
