@@ -41,6 +41,10 @@ public class Publicacion implements Serializable
 		this.extension = newPublicacion.getExtension();
 		this.nombre = newPublicacion.getNombre();
 		this.perfil = new PerfilUsuario(newPublicacion.getPerfil());
+		if (newPublicacion.getEvento() != null && newPublicacion.getEvento().getIdEvento() != 0) {
+			this.evento = new Evento();
+			this.evento.setIdEvento(newPublicacion.getEvento().getIdEvento());
+		}
 	}
 
 	public int getIdPublicacion() {

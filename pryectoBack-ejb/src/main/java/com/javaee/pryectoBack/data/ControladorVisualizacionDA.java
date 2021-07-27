@@ -24,7 +24,6 @@ import com.javaee.pryectoBack.model.Ubicacion;
 import com.javaee.pryectoBack.model.Usuario;
 import com.javaee.pryectoBack.model.UsuarioContacto;
 import com.javaee.pryectoBack.model.estadosContactos;
-import com.javaee.pryectoBack.model.tipos;
 
 @Stateless
 public class ControladorVisualizacionDA implements ControladorVisualizacionDALocal, ControladorVisualizacionDARemote {
