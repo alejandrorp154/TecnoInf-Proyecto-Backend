@@ -37,17 +37,15 @@ public class ControladorUbicacionDA implements ControladorUbicacionDALocal, Cont
 				manager.persist(ubicacion);
 				owner.getUbicaciones().add(ubicacion);
 				manager.merge(owner);
-				DTOUbicacion ubicacionCreada = dtoUbicacion;
-				ubicacionCreada.setIdUbicacion(ubicacion.getIdUbicacion());
+				dtoUbicacion.setIdUbicacion(ubicacion.getIdUbicacion());
 				Usuario usuario1 = manager.find(Usuario.class, owner.getIdPersona());
 				DTOUsuario dtoUsuario1 = new DTOUsuario(usuario1);
 				puntoUsuario.getPuntosUsuario("AltaUbicacion", dtoUsuario1, manager);
-				return ubicacionCreada;
 			}			
-			return null;
 		} catch (Exception exception) {
 			return null;
 		}
+		return dtoUbicacion;
 	}
 
 	@Override
