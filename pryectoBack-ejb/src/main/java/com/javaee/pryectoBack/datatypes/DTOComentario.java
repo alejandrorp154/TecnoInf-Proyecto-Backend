@@ -17,11 +17,12 @@ public class DTOComentario implements Serializable
 	private int idPublicacion;
 	private String idComentarioPadre;
 	protected String idPersona;
+	private String nickname;
 	private List<DTOComentario> comentariosHijos;
 	private Integer cantidadLikes;
 	private Integer cantidadDislikes;
 	
-	public DTOComentario(String idComentario, String contenido, Date fecha, int idPublicacion, String idPersona, String idComentarioPadre) {
+	public DTOComentario(String idComentario, String contenido, Date fecha, int idPublicacion, String idPersona, String idComentarioPadre, String nickname) {
 		super();
 		this.idComentarioPadre = idComentarioPadre;
 		this.idComentario = idComentario;
@@ -29,6 +30,7 @@ public class DTOComentario implements Serializable
 		this.fecha = fecha;
 		this.idPublicacion = idPublicacion;
 		this.idPersona = idPersona;
+		this.nickname = nickname;
 	}
 
 	public DTOComentario() {
@@ -89,6 +91,7 @@ public class DTOComentario implements Serializable
 		newDocument.append("idPersona", this.idPersona);
 		newDocument.append("contenido", this.contenido);
 		newDocument.append("fecha", this.fecha);
+		newDocument.append("nickname", this.nickname);
 		return newDocument;
 	}
 	
@@ -98,6 +101,7 @@ public class DTOComentario implements Serializable
 			this.idComentario = (String) idObj.toString();		
 		}
 		this.idPersona = (String) comentario.get("idPersona");
+		this.nickname = (String) comentario.getString("nickname");
 		this.contenido = (String) comentario.get("contenido");
 		this.fecha = (Date) comentario.get("fecha");
 		this.idComentarioPadre = (String) comentario.get("idComentarioPadre");		
@@ -128,4 +132,11 @@ public class DTOComentario implements Serializable
 		this.cantidadDislikes = cantidadDislikes;
 	}
 
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
 }

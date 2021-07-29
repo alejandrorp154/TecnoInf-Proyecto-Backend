@@ -12,14 +12,13 @@ import com.javaee.pryectoBack.datatypes.DTOMultimedia;
 import com.javaee.pryectoBack.datatypes.DTOUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioContacto;
 import com.javaee.pryectoBack.datatypes.DTOAdministrador;
+import com.javaee.pryectoBack.datatypes.DTOComentario;
 import com.javaee.pryectoBack.datatypes.DTOConfiguracion;
 import com.javaee.pryectoBack.datatypes.DTOInteresUsuario;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioInicioSesion;
 import com.javaee.pryectoBack.datatypes.DTOUsuarioPerfil;
 import com.javaee.pryectoBack.model.PerfilUsuario;
 import com.javaee.pryectoBack.model.Persona;
-import com.javaee.pryectoBack.model.Medalla;
-import com.javaee.pryectoBack.model.Notificacion;
 import com.javaee.pryectoBack.model.Ubicacion;
 import com.javaee.pryectoBack.model.Evento;
 import com.javaee.pryectoBack.model.EventoUsuario;
@@ -30,18 +29,21 @@ import com.javaee.pryectoBack.model.Administrador;
 import com.javaee.pryectoBack.model.Configuracion;
 import com.javaee.pryectoBack.util.EnviarNotificacion;
 import com.javaee.pryectoBack.util.MongoDBConnector;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.util.List;
 
+import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 
 import com.javaee.pryectoBack.model.Usuario;
 import com.javaee.pryectoBack.model.UsuarioContacto;
 import com.javaee.pryectoBack.model.UsuarioContactoId;
 import com.javaee.pryectoBack.model.estadosContactos;
+import com.javaee.pryectoBack.model.reacciones;
 import com.javaee.pryectoBack.util.PuntosUsuario;
 
 
@@ -53,6 +55,7 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 	
 	private PuntosUsuario puntoUsuario;
 	private EnviarNotificacion enviarNotificacion;
+	private MongoDBConnector mongoConnector;
 	
 	public ControladorUsuarioDA()
 	{
@@ -198,10 +201,10 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 
 			if (user != null) {
 
-				//Medallas
-				Medalla medalla = user.getMedalla();
-				manager.remove(medalla);
-				
+//				//Medallas
+//				Medalla medalla = user.getMedalla();
+//				manager.remove(medalla);
+//				
 				// Remover configuraciones
 				TypedQuery<Configuracion> queryConfiguraciones = manager.createQuery("SELECT configuracion FROM Configuracion configuracion where configuracion.idPersona = '" + idPersona + "'", Configuracion.class);
 				List<Configuracion> configuraciones =  queryConfiguraciones.getResultList();
@@ -211,11 +214,11 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 					}	
 				}
 
-				//Notificaciones
-				List<Notificacion> notificaciones = user.getNotificaciones();
-				for (Notificacion noti : notificaciones) {
-					manager.remove(noti);
-				}
+//				//Notificaciones
+//				List<Notificacion> notificaciones = user.getNotificaciones();
+//				for (Notificacion noti : notificaciones) {
+//					manager.remove(noti);
+//				}
 
 				//Ubicaciones
 				List<Ubicacion> ubicaciones = user.getUbicaciones();
@@ -240,11 +243,13 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 						List<Publicacion> publicaciones = event.getPublicaciones();
 						if (!publicaciones.isEmpty()) {
 							for (Publicacion pub : publicaciones) {
-								MongoDBConnector mongoConnector = new MongoDBConnector();
-								MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosYReacciones");
-
-								String idPublicacion = String.valueOf(pub.getIdPublicacion());
-								collection.deleteOne(eq("idPublicacion", new ObjectId(idPublicacion)));
+								mongoConnector = new MongoDBConnector();
+//								MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosYReacciones");
+								// Obtengo lista de comentarios
+								List<DTOComentario> comentarios = getComentarios(pub.getIdPublicacion());
+								for (DTOComentario dtoComentario : comentarios) {
+									bajaComentario(dtoComentario.getIdComentario());
+								}
 
 								pub.getPerfil().getPublicaciones().remove(pub);
 
@@ -253,15 +258,8 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 						}
 						manager.remove(event);
 					}
-				}
-
-				TypedQuery<EventoUsuario> query = manager.createQuery("SELECT eventoUsuario FROM EventoUsuario eventoUsuario where eventoUsuario.idPersona = '" + user.getIdPersona() + "'", EventoUsuario.class);
-				List<EventoUsuario> eventosUsuarios = query.getResultList();
-				//Eventos a los que asistira el usuario
-				for (EventoUsuario eventoUsuario : eventosUsuarios) {
-					manager.remove(eventoUsuario);
-				}
-
+				}				
+				
 				//Remove Multimedia
 				PerfilUsuario userProfile = user.getPerfil();
 				List<Multimedia> galerias = userProfile.getGalerias();
@@ -270,17 +268,18 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 						manager.remove(multi);
 					}
 				}
-
 				//Publicaciones del Usuario
 				List<Publicacion> pubs = userProfile.getPublicaciones();
 				if (!pubs.isEmpty()){
 					for (Publicacion publicacion : pubs){
 
-						MongoDBConnector mongoConnector = new MongoDBConnector();
-						MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosYReacciones");
-
-						String idPublicacion = String.valueOf(publicacion.getIdPublicacion());
-						collection.deleteOne(eq("idPublicacion", new ObjectId(idPublicacion)));
+						mongoConnector = new MongoDBConnector();
+//						MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosYReacciones");
+						// Obtengo lista de comentarios
+						List<DTOComentario> comentarios = getComentarios(publicacion.getIdPublicacion());
+						for (DTOComentario dtoComentario : comentarios) {
+							bajaComentario(dtoComentario.getIdComentario());
+						}
 
 						manager.remove(publicacion);
 					}
@@ -292,6 +291,25 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 					for (Interes inter : intereses){
 						inter.getPerfiles().remove(userProfile);
 					}
+				}
+
+				TypedQuery<EventoUsuario> query = manager.createQuery("SELECT eventoUsuario FROM EventoUsuario eventoUsuario where eventoUsuario.idPersona = '" + user.getIdPersona() + "'", EventoUsuario.class);
+				List<EventoUsuario> eventosUsuarios = query.getResultList();
+				//Eventos a los que asistira el usuario
+				for (EventoUsuario eventoUsuario : eventosUsuarios) {
+					manager.remove(eventoUsuario);
+				}
+				
+				TypedQuery<UsuarioContacto> queryUsuarioContacto = manager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.idPersona = :idPersona ", UsuarioContacto.class);
+				List<UsuarioContacto> usuariosContactos = queryUsuarioContacto.setParameter("idPersona", idPersona).getResultList();
+				for (UsuarioContacto usuarioContacto : usuariosContactos) {
+					manager.remove(usuarioContacto);
+				}
+				
+				TypedQuery<UsuarioContacto> queryUsuarioContacto2 = manager.createQuery("SELECT usuariocontacto FROM UsuarioContacto usuariocontacto where usuariocontacto.contactoIdPersona = :contactoIdPersona ", UsuarioContacto.class);
+				List<UsuarioContacto> usuariosContactos2 = queryUsuarioContacto2.setParameter("contactoIdPersona", idPersona).getResultList();
+				for (UsuarioContacto usuarioContacto2 : usuariosContactos2) {
+					manager.remove(usuarioContacto2);
 				}
 
 				//Perfil
@@ -307,6 +325,78 @@ public class ControladorUsuarioDA implements ControladorUsuarioDALocal, Controla
 		}
 		return false;
 	}
+	
+	private boolean bajaComentario(String idComentario) {
+		try {
+			if (mongoConnector == null || mongoConnector.getClient() == null || mongoConnector.getDataBase() == null) {
+				mongoConnector = new MongoDBConnector();
+			}
+			MongoCollection<Document> collection = mongoConnector.getCollection("ComentariosPublicacion");
+			collection.deleteMany(eq("_id", new ObjectId(idComentario)));
+			collection = mongoConnector.getCollection("ReaccionesComentario");
+			collection.deleteMany(eq("idComentario", new ObjectId(idComentario)));
+			return true;
+		} catch (Exception exception) {
+			System.out.println(exception.getMessage());
+			return false;
+		}
+	}
+	
+	private List<DTOComentario> getComentarios(int idPublicacion) {
+		try {
+			List<DTOComentario> result = new ArrayList<DTOComentario>();
+			if (mongoConnector == null || mongoConnector.getClient() == null || mongoConnector.getDataBase() == null) {
+				mongoConnector = new MongoDBConnector();
+			}
+			MongoCollection<Document> collectionComentariosPublicacion = mongoConnector
+					.getCollection("ComentariosPublicacion");
+			MongoCollection<Document> reaccionesComentarios = mongoConnector.getCollection("ReaccionesComentario");
+			FindIterable<Document> comentariosPadre = collectionComentariosPublicacion
+					.find(and(eq("idPublicacion", idPublicacion), eq("idComentarioPadre", null)));
+			for (Document comentario : comentariosPadre) {
+				result.add(getArbolComentario(comentario, collectionComentariosPublicacion, reaccionesComentarios));
+			}
+			return result;
+		} catch (Exception exception) {
+			System.out.println(exception.getMessage());
+			return null;
+
+		}
+	}
+
+	private DTOComentario getArbolComentario(Document comentarioPadre,
+			MongoCollection<Document> collectionComentariosPublicacion,
+			MongoCollection<Document> reaccionesComentarios) {
+		DTOComentario comentarioPadreDTO = new DTOComentario(comentarioPadre);
+		FindIterable<Document> comentariosHijo = collectionComentariosPublicacion
+				.find(eq("idComentarioPadre", comentarioPadreDTO.getIdComentario()));
+		comentarioPadreDTO
+				.setCantidadLikes(getCantidadReaccion(reacciones.MeGusta, comentarioPadre, reaccionesComentarios));
+		comentarioPadreDTO
+				.setCantidadDislikes(getCantidadReaccion(reacciones.NoMeGusta, comentarioPadre, reaccionesComentarios));
+		if (comentariosHijo != null) {
+			for (Document comentario : comentariosHijo) {
+				DTOComentario hijo = new DTOComentario(comentario);
+				hijo.setCantidadLikes(getCantidadReaccion(reacciones.MeGusta, comentario, reaccionesComentarios));
+				hijo.setCantidadDislikes(getCantidadReaccion(reacciones.NoMeGusta, comentario, reaccionesComentarios));
+				comentarioPadreDTO.getComentariosHijos().add(hijo);
+			}
+		}
+		return comentarioPadreDTO;
+	}	
+	
+	@SuppressWarnings("unused")
+	private Integer getCantidadReaccion(reacciones reaccion, Document comentario,
+			MongoCollection<Document> collection) {
+		Integer cantidad = 0;
+		FindIterable<Document> reacciones = collection.find(and(
+				eq("idComentario", String.valueOf(comentario.get("_id"))), eq("reaccion", String.valueOf(reaccion))));
+		for (Document document : reacciones) {
+			cantidad++;
+		}
+		return cantidad;
+	}
+
 
 	@Override
 	public boolean bajaUsuarioAdmin(String idPersona) {

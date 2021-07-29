@@ -4,10 +4,16 @@ import java.security.Security;
 import java.util.Date;
 import java.util.Properties;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 import com.sun.mail.smtp.SMTPTransport;
 
@@ -44,12 +50,45 @@ public class EnviarNotificacion {
 		final MimeMessage msg = new MimeMessage(session);
 
 		try {
+			
+			// This mail has 2 part, the BODY and the embedded image
+            MimeMultipart multipart = new MimeMultipart("related");
+
+           // first part (the html)
+            BodyPart messageBodyPart = new MimeBodyPart();
+            String htmlText = "<div> Traveller:  </div>"
+            					+ "<br>    "
+            					+ "<div> " +  mensaje + " </div>" 
+            					+ "<br>    "
+            					+ "<div> Saludos, </div>" 
+            					+ "<div> TravelPack team </div>" 
+            					+ "<br> " + "<img src=\"cid:image\" width=\"57\" height=\"73\">";
+            messageBodyPart.setContent(htmlText, "text/html");
+           // add it
+            multipart.addBodyPart(messageBodyPart);
+
+           // second part (the image)
+            messageBodyPart = new MimeBodyPart();
+            DataSource fds =  new FileDataSource(
+           "C:\\Users\\Lu\\Desktop\\background\\unnamed.jpg");
+
+            messageBodyPart.setDataHandler(new DataHandler(fds));
+            messageBodyPart.setHeader("Content-ID", "<image>");
+
+           // add image to the multipart
+            multipart.addBodyPart(messageBodyPart);
+
+           // put everything together
+            msg.setContent(multipart);
+			
+			
+			
 			// -- Set the FROM and TO fields --
 			msg.setFrom(new InternetAddress(from));
 			msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
 
 			msg.setSubject(titulo);
-			msg.setText(mensaje, "utf-8");
+			//msg.setText(mensaje, "utf-8");
 			msg.setSentDate(new Date());
 
 			SMTPTransport t = (SMTPTransport) session.getTransport("smtps");
