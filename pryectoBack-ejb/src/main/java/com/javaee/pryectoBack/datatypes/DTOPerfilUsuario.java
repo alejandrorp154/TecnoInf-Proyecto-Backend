@@ -2,6 +2,8 @@ package com.javaee.pryectoBack.datatypes;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.javaee.pryectoBack.model.Interes;
@@ -42,6 +44,7 @@ public class DTOPerfilUsuario implements Serializable
 			DTOPublicacion dtoPublicacion = new DTOPublicacion(publicacion);
 			res.add(dtoPublicacion);
 		}
+		Collections.sort(res, Comparator.comparingLong(DTOPublicacion::getIdPublicacion).reversed());
 		return res;
 	}
 
